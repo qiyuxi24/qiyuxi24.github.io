@@ -14,24 +14,20 @@
           <!-- 按钮已移至最上层，见下方.floating-actions -->
         </div>
       </div>
-      <p class="header-subtitle">引导式分步教学，帮助你循序渐进掌握知识</p>
     </el-header>
 
     <el-main class="main-content">
       <!-- 左侧边栏：已清空，预留空间 -->
       <!-- UI位置变更说明：
-           - 原"学习引导"卡片：已删除
+           - 原"学习"卡片：已删除
            - 原"本课要点"卡片：已删除
            - 侧边栏现在为空，仅保留布局空间
       -->
       <!-- 左侧边栏：对话历史列表 -->
       <el-aside :width="sidebarCollapsed ? '60px' : '280px'" class="guide-sidebar" :class="{ 'collapsed': sidebarCollapsed }">
         <!-- 折叠/展开按钮 -->
-        <div class="sidebar-toggle" @click="toggleSidebar" v-if="!sidebarCollapsed">
-          <el-button :icon="Fold" circle size="small" />
-        </div>
-        <div class="sidebar-toggle" @click="toggleSidebar" v-else>
-          <el-button :icon="Expand" circle size="small" />
+        <div class="sidebar-toggle" @click="toggleSidebar" :title="sidebarCollapsed ? '展开侧边栏' : '收起侧边栏'">
+          <el-button :icon="sidebarCollapsed ? Expand : Fold" circle size="small" />
         </div>
 
         <!-- 对话历史列表 -->
@@ -178,15 +174,9 @@
           </el-form-item>
           <el-divider />
           <el-form-item label="API配置">
-            <div style="margin-bottom: 10px; color: #909399; font-size: 0.85em;">
-              ⚠️ 注意：将 API 密钥存储在前端存在安全风险，建议生产环境使用后端代理
+            <div style="margin-bottom: 10px; color: #909399; font-size: 0.85em; line-height: 1.6;">
+              已启用后端代理（`/api/chat`）。API Key 由本地服务端环境变量提供，前端不会存储密钥。
             </div>
-          </el-form-item>
-          <el-form-item label="AccessKey ID">
-            <el-input v-model="accessKeyId" placeholder="请输入 AccessKey ID" />
-          </el-form-item>
-          <el-form-item label="AccessKey Secret">
-            <el-input v-model="accessKeySecret" type="password" placeholder="请输入 AccessKey Secret" show-password />
           </el-form-item>
           <el-divider />
           <el-form-item label="清空对话">
@@ -231,10 +221,10 @@
 import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
-import { useDark, useToggle } from '@vueuse/core'
 import { useTypingEffect } from './composables/useTypingEffect'
-import { callDashScopeAPI, convertMessagesToDashScopeFormat } from './composables/useDashScopeAPI'
 import { readChatCache, writeChatCache, snapshotMessages } from './composables/useChatLocalCache'
+import { useAutoInvertTheme } from './composables/useAutoInvertTheme'
+import { callChatProxyAPI, convertMessagesToOpenAIFormat } from './composables/useChatProxyAPI'
 import { ElMessage } from 'element-plus'
 import {
   MagicStick,
@@ -268,14 +258,8 @@ marked.setOptions({
   gfm: true
 })
 
-// ---------- 暗色模式 ----------
-const isDark = useDark({
-  selector: 'html',
-  attribute: 'class',
-  valueDark: 'dark',
-  valueLight: 'light'
-})
-const toggleDark = useToggle(isDark)
+// ---------- 白天/黑夜（自动黑白灰取反） ----------
+const { isDark, toggleDark } = useAutoInvertTheme({ rootSelector: '#app' })
 
 // ---------- 状态定义 ----------
 const userInput = ref('')
@@ -409,9 +393,7 @@ const loadChatHistory = () => {
   }
 }
 
-// API 配置
-const accessKeyId = ref('LTAI5tRsyKiAywRoEmnYFxkj')
-const accessKeySecret = ref('Gq87uSC7yXtLlwv6dOdeQt04rMQjKS')
+// API 通过本地后端代理调用（server/index.js），前端不保存密钥
 
 // 引导步骤定义
 const guideSteps = reactive([
@@ -525,46 +507,18 @@ const sendMessage = async () => {
   isAiThinking.value = true
   
   try {
-    // 3. 调用真实 API 生成 AI 回复
+    // 3. 调用真实 API 生成 AI 回复（经由 /api/chat 代理）
     let aiResponseText = ''
     let useFallback = false
-    
-    // 检查是否有配置 API Key
-    if (accessKeyId.value) {
-      try {
-        // 转换消息格式为 DashScope 格式
-        const dashScopeMessages = convertMessagesToDashScopeFormat(messages)
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:356',message:'before API call',data:{messagesLength:messages.length,dashScopeMessagesLength:dashScopeMessages.length,hasAccessKeyId:!!accessKeyId.value,hasAccessKeySecret:!!accessKeySecret.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
-        // 调用 API
-        const apiResponse = await callDashScopeAPI(
-          dashScopeMessages,
-          accessKeyId.value,
-          accessKeySecret.value || null
-        )
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:363',message:'after API call',data:{success:apiResponse?.success,hasText:!!apiResponse?.text,textLength:apiResponse?.text?.length||0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
-        
-        if (apiResponse.success && apiResponse.text) {
-          aiResponseText = apiResponse.text
-        } else {
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:369',message:'API response format error',data:{success:apiResponse?.success,hasText:!!apiResponse?.text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-          // #endregion
-          throw new Error('API 返回的数据格式异常')
-        }
-      } catch (apiError) {
-        console.error('API 调用失败:', apiError)
-        // API 调用失败，使用模拟回复作为后备方案
-        useFallback = true
-        ElMessage.warning(`API 调用失败: ${apiError.message}，已切换到模拟回复模式`)
-      }
-    } else {
-      // 未配置 API Key，使用模拟回复
+ 
+    try {
+      const openAIMessages = convertMessagesToOpenAIFormat(messages)
+      const apiResponse = await callChatProxyAPI(openAIMessages)
+      aiResponseText = apiResponse.text
+    } catch (apiError) {
+      console.error('API 调用失败:', apiError)
       useFallback = true
+      ElMessage.warning(`API 调用失败: ${apiError.message}，已切换到模拟回复模式`)
     }
     
     // 如果 API 调用失败或未配置，使用模拟回复
@@ -834,14 +788,6 @@ const saveSettings = () => {
     aiName: aiName.value,
     chatModes: chatModes.value
   }))
-  
-  // 保存 API 配置到 localStorage
-  // ⚠️ 安全提醒：将 AccessKey 存储在前端存在安全风险，建议生产环境使用后端代理
-  localStorage.setItem('aiTutorAPIConfig', JSON.stringify({
-    accessKeyId: accessKeyId.value,
-    accessKeySecret: accessKeySecret.value
-  }))
-  
   ElMessage.success('设置已保存')
 }
 
@@ -862,18 +808,6 @@ onMounted(() => {
       }
     } catch (error) {
       console.error('加载设置失败:', error)
-    }
-  }
-  
-  // 加载 API 配置
-  const savedAPIConfig = localStorage.getItem('aiTutorAPIConfig')
-  if (savedAPIConfig) {
-    try {
-      const { accessKeyId: savedAccessKeyId, accessKeySecret: savedAccessKeySecret } = JSON.parse(savedAPIConfig)
-      if (savedAccessKeyId) accessKeyId.value = savedAccessKeyId
-      if (savedAccessKeySecret) accessKeySecret.value = savedAccessKeySecret
-    } catch (error) {
-      console.error('加载 API 配置失败:', error)
     }
   }
   
@@ -903,33 +837,6 @@ watch(
 </script>
 
 <style scoped>
-/* 暗色模式变量 */
-:root {
-  --bg-gradient-start: #f5f7fa;
-  --bg-gradient-end: #c3cfe2;
-  --header-gradient-start: #409EFF;
-  --header-gradient-end: #337ecc;
-  --card-bg: white;
-  --message-ai-bg: #f0f7ff;
-  --message-user-bg: #f0fff4;
-  --text-primary: #303133;
-  --text-secondary: #606266;
-  --border-color: #e4e7ed;
-}
-
-.dark {
-  --bg-gradient-start: #1a1a1a;
-  --bg-gradient-end: #2d2d2d;
-  --header-gradient-start: #1e88e5;
-  --header-gradient-end: #1565c0;
-  --card-bg: #2d2d2d;
-  --message-ai-bg: #1e3a5f;
-  --message-user-bg: #1a4d2e;
-  --text-primary: #e5eaf3;
-  --text-secondary: #a8abb2;
-  --border-color: #4c4d4f;
-}
-
 .app-container {
   height: 100vh;
   display: flex;
@@ -1026,6 +933,10 @@ watch(
   position: relative;
   transition: width 0.3s ease;
   overflow: hidden;
+  /* 侧边栏底色：更深一点点的灰色（夜间会自动取反） */
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 .guide-sidebar.collapsed {
@@ -1041,22 +952,24 @@ watch(
 }
 
 .guide-sidebar.collapsed .sidebar-toggle {
-  position: relative;
-  top: 0;
-  right: 0;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  padding: 10px;
+  padding: 6px;
 }
 
 .sidebar-toggle .el-button {
-  background: rgba(64, 158, 255, 0.2);
-  border: none;
-  color: #409EFF;
+  background: rgba(64, 158, 255, 0.25);
+  border: 1px solid rgba(64, 158, 255, 0.35);
+  color: #2b7cd9;
 }
 
 .sidebar-toggle .el-button:hover {
-  background: rgba(64, 158, 255, 0.3);
+  background: rgba(64, 158, 255, 0.35);
 }
 
 /* 对话历史面板样式 */
@@ -1065,6 +978,8 @@ watch(
   flex-direction: column;
   height: 100%;
   padding: 10px;
+  /* 给右上角折叠按钮留出视觉空间 */
+  padding-top: 44px;
 }
 
 .new-chat-button {
@@ -1427,12 +1342,69 @@ watch(
 .follow-up {
   margin-top: 15px;
 }
+.follow-up {
+  /* follow-up 标题分区色（按消息序号变化） */
+  --followup-title-color: #4b6b88;
+  --followup-line-color: rgba(75, 107, 136, 0.35);
+}
+
+/* 让不同消息的 follow-up 标题呈现不同蓝灰色，形成“分区”效果 */
+.message-item:nth-of-type(4n + 1) .follow-up {
+  --followup-title-color: #4b6b88;
+  --followup-line-color: rgba(75, 107, 136, 0.35);
+}
+.message-item:nth-of-type(4n + 2) .follow-up {
+  --followup-title-color: #3f7f9a;
+  --followup-line-color: rgba(63, 127, 154, 0.35);
+}
+.message-item:nth-of-type(4n + 3) .follow-up {
+  --followup-title-color: #5a7a96;
+  --followup-line-color: rgba(90, 122, 150, 0.35);
+}
+.message-item:nth-of-type(4n) .follow-up {
+  --followup-title-color: #4a7c6e;
+  --followup-line-color: rgba(74, 124, 110, 0.35);
+}
+
+/* Element Plus Divider：标题与分隔线样式（scoped 下用 :deep） */
+.follow-up :deep(.el-divider__text) {
+  color: var(--followup-title-color);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  /* 让标题与气泡背景更融合，避免出现“发白的贴片” */
+  background: transparent;
+}
+.message-item.ai .follow-up :deep(.el-divider__text) {
+  background: var(--message-ai-bg);
+}
+.message-item.user .follow-up :deep(.el-divider__text) {
+  background: var(--message-user-bg);
+}
+
+/* content-position="left" 会用 before/after 画线，统一改线条颜色 */
+.follow-up :deep(.el-divider__text)::before,
+.follow-up :deep(.el-divider__text)::after {
+  border-top-color: var(--followup-line-color);
+}
+
 .follow-up-questions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
 }
+
+/* 追问的三个提示（el-tag）统一使用浅灰蓝背景 */
+.follow-up :deep(.el-tag.follow-up-question) {
+  background-color: #e7eff8;
+  border-color: #c9d8ea;
+  color: #355b78;
+}
+.follow-up :deep(.el-tag.follow-up-question:hover) {
+  background-color: #dbe7f4;
+  border-color: #b7cbe3;
+}
+
 .follow-up-question {
   cursor: pointer;
   transition: all 0.3s;
