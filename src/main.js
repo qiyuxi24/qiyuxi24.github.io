@@ -9,6 +9,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 // 导入 highlight.js 样式（基础主题，暗色模式通过 CSS 覆盖）
 import 'highlight.js/styles/github.css'
+// 导入 KaTeX 样式
+import 'katex/dist/katex.min.css'
 
 import App from './App.vue'
 

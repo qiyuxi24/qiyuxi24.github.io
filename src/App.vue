@@ -19,7 +19,7 @@
     <el-main class="main-content">
       <!-- 左侧边栏：已清空，预留空间 -->
       <!-- UI位置变更说明：
-           - 原"学习"卡片：已删除
+           - 原"学习引导"卡片：已删除
            - 原"本课要点"卡片：已删除
            - 侧边栏现在为空，仅保留布局空间
       -->
@@ -100,7 +100,29 @@
                 <div v-if="message.isTyping" class="typing-indicator">
                   <span></span><span></span><span></span>
                 </div>
-                <!-- AI消息特有的“追问”区域 -->
+                <!-- 关键节点暂停提示 -->
+                <div v-if="message.isPaused && message.role === 'ai'" class="pause-prompt">
+                  <el-divider content-position="left">
+                    <el-icon><Pointer /></el-icon>
+                    <span style="margin-left: 8px;">思考时间</span>
+                  </el-divider>
+                  <div class="pause-content">
+                    <p>请先理解上面的内容，思考一下：</p>
+                    <ul>
+                      <li>这个步骤的关键点是什么？</li>
+                      <li>你理解了吗？有什么疑问？</li>
+                    </ul>
+                    <el-button 
+                      type="primary" 
+                      :icon="ArrowRight" 
+                      @click="continueTyping(index)"
+                      class="continue-button"
+                    >
+                      继续学习
+                    </el-button>
+                  </div>
+                </div>
+                <!-- AI消息特有的"追问"区域 -->
                 <div v-if="message.role === 'ai' && message.followUp" class="follow-up">
                   <el-divider content-position="left">为了帮助你，请告诉我：</el-divider>
                   <div class="follow-up-questions">
@@ -126,8 +148,19 @@
     <!-- 固定在底部的输入区域 -->
     <!-- UI位置变更说明：
          - 输入区域：固定在页面底部，根据侧边栏状态调整位置和宽度
+         - 对话模式选项：显示在输入框上方，成行排列
     -->
     <div class="fixed-input-area" :style="{ left: sidebarCollapsed ? '80px' : '300px', width: sidebarCollapsed ? 'calc(100% - 100px)' : 'calc(100% - 320px)' }">
+      <!-- 对话模式选项 -->
+      <div class="chat-mode-selector">
+        <div class="chat-mode-label">对话模式：</div>
+        <el-radio-group v-model="chatMode" class="chat-mode-options">
+          <el-radio label="引导问答" class="chat-mode-radio">引导问答</el-radio>
+          <el-radio label="检测考验" class="chat-mode-radio">检测考验</el-radio>
+          <el-radio label="即时回答" class="chat-mode-radio">即时回答</el-radio>
+        </el-radio-group>
+      </div>
+      
       <div class="input-container">
         <el-input
           v-model="userInput"
@@ -165,17 +198,24 @@
             <el-input v-model="aiName" placeholder="请输入AI导师名称" />
           </el-form-item>
           <el-divider />
-          <el-form-item label="对话模式">
-            <el-checkbox-group v-model="chatModes">
-              <el-checkbox label="引导问答">引导问答</el-checkbox>
-              <el-checkbox label="检测考验">检测考验</el-checkbox>
-              <el-checkbox label="即时回答">即时回答</el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
+          <!-- 对话模式选项已移至主界面输入框上方 -->
           <el-divider />
           <el-form-item label="API配置">
-            <div style="margin-bottom: 10px; color: #909399; font-size: 0.85em; line-height: 1.6;">
-              已启用后端代理（`/api/chat`）。API Key 由本地服务端环境变量提供，前端不会存储密钥。
+            <div style="margin-bottom: 10px; color: #909399; font-size: 0.85em;">
+              ⚠️ 注意：将 API 密钥存储在前端存在安全风险，建议生产环境使用后端代理
+            </div>
+          </el-form-item>
+          <el-form-item label="AccessKey ID">
+            <el-input v-model="accessKeyId" placeholder="请输入 AccessKey ID" />
+          </el-form-item>
+          <el-form-item label="AccessKey Secret">
+            <el-input v-model="accessKeySecret" type="password" placeholder="请输入 AccessKey Secret（将作为 API Key 使用）" show-password />
+          </el-form-item>
+          <el-form-item label="说明">
+            <div style="color: #909399; font-size: 0.85em; line-height: 1.6;">
+              • AccessKey Secret 将作为 API Key 用于认证<br/>
+              • 如果只有 API Key，可以只填写 AccessKey Secret 字段<br/>
+              • 配置后点击"保存设置"即可使用
             </div>
           </el-form-item>
           <el-divider />
@@ -207,10 +247,10 @@
         title="设置"
       />
       <el-button
-        :icon="isDark ? Sunny : Moon"
+        :icon="isInverted ? Sunny : Moon"
         circle
         class="floating-button theme-button"
-        @click="toggleDark()"
+        @click="toggleInvertTheme()"
         title="切换主题"
       />
     </div>
@@ -221,10 +261,11 @@
 import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
+import markedKatex from 'marked-katex-extension'
+import { useInvertTheme } from './composables/useInvertTheme'
 import { useTypingEffect } from './composables/useTypingEffect'
+import { callDashScopeAPI, convertMessagesToDashScopeFormat } from './composables/useDashScopeAPI'
 import { readChatCache, writeChatCache, snapshotMessages } from './composables/useChatLocalCache'
-import { useAutoInvertTheme } from './composables/useAutoInvertTheme'
-import { callChatProxyAPI, convertMessagesToOpenAIFormat } from './composables/useChatProxyAPI'
 import { ElMessage } from 'element-plus'
 import {
   MagicStick,
@@ -249,6 +290,14 @@ import {
 } from '@element-plus/icons-vue'
 
 // ---------- Markdown 和代码高亮配置 ----------
+marked.use(markedKatex({
+  throwOnError: false,
+  errorColor: '#cc0000',
+  katexOptions: {
+    throwOnError: false
+  }
+}))
+
 marked.setOptions({
   highlight: function(code, lang) {
     const language = hljs.getLanguage(lang) ? lang : 'plaintext'
@@ -258,8 +307,9 @@ marked.setOptions({
   gfm: true
 })
 
-// ---------- 白天/黑夜（自动黑白灰取反） ----------
-const { isDark, toggleDark } = useAutoInvertTheme({ rootSelector: '#app' })
+// ---------- 主题取反（扫描所有文字/图片颜色并取反） ----------
+// 取反范围用 html，确保 body/#app 背景也会一起反转，不会“露白”
+const { isInverted, toggle: toggleInvertTheme } = useInvertTheme({ rootSelector: 'html' })
 
 // ---------- 状态定义 ----------
 const userInput = ref('')
@@ -269,7 +319,7 @@ const sidebarCollapsed = ref(false)
 const userName = ref('学员')
 const aiName = ref('AI导师')
 const messagesContainer = ref(null)
-const chatModes = ref(['引导问答']) // 对话模式：引导问答、检测考验、即时回答
+const chatMode = ref('引导问答') // 对话模式：引导问答、检测考验、即时回答（单选）
 
 // 对话历史管理
 const chatHistory = ref([])
@@ -393,7 +443,10 @@ const loadChatHistory = () => {
   }
 }
 
-// API 通过本地后端代理调用（server/index.js），前端不保存密钥
+// API 配置
+// ⚠️ 安全提醒：请勿在此处硬编码 API 密钥，应在设置界面中配置
+const accessKeyId = ref('')
+const accessKeySecret = ref('')
 
 // 引导步骤定义
 const guideSteps = reactive([
@@ -494,6 +547,8 @@ const sendMessage = async () => {
   // 更新对话标题
   updateChatTitle(userInput.value)
   
+  // 保存消息到 localStorage
+  saveMessagesToLocalStorage()
   saveChatHistory()
   
   const userQuestion = userInput.value
@@ -507,18 +562,61 @@ const sendMessage = async () => {
   isAiThinking.value = true
   
   try {
-    // 3. 调用真实 API 生成 AI 回复（经由 /api/chat 代理）
+    // 3. 调用真实 API 生成 AI 回复
     let aiResponseText = ''
     let useFallback = false
- 
-    try {
-      const openAIMessages = convertMessagesToOpenAIFormat(messages)
-      const apiResponse = await callChatProxyAPI(openAIMessages)
-      aiResponseText = apiResponse.text
-    } catch (apiError) {
-      console.error('API 调用失败:', apiError)
+    
+    // 检查是否有配置 API Key（允许只填 Secret / 只填 ID 任意一种）
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/6da02d2c-eddb-414c-ba5e-278b852814ec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:sendMessage',message:'before api key check',data:{messagesLength:messages.length,chatMode:chatMode.value,hasAccessKeyId:!!accessKeyId.value,hasAccessKeySecret:!!accessKeySecret.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
+    if (accessKeyId.value || accessKeySecret.value) {
+      try {
+        // 转换消息格式为 DashScope 格式，并根据模式添加系统提示词
+        const dashScopeMessages = convertMessagesToDashScopeFormat(messages, chatMode.value)
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/6da02d2c-eddb-414c-ba5e-278b852814ec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:sendMessage',message:'prepared dashscope messages',data:{dashScopeMessagesLength:dashScopeMessages.length,roles:dashScopeMessages.map(m=>m.role).slice(0,6)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:356',message:'before API call',data:{messagesLength:messages.length,dashScopeMessagesLength:dashScopeMessages.length,hasAccessKeyId:!!accessKeyId.value,hasAccessKeySecret:!!accessKeySecret.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
+        // 调用 API
+        const apiResponse = await callDashScopeAPI(
+          dashScopeMessages,
+          accessKeyId.value || null,
+          accessKeySecret.value || null
+        )
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/6da02d2c-eddb-414c-ba5e-278b852814ec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:sendMessage',message:'dashscope api returned',data:{success:!!apiResponse?.success,hasText:!!apiResponse?.text,textLength:apiResponse?.text?.length||0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:363',message:'after API call',data:{success:apiResponse?.success,hasText:!!apiResponse?.text,textLength:apiResponse?.text?.length||0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
+        
+        if (apiResponse.success && apiResponse.text) {
+          aiResponseText = apiResponse.text
+        } else {
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:369',message:'API response format error',data:{success:apiResponse?.success,hasText:!!apiResponse?.text},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+          // #endregion
+          throw new Error('API 返回的数据格式异常')
+        }
+      } catch (apiError) {
+        console.error('API 调用失败:', apiError)
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/6da02d2c-eddb-414c-ba5e-278b852814ec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:sendMessage',message:'dashscope api failed, fallback enabled',data:{errorName:apiError?.name,errorMessage:apiError?.message,chatMode:chatMode.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+        // #endregion
+        // API 调用失败，使用模拟回复作为后备方案
+        useFallback = true
+        ElMessage.warning(`API 调用失败: ${apiError.message}，已切换到模拟回复模式`)
+      }
+    } else {
+      // 未配置 API Key，使用模拟回复
+      // #region agent log
+      fetch('http://127.0.0.1:7244/ingest/6da02d2c-eddb-414c-ba5e-278b852814ec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:sendMessage',message:'no accessKeyId, using fallback',data:{hasAccessKeyId:!!accessKeyId.value,hasAccessKeySecret:!!accessKeySecret.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+      // #endregion
       useFallback = true
-      ElMessage.warning(`API 调用失败: ${apiError.message}，已切换到模拟回复模式`)
     }
     
     // 如果 API 调用失败或未配置，使用模拟回复
@@ -533,6 +631,8 @@ const sendMessage = async () => {
       text: aiResponseText,
       displayText: '',
       isTyping: true,
+      isPaused: false,
+      typingEffect: null, // 存储打字机效果实例
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       // 如果是模拟回复，保留追问选项；API 回复则根据内容生成简单追问
       followUp: useFallback ? generateAIResponse(userQuestion).followUp : [
@@ -552,10 +652,21 @@ const sendMessage = async () => {
     // #endregion
     // 启动打字机效果
     const typingEffect = useTypingEffect()
+    // 保存打字机效果实例到消息对象
+    messages[messageIndex].typingEffect = typingEffect
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:407',message:'typingEffect instance created',data:{messageIndex,messagesLength:messages.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:407',message:'typingEffect instance created',data:{messageIndex,messagesLength:messages.length,chatMode:chatMode.value},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
     // #endregion
-    typingEffect.start(aiResponse.text, 20) // 20ms 每字符
+    // 设置暂停回调（仅在引导问答模式下启用）
+    const enablePause = chatMode.value === '引导问答'
+    const onPause = enablePause ? () => {
+      if (messages[messageIndex]) {
+        messages[messageIndex].isPaused = true
+        scrollToBottom()
+      }
+    } : null
+    // 在引导问答模式下启用暂停，其他模式禁用
+    typingEffect.start(aiResponse.text, 20, onPause, enablePause) // 20ms 每字符，引导问答模式带暂停回调
     
     // 更新消息的显示文本
     // #region agent log
@@ -566,24 +677,26 @@ const sendMessage = async () => {
         const displayTextBefore = messages[messageIndex].displayText
         messages[messageIndex].displayText = typingEffect.displayText.value
         messages[messageIndex].isTyping = typingEffect.isTyping.value
+        messages[messageIndex].isPaused = typingEffect.isPaused.value
         // #region agent log
         if (messages[messageIndex].displayText !== displayTextBefore || !typingEffect.isTyping.value) {
-          fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:416',message:'updateInterval tick',data:{messageIndex,messagesLength:messages.length,displayTextLength:messages[messageIndex].displayText.length,typingDisplayLength:typingEffect.displayText.value.length,isTyping:typingEffect.isTyping.value,msgIsTyping:messages[messageIndex].isTyping},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+          fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:416',message:'updateInterval tick',data:{messageIndex,messagesLength:messages.length,displayTextLength:messages[messageIndex].displayText.length,typingDisplayLength:typingEffect.displayText.value.length,isTyping:typingEffect.isTyping.value,isPaused:typingEffect.isPaused.value,msgIsTyping:messages[messageIndex].isTyping,msgIsPaused:messages[messageIndex].isPaused},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
         }
         // #endregion
-        if (!typingEffect.isTyping.value) {
+        if (!typingEffect.isTyping.value && !typingEffect.isPaused.value) {
           // #region agent log
           fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:420',message:'clearing updateInterval',data:{messageIndex,messagesLength:messages.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
           // #endregion
           clearInterval(updateInterval)
           // 打字完成，保存消息
-          saveChatHistory()
+          saveMessagesToLocalStorage()
         }
         scrollToBottom()
       } else {
         // #region agent log
         fetch('http://127.0.0.1:7242/ingest/0742b738-8510-42a3-913c-b9b9f2a546ac',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.vue:428',message:'messageIndex invalid in updateInterval',data:{messageIndex,messagesLength:messages.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
         // #endregion
+        clearInterval(updateInterval)
       }
     }, 20)
     
@@ -604,6 +717,29 @@ const sendMessage = async () => {
 const sendFollowUp = (question) => {
   userInput.value = question
   sendMessage()
+}
+
+// 继续显示暂停的消息
+const continueTyping = (messageIndex) => {
+  if (messages[messageIndex] && messages[messageIndex].typingEffect) {
+    messages[messageIndex].typingEffect.resume()
+    messages[messageIndex].isPaused = false
+    // 继续更新显示
+    const updateInterval = setInterval(() => {
+      if (messages[messageIndex]) {
+        messages[messageIndex].displayText = messages[messageIndex].typingEffect.displayText.value
+        messages[messageIndex].isTyping = messages[messageIndex].typingEffect.isTyping.value
+        messages[messageIndex].isPaused = messages[messageIndex].typingEffect.isPaused.value
+        if (!messages[messageIndex].typingEffect.isTyping.value && !messages[messageIndex].typingEffect.isPaused.value) {
+          clearInterval(updateInterval)
+          saveMessagesToLocalStorage()
+        }
+        scrollToBottom()
+      } else {
+        clearInterval(updateInterval)
+      }
+    }, 20)
+  }
 }
 
 // 生成AI回复（模拟函数，后续需替换为真实API调用）
@@ -657,9 +793,10 @@ const nextStep = async () => {
     await nextTick()
     scrollToBottom()
     
-    // 启动打字机效果
+    // 启动打字机效果（根据模式决定是否启用暂停）
     const typingEffect = useTypingEffect()
-    typingEffect.start(stepMessage.text, 20)
+    const enablePause = chatMode.value === '引导问答'
+    typingEffect.start(stepMessage.text, 20, null, enablePause)
     
     const updateInterval = setInterval(() => {
       if (messages[messageIndex]) {
@@ -696,9 +833,10 @@ const resetSteps = async () => {
   await nextTick()
   scrollToBottom()
   
-  // 启动打字机效果
+  // 启动打字机效果（根据模式决定是否启用暂停）
   const typingEffect = useTypingEffect()
-  typingEffect.start(resetMessage.text, 20)
+  const enablePause = chatMode.value === '引导问答'
+  typingEffect.start(resetMessage.text, 20, null, enablePause)
   
   const updateInterval = setInterval(() => {
     if (messages[messageIndex]) {
@@ -747,14 +885,16 @@ const clearMessages = async () => {
   }
   
   // 保存清空后的初始消息
+  saveMessagesToLocalStorage()
   saveChatHistory()
   
   await nextTick()
   scrollToBottom()
   
-  // 启动打字机效果
+  // 启动打字机效果（根据模式决定是否启用暂停）
   const typingEffect = useTypingEffect()
-  typingEffect.start(clearMessage.text, 20)
+  const enablePause = chatMode.value === '引导问答'
+  typingEffect.start(clearMessage.text, 20, null, enablePause)
   
   const updateInterval = setInterval(() => {
     if (messages[messageIndex]) {
@@ -762,6 +902,7 @@ const clearMessages = async () => {
       messages[messageIndex].isTyping = typingEffect.isTyping.value
       if (!typingEffect.isTyping.value) {
         clearInterval(updateInterval)
+        saveMessagesToLocalStorage()
         saveChatHistory()
       }
       scrollToBottom()
@@ -786,9 +927,59 @@ const saveSettings = () => {
   localStorage.setItem('aiTutorSettings', JSON.stringify({
     userName: userName.value,
     aiName: aiName.value,
-    chatModes: chatModes.value
+    chatMode: chatMode.value
   }))
+  
+  // 保存 API 配置到 localStorage
+  // ⚠️ 安全提醒：将 AccessKey 存储在前端存在安全风险，建议生产环境使用后端代理
+  localStorage.setItem('aiTutorAPIConfig', JSON.stringify({
+    accessKeyId: accessKeyId.value,
+    accessKeySecret: accessKeySecret.value
+  }))
+  
   ElMessage.success('设置已保存')
+}
+
+// 保存消息到 localStorage
+const saveMessagesToLocalStorage = () => {
+  try {
+    // 只保存必要的字段，排除临时状态
+    const messagesToSave = messages.map(msg => ({
+      role: msg.role,
+      text: msg.text,
+      time: msg.time,
+      followUp: msg.followUp || null
+    }))
+    localStorage.setItem('aiTutorMessages', JSON.stringify(messagesToSave))
+  } catch (error) {
+    console.error('保存消息失败:', error)
+    ElMessage.warning('保存对话记录失败，可能是存储空间不足')
+  }
+}
+
+// 从 localStorage 加载消息
+const loadMessagesFromLocalStorage = () => {
+  try {
+    const savedMessages = localStorage.getItem('aiTutorMessages')
+    if (savedMessages) {
+      const parsedMessages = JSON.parse(savedMessages)
+      if (Array.isArray(parsedMessages) && parsedMessages.length > 0) {
+        // 恢复消息，为每条消息添加 displayText
+        const restoredMessages = parsedMessages.map(msg => ({
+          ...msg,
+          displayText: msg.text,
+          isTyping: false
+        }))
+        messages.length = 0
+        messages.push(...restoredMessages)
+        return true
+      }
+    }
+  } catch (error) {
+    console.error('加载消息失败:', error)
+    ElMessage.warning('加载历史对话失败')
+  }
+  return false
 }
 
 // 页面加载时，滚动到底部并加载设置
@@ -800,14 +991,34 @@ onMounted(() => {
   const savedSettings = localStorage.getItem('aiTutorSettings')
   if (savedSettings) {
     try {
-      const { userName: savedUserName, aiName: savedAiName, chatModes: savedChatModes } = JSON.parse(savedSettings)
+      const { userName: savedUserName, aiName: savedAiName, chatMode: savedChatMode, chatModes: savedChatModes } = JSON.parse(savedSettings)
       userName.value = savedUserName || '学员'
       aiName.value = savedAiName || 'AI导师'
-      if (savedChatModes) {
-        chatModes.value = savedChatModes
+      // 优先使用新的 chatMode 字段，如果没有则尝试兼容旧的 chatModes 字段
+      if (savedChatMode) {
+        chatMode.value = savedChatMode
+      } else if (savedChatModes) {
+        // 兼容旧版本的多选格式，转换为单选
+        if (Array.isArray(savedChatModes) && savedChatModes.length > 0) {
+          chatMode.value = savedChatModes[0]
+        } else if (typeof savedChatModes === 'string') {
+          chatMode.value = savedChatModes
+        }
       }
     } catch (error) {
       console.error('加载设置失败:', error)
+    }
+  }
+  
+  // 加载 API 配置
+  const savedAPIConfig = localStorage.getItem('aiTutorAPIConfig')
+  if (savedAPIConfig) {
+    try {
+      const { accessKeyId: savedAccessKeyId, accessKeySecret: savedAccessKeySecret } = JSON.parse(savedAPIConfig)
+      if (savedAccessKeyId) accessKeyId.value = savedAccessKeyId
+      if (savedAccessKeySecret) accessKeySecret.value = savedAccessKeySecret
+    } catch (error) {
+      console.error('加载 API 配置失败:', error)
     }
   }
   
@@ -829,6 +1040,7 @@ watch(
     // 防抖：避免频繁保存
     clearTimeout(window._saveMessagesTimeout)
     window._saveMessagesTimeout = setTimeout(() => {
+      saveMessagesToLocalStorage()
       saveChatHistory()
     }, 500)
   },
@@ -837,6 +1049,39 @@ watch(
 </script>
 
 <style scoped>
+/* 暗色模式变量 */
+:root {
+  --bg-gradient-start: #f5f7fa;
+  --bg-gradient-end: #c3cfe2;
+  --header-gradient-start: #409EFF;
+  --header-gradient-end: #337ecc;
+  --card-bg: white;
+  --message-ai-bg: #f0f7ff;
+  --message-user-bg: #f0fff4;
+  --text-primary: #303133;
+  --text-secondary: #606266;
+  --border-color: #e4e7ed;
+}
+
+html.dark,
+.dark {
+  --bg-gradient-start: #2d2d2d;
+  --bg-gradient-end: #1a1a1a;
+  --header-gradient-start: #1e88e5;
+  --header-gradient-end: #1565c0;
+  --card-bg: #1a1a1a;
+  --message-ai-bg: #1e3a5f;
+  --message-user-bg: #1a4d2e;
+  --text-primary: #e5eaf3;
+  --text-secondary: #a8abb2;
+  --border-color: #4c4d4f;
+}
+
+html.dark .app-header h1,
+.dark .app-header h1 {
+  color: #e5eaf3 !important;
+}
+
 .app-container {
   height: 100vh;
   display: flex;
@@ -855,6 +1100,13 @@ watch(
   box-shadow: none;
   transition: background 0.3s ease;
 }
+
+.app-header h1 {
+  color: #303133;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
 .header-content {
   display: flex;
   align-items: center;
@@ -931,12 +1183,18 @@ watch(
   flex-direction: column;
   gap: 20px;
   position: relative;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, background 0.3s ease;
   overflow: hidden;
   /* 侧边栏底色：更深一点点的灰色（夜间会自动取反） */
   background: rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+html.dark .guide-sidebar,
+.dark .guide-sidebar {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .guide-sidebar.collapsed {
@@ -957,9 +1215,6 @@ watch(
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  padding: 6px;
 }
 
 .sidebar-toggle .el-button {
@@ -1009,9 +1264,19 @@ watch(
   background: rgba(64, 158, 255, 0.1);
 }
 
+html.dark .chat-item:hover,
+.dark .chat-item:hover {
+  background: rgba(64, 158, 255, 0.2);
+}
+
 .chat-item.active {
   background: rgba(64, 158, 255, 0.15);
   border-left: 3px solid #409EFF;
+}
+
+html.dark .chat-item.active,
+.dark .chat-item.active {
+  background: rgba(64, 158, 255, 0.25);
 }
 
 .chat-icon {
@@ -1082,8 +1347,19 @@ watch(
   background-color: rgba(64, 158, 255, 0.1);
   transition: background-color 0.3s;
 }
+
+html.dark .clickable-step:hover,
+.dark .clickable-step:hover {
+  background-color: rgba(64, 158, 255, 0.2);
+}
+
 .is-active {
   background-color: rgba(64, 158, 255, 0.15);
+}
+
+html.dark .is-active,
+.dark .is-active {
+  background-color: rgba(64, 158, 255, 0.25);
 }
 
 .step-controls {
@@ -1101,6 +1377,11 @@ watch(
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
+}
+
+html.dark .current-tip,
+.dark .current-tip {
+  background-color: rgba(64, 158, 255, 0.2);
 }
 .current-tip .el-icon {
   margin-right: 8px;
@@ -1130,7 +1411,7 @@ watch(
   flex: 1;
   overflow-y: auto;
   padding: 20px;
-  padding-bottom: 200px; /* 为底部固定输入区域留出空间 */
+  padding-bottom: 260px; /* 为底部固定输入区域（含对话模式选择器）留出空间，避免内容被遮挡 */
 }
 .message-item {
   display: flex;
@@ -1160,6 +1441,11 @@ watch(
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   position: relative;
+}
+
+html.dark .message-content,
+.dark .message-content {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 .message-item.ai .message-content {
   background: var(--message-ai-bg);
@@ -1224,10 +1510,13 @@ watch(
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.9em;
+  color: var(--text-primary);
 }
 
+html.dark .markdown-body :deep(code),
 .dark .markdown-body :deep(code) {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  color: #e5eaf3;
 }
 
 .markdown-body :deep(pre) {
@@ -1239,8 +1528,10 @@ watch(
   margin: 12px 0;
 }
 
+html.dark .markdown-body :deep(pre),
 .dark .markdown-body :deep(pre) {
   background: #1e1e1e;
+  border-color: #4c4d4f;
 }
 
 .markdown-body :deep(pre code) {
@@ -1251,29 +1542,39 @@ watch(
 }
 
 /* 暗色模式下的代码高亮优化 */
+html.dark .markdown-body :deep(pre),
 .dark .markdown-body :deep(pre) {
   border-color: #404040;
 }
 
+html.dark .markdown-body :deep(pre code.hljs),
 .dark .markdown-body :deep(pre code.hljs) {
   background: #1e1e1e;
   color: #d4d4d4;
 }
 
 /* 确保代码块在暗色模式下有足够的对比度 */
+html.dark .markdown-body :deep(.hljs-keyword),
 .dark .markdown-body :deep(.hljs-keyword),
+html.dark .markdown-body :deep(.hljs-selector-tag),
 .dark .markdown-body :deep(.hljs-selector-tag),
+html.dark .markdown-body :deep(.hljs-built_in),
 .dark .markdown-body :deep(.hljs-built_in),
+html.dark .markdown-body :deep(.hljs-name),
 .dark .markdown-body :deep(.hljs-name) {
   color: #569cd6;
 }
 
+html.dark .markdown-body :deep(.hljs-string),
 .dark .markdown-body :deep(.hljs-string),
+html.dark .markdown-body :deep(.hljs-title),
 .dark .markdown-body :deep(.hljs-title) {
   color: #ce9178;
 }
 
+html.dark .markdown-body :deep(.hljs-comment),
 .dark .markdown-body :deep(.hljs-comment),
+html.dark .markdown-body :deep(.hljs-quote),
 .dark .markdown-body :deep(.hljs-quote) {
   color: #6a9955;
   font-style: italic;
@@ -1329,6 +1630,61 @@ watch(
   animation-delay: 0.4s;
 }
 
+/* 暂停提示样式 */
+.pause-prompt {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(64, 158, 255, 0.1);
+  border-left: 4px solid #409EFF;
+  border-radius: 8px;
+}
+
+html.dark .pause-prompt,
+.dark .pause-prompt {
+  background: rgba(30, 136, 229, 0.15);
+  border-left-color: #1e88e5;
+}
+
+.pause-content {
+  margin-top: 12px;
+}
+
+.pause-content p {
+  margin: 8px 0;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.pause-content ul {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.pause-content li {
+  margin: 6px 0;
+  color: var(--text-secondary);
+}
+
+.continue-button {
+  margin-top: 12px;
+}
+
+/* 数学公式样式 */
+.markdown-body :deep(.katex) {
+  font-size: 1.1em;
+}
+
+.markdown-body :deep(.katex-display) {
+  margin: 16px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.markdown-body :deep(.katex-display > .katex) {
+  display: inline-block;
+  text-align: left;
+}
+
 @keyframes typing {
   0%, 60%, 100% {
     opacity: 0.3;
@@ -1342,69 +1698,12 @@ watch(
 .follow-up {
   margin-top: 15px;
 }
-.follow-up {
-  /* follow-up 标题分区色（按消息序号变化） */
-  --followup-title-color: #4b6b88;
-  --followup-line-color: rgba(75, 107, 136, 0.35);
-}
-
-/* 让不同消息的 follow-up 标题呈现不同蓝灰色，形成“分区”效果 */
-.message-item:nth-of-type(4n + 1) .follow-up {
-  --followup-title-color: #4b6b88;
-  --followup-line-color: rgba(75, 107, 136, 0.35);
-}
-.message-item:nth-of-type(4n + 2) .follow-up {
-  --followup-title-color: #3f7f9a;
-  --followup-line-color: rgba(63, 127, 154, 0.35);
-}
-.message-item:nth-of-type(4n + 3) .follow-up {
-  --followup-title-color: #5a7a96;
-  --followup-line-color: rgba(90, 122, 150, 0.35);
-}
-.message-item:nth-of-type(4n) .follow-up {
-  --followup-title-color: #4a7c6e;
-  --followup-line-color: rgba(74, 124, 110, 0.35);
-}
-
-/* Element Plus Divider：标题与分隔线样式（scoped 下用 :deep） */
-.follow-up :deep(.el-divider__text) {
-  color: var(--followup-title-color);
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  /* 让标题与气泡背景更融合，避免出现“发白的贴片” */
-  background: transparent;
-}
-.message-item.ai .follow-up :deep(.el-divider__text) {
-  background: var(--message-ai-bg);
-}
-.message-item.user .follow-up :deep(.el-divider__text) {
-  background: var(--message-user-bg);
-}
-
-/* content-position="left" 会用 before/after 画线，统一改线条颜色 */
-.follow-up :deep(.el-divider__text)::before,
-.follow-up :deep(.el-divider__text)::after {
-  border-top-color: var(--followup-line-color);
-}
-
 .follow-up-questions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
 }
-
-/* 追问的三个提示（el-tag）统一使用浅灰蓝背景 */
-.follow-up :deep(.el-tag.follow-up-question) {
-  background-color: #e7eff8;
-  border-color: #c9d8ea;
-  color: #355b78;
-}
-.follow-up :deep(.el-tag.follow-up-question:hover) {
-  background-color: #dbe7f4;
-  border-color: #b7cbe3;
-}
-
 .follow-up-question {
   cursor: pointer;
   transition: all 0.3s;
@@ -1420,10 +1719,103 @@ watch(
   bottom: 0;
   padding: 20px;
   background: var(--card-bg);
-  border-top: none;
+  border-top: 1px solid var(--border-color); /* 顶部描边，形成完整遮挡区域 */
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
-  transition: left 0.3s ease, width 0.3s ease;
+  transition: left 0.3s ease, width 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   z-index: 100;
+}
+
+/* 对话模式选择器样式 */
+.chat-mode-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+html.dark .chat-mode-selector,
+.dark .chat-mode-selector {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.chat-mode-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chat-mode-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  flex: 1;
+  align-items: center;
+}
+
+.chat-mode-radio {
+  margin-right: 0;
+  transition: all 0.3s ease;
+}
+
+.chat-mode-radio:hover {
+  transform: translateY(-1px);
+}
+
+.chat-mode-radio :deep(.el-radio__label) {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding-left: 8px;
+}
+
+.chat-mode-radio :deep(.el-radio__input .el-radio__inner) {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.chat-mode-radio :deep(.el-radio__input.is-checked .el-radio__inner) {
+  background-color: #409EFF;
+  border-color: #409EFF;
+}
+
+.chat-mode-radio :deep(.el-radio__input.is-checked + .el-radio__label) {
+  color: #409EFF;
+  font-weight: 600;
+}
+
+html.dark .chat-mode-radio :deep(.el-radio__input.is-checked + .el-radio__label),
+.dark .chat-mode-radio :deep(.el-radio__input.is-checked + .el-radio__label) {
+  color: #66b1ff;
+}
+
+html.dark .chat-mode-radio :deep(.el-radio__input .el-radio__inner),
+.dark .chat-mode-radio :deep(.el-radio__input .el-radio__inner) {
+  border-color: var(--border-color);
+  background-color: transparent;
+}
+
+html.dark .chat-mode-radio :deep(.el-radio__input.is-checked .el-radio__inner),
+.dark .chat-mode-radio :deep(.el-radio__input.is-checked .el-radio__inner) {
+  background-color: #409EFF;
+  border-color: #409EFF;
+}
+
+html.dark .fixed-input-area,
+.dark .fixed-input-area {
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .input-container {
@@ -1458,6 +1850,14 @@ kbd {
   line-height: 1;
   padding: 2px 5px;
   margin: 0 2px;
+}
+
+html.dark kbd,
+.dark kbd {
+  background-color: #2d2d2d;
+  border: 1px solid #4c4d4f;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  color: #e5eaf3;
 }
 
 </style>

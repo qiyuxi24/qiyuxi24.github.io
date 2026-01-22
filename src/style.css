@@ -17,18 +17,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* 兜底：即使 App 容器有间隙，也不会露出纯白底 */
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
 }
 
-/* 全局主题颜色变量（白天默认）
-   说明：夜间模式不再手写一套变量，而是通过运行时“黑白灰亮度取反”自动生成。 */
+html,
+body,
+#app {
+  height: 100%;
+}
+
+/* 全局主题变量（供 App.vue 使用） */
 :root {
   --bg-gradient-start: #f5f7fa;
   --bg-gradient-end: #c3cfe2;
   --header-gradient-start: #409EFF;
   --header-gradient-end: #337ecc;
-  --card-bg: white;
-  /* AI气泡浅蓝：稍微加深一点，更贴近用户浅绿色气泡的视觉强度 */
-  --message-ai-bg: #dbeeff;
+  --card-bg: #ffffff;
+  --message-ai-bg: #f0f7ff;
   --message-user-bg: #f0fff4;
   --text-primary: #303133;
   --text-secondary: #606266;

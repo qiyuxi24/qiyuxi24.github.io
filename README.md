@@ -1,49 +1,38 @@
-# AI辅助引导式教学网站     
+# my-ai-tutor-ui
 
-这是一个旨在帮助在使用AI学习遇到困难的人群的网站
+This template should help get you started developing with Vue 3 in Vite.
 
----
+## Recommended IDE Setup
 
-### 问题描述   
-现行AI的功能单一，会直接根据问题给出大段文字，不利于甚至阻碍使用者进行一步步的思考。
+[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
+## Recommended Browser Setup
 
-### 不同模式切换   
+- Chromium-based browsers (Chrome, Edge, Brave, etc.):
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
+- Firefox:
+  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
-1.**引导模式**
-  > - 不会在提问是一次就给出答案，而是以逻辑中的关键步骤为节点，逐渐引导用户来进行思考  
-  > - 适用于想要按步骤掌握知识点的用户，每次投放的信息量少，更易于学习
+## Customize configuration
 
-2.**直接回答模式**
- > - 类似于常规的AI回答的风格，会直接给出完整的解题步骤
- > - 适用于急于获得答案的用户
+See [Vite Configuration Reference](https://vite.dev/config/).
 
-3.**检验模式**
-> - 该模式下，会由AI来提问，用户来回答，AI可以来检查用户回答的正确性，并给出建议
-> - 适用于要找出漏洞或者巩固知识点的用户
----
-### 工作流程图
+## Project Setup
 
-```mermaid
-graph TD
-    A[用户] --> B[前端]
-    B --> |对话和设置|C[本地浏览器数据]
-    B -->|问题和请求| E[后端]
-    E --> F(千问API)
-    E --> |回答|B
+```sh
+npm install
 ```
 
-### 要实现的功能列表   
----
-- [ ] API接口调试
-- [ ] 回答流程固定化（代码层面）
-- [ ] 用户数据本地化，存储在浏览器的缓存中
-- [ ] 后端代码的支持
-- [ ] 对于不同模式设置提示词并且调试（模式切换）
-- [ ] 前端的界面优化
-- [ ] 附加功能`语音输入输出`和`图片识别`和`朗读`   
-- [ ] 一个好看的图片
-- [ ] （选做）账户密码
-- [ ] （选做）知识图谱
+### Compile and Hot-Reload for Development
 
-> &#x1f4fb; **推荐阅读**
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
