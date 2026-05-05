@@ -2,15 +2,15 @@
   "basics": {
     "name": "Your Sidebar Name",
     "email": "none@example.org",
-    "phone": "",
+    "phone": "13319275593",
     "website": "https://academicpages.github.io",
-    "summary": "Currently employed at Red Brick University. Short biography for the left-hand sidebar",
+    "summary": "Currently employed at Northwest Polytechnicial University. Short biography for the left-hand sidebar",
     "location": {
       "address": "",
       "postalCode": "",
-      "city": "Earth",
-      "countryCode": "US",
-      "region": ""
+      "city": "Xi'an",
+      "countryCode": "CN",
+      "region": "Shaanxi"
     },
     "profiles": [
       {
