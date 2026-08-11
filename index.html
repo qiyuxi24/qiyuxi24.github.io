@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>佀佳超 | 同州禹斋 - AI 应用开发者</title>
+
+  <!--
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./assets/images/logo.ico" type="image/x-icon">
+
+  <!--
+    - custom css link
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <!--
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!--
+    - #MAIN
+  -->
+
+  <main>
+
+    <!--
+      - #SIDEBAR
+    -->
+
+    <aside class="sidebar" data-sidebar>
+
+      <div class="sidebar-info">
+
+        <figure class="avatar-box">
+          <img src="./assets/images/avatar.png" alt="佀佳超" width="80">
+        </figure>
+
+        <div class="info-content">
+          <h1 class="name" title="佀佳超">佀佳超</h1>
+
+          <p class="title">AI 应用开发者</p>
+        </div>
+
+        <button class="info_more-btn" data-sidebar-btn>
+          <span>Show Contacts</span>
+
+          <ion-icon name="chevron-down"></ion-icon>
+        </button>
+
+      </div>
+
+      <div class="sidebar-info_more">
+
+        <div class="separator"></div>
+
+        <ul class="contacts-list">
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="mail-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Email</p>
+
+              <a href="mailto:wojtek@mail.nwpu.edu.cn" class="contact-link">wojtek@mail.nwpu.edu.cn</a>
+            </div>
+
+          </li>
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="calendar-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Birthday</p>
+
+              <time datetime="2006-11-16">Nov 16, 2006</time>
+            </div>
+
+          </li>
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="location-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title">Location</p>
+
+              <address>Xi'an, Shaanxi, China</address>
+            </div>
+
+          </li>
+
+        </ul>
+
+        <div class="separator"></div>
+
+        <ul class="social-list">
+
+          <li class="social-item">
+            <a href="https://github.com/qiyuxi24" class="social-link">
+              <ion-icon name="logo-github"></ion-icon>
+            </a>
+          </li>
+
+          <li class="social-item">
+            <a href="mailto:wojtek@mail.nwpu.edu.cn" class="social-link">
+              <ion-icon name="mail-outline"></ion-icon>
+            </a>
+          </li>
+
+          <li class="social-item">
+            <a href="https://space.bilibili.com/2102911329" class="social-link" target="_blank" title="B站">
+              <ion-icon name="logo-youtube"></ion-icon>
+            </a>
+          </li>
+
+          <li class="social-item">
+            <a href="https://www.zhihu.com/people/hiver-18-23" class="social-link" target="_blank" title="知乎">
+              <ion-icon name="globe-outline"></ion-icon>
+            </a>
+          </li>
+
+          <li class="social-item">
+            <a href="#" class="social-link" title="公众号：同州禹斋">
+              <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+
+    </aside>
+
+
+
+
+
+    <!--
+      - #main-content
+    -->
+
+    <div class="main-content">
+
+      <!--
+        - #NAVBAR
+      -->
+
+      <nav class="navbar">
+
+        <ul class="navbar-list">
+
+          <li class="navbar-item">
+            <button class="navbar-link  active" data-nav-link data-nav-page="about">关于</button>
+          </li>
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link data-nav-page="resume">简历</button>
+          </li>
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link data-nav-page="portfolio">项目</button>
+          </li>
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link data-nav-page="blog">文章</button>
+          </li>
+
+          <li class="navbar-item">
+            <button class="navbar-link" data-nav-link data-nav-page="contact">联系</button>
+          </li>
+
+        </ul>
+
+      </nav>
+
+
+
+
+
+      <!--
+        - #ABOUT
+      -->
+
+      <article class="about  active" data-page="about">
+
+        <header>
+          <h2 class="h2 article-title">关于我</h2>
+        </header>
+
+        <section class="about-text">
+          <p>
+            西北工业大学人工智能专业在读，AI 应用方向开发者。
+            做过桌面 AI IDE、AI 教育导师、快应用等项目，拿过 AIGC 大赛地区二等奖。
+          </p>
+
+          <p>
+            信奉「项目 + 文档 &gt; 看书」，正把每个想法变成能跑的东西。
+          </p>
+        </section>
+
+
+        <!--
+          - service
+        -->
+
+        <section class="service">
+
+          <h3 class="h3 service-title">我在做什么</h3>
+
+          <ul class="service-list">
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-dev.svg" alt="AI 应用开发 icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">AI 应用开发</h4>
+
+                <p class="service-item-text">
+                  LLM 调用、Agent、流式对话，从零搭过完整的 AI 教育系统。
+                </p>
+              </div>
+
+            </li>
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-app.svg" alt="桌面应用 icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">桌面应用</h4>
+
+                <p class="service-item-text">
+                  Tauri v2 + Rust + React，做出 ~5MB 的端侧 AI IDE。
+                </p>
+              </div>
+
+            </li>
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-design.svg" alt="全栈 Web icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">全栈 Web</h4>
+
+                <p class="service-item-text">
+                  Vue 3 / FastAPI 前后端分离，JWT 认证、限流、SSE 流式全套。
+                </p>
+              </div>
+
+            </li>
+
+            <li class="service-item">
+
+              <div class="service-icon-box">
+                <img src="./assets/images/icon-photo.svg" alt="深度学习 icon" width="40">
+              </div>
+
+              <div class="service-content-box">
+                <h4 class="h4 service-item-title">深度学习</h4>
+
+                <p class="service-item-text">
+                  纯 NumPy 手写神经网络与 CNN，MNIST 实战，正在上 PyTorch。
+                </p>
+              </div>
+
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #RESUME
+      -->
+
+      <article class="resume" data-page="resume">
+
+        <header>
+          <h2 class="h2 article-title">简历</h2>
+        </header>
+
+        <section class="timeline">
+
+          <div class="title-wrapper">
+            <div class="icon-box">
+              <ion-icon name="book-outline"></ion-icon>
+            </div>
+
+            <h3 class="h3">教育经历</h3>
+          </div>
+
+          <ol class="timeline-list">
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">西北工业大学 · 人工智能专业</h4>
+
+              <span>2024 — 2028</span>
+
+              <p class="timeline-text">
+                西工大人工智能学院在读，AI 应用方向，主攻大模型应用、Agent 与桌面软件开发。
+              </p>
+
+            </li>
+
+          </ol>
+
+        </section>
+
+        <section class="timeline">
+
+          <div class="title-wrapper">
+            <div class="icon-box">
+              <ion-icon name="book-outline"></ion-icon>
+            </div>
+
+            <h3 class="h3">项目经历</h3>
+          </div>
+
+          <ol class="timeline-list">
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">Votek · 桌面 AI IDE</h4>
+
+              <span>2026.07 — 至今</span>
+
+              <p class="timeline-text">
+                Tauri v2 + React 19，流式对话、多模型一键切换、MCP 服务器管理、Skills 技能市场、内置浏览器，
+                安装包 ~5MB，纯端侧运行。
+              </p>
+
+            </li>
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title">AI-tutor · AI 教育导师</h4>
+
+              <span>NWPU-CS 创新训练项目</span>
+
+              <p class="timeline-text">
+                Vue 3 + FastAPI + 知识图谱，两阶段流式对话（Function Calling 后台执行），
+                JWT + bcrypt + IP 限流安全体系。
+              </p>
+
+            </li>
+
+          </ol>
+
+        </section>
+
+        <section class="skill">
+
+          <h3 class="h3 skills-title">技能</h3>
+
+          <ul class="skills-list content-card">
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Python</h5>
+                <data value="85">85%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 85%;"></div>
+              </div>
+
+            </li>
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">C / C++</h5>
+                <data value="80">80%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 80%;"></div>
+              </div>
+
+            </li>
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Vue 3 / FastAPI</h5>
+                <data value="70">70%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 70%;"></div>
+              </div>
+
+            </li>
+
+            <li class="skills-item">
+
+              <div class="title-wrapper">
+                <h5 class="h5">Tauri / Rust</h5>
+                <data value="60">60%</data>
+              </div>
+
+              <div class="skill-progress-bg">
+                <div class="skill-progress-fill" style="width: 60%;"></div>
+              </div>
+
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #PORTFOLIO
+      -->
+
+      <article class="portfolio" data-page="portfolio">
+
+        <header>
+          <h2 class="h2 article-title">项目</h2>
+        </header>
+
+        <section class="projects">
+
+          <ul class="filter-list">
+
+            <li class="filter-item">
+              <button class="active" data-filter-btn>All</button>
+            </li>
+
+            <li class="filter-item">
+              <button data-filter-btn>AI 应用</button>
+            </li>
+
+            <li class="filter-item">
+              <button data-filter-btn>桌面应用</button>
+            </li>
+
+            <li class="filter-item">
+              <button data-filter-btn>学习项目</button>
+            </li>
+
+          </ul>
+
+          <div class="filter-select-box">
+
+            <button class="filter-select" data-select>
+
+              <div class="select-value" data-selecct-value>选择分类</div>
+
+              <div class="select-icon">
+                <ion-icon name="chevron-down"></ion-icon>
+              </div>
+
+            </button>
+
+            <ul class="select-list">
+
+              <li class="select-item">
+                <button data-select-item>All</button>
+              </li>
+
+              <li class="select-item">
+                <button data-select-item>AI 应用</button>
+              </li>
+
+              <li class="select-item">
+                <button data-select-item>桌面应用</button>
+              </li>
+
+              <li class="select-item">
+                <button data-select-item>学习项目</button>
+              </li>
+
+            </ul>
+
+          </div>
+
+          <ul class="project-list">
+
+            <li class="project-item  active" data-filter-item data-category="桌面应用">
+              <a href="https://github.com/qiyuxi24/Agent" target="_blank">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-1.jpg" alt="Votek" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">Votek</h3>
+
+                <p class="project-category">桌面应用 · 端侧桌面 AI IDE</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="ai 应用">
+              <a href="https://github.com/qiyuxi24/AI-tutor" target="_blank">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-2.png" alt="AI-tutor" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">AI-tutor</h3>
+
+                <p class="project-category">AI 应用 · 知识图谱驱动的 AI 教育导师</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="ai 应用">
+              <a href="https://github.com/qiyuxi24/KinVoice" target="_blank">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-3.jpg" alt="KinVoice" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">家语 AI / KinVoice</h3>
+
+                <p class="project-category">AI 应用 · vivo+南开 AIGC 大赛地区二等奖</p>
+
+              </a>
+            </li>
+
+            <li class="project-item  active" data-filter-item data-category="学习项目">
+              <a href="https://github.com/qiyuxi24/CNN-learning" target="_blank">
+
+                <figure class="project-img">
+                  <div class="project-item-icon-box">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </div>
+
+                  <img src="./assets/images/project-4.png" alt="CNN 学习" loading="lazy">
+                </figure>
+
+                <h3 class="project-title">从零实现神经网络与 CNN</h3>
+
+                <p class="project-category">学习项目 · 纯 NumPy 手写，MNIST 实战</p>
+
+              </a>
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #BLOG
+      -->
+
+      <article class="blog" data-page="blog">
+
+        <header>
+          <h2 class="h2 article-title">文章</h2>
+        </header>
+
+        <section class="blog-posts">
+
+          <ul class="blog-posts-list">
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-1.jpg" alt="技术不是中立的" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">随笔</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2026-06">Jun 2026</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">技术不是中立的：短视频的阶级压迫性</h3>
+
+                  <p class="blog-text">
+                    技术有倾向，短视频的倾向是阶级压迫。
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-2.jpg" alt="男女对立" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">随笔</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2026-06">Jun 2026</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">男女对立：一场所有人都输的战争</h3>
+
+                  <p class="blog-text">
+                    性别议题已经从「讨论问题」变成「表演愤怒」，没有人赢只有伤。
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+            <li class="blog-post-item">
+              <a href="#">
+
+                <figure class="blog-banner-box">
+                  <img src="./assets/images/blog-3.jpg" alt="不一样的普通人" loading="lazy">
+                </figure>
+
+                <div class="blog-content">
+
+                  <div class="blog-meta">
+                    <p class="blog-category">随笔</p>
+
+                    <span class="dot"></span>
+
+                    <time datetime="2026-06">Jun 2026</time>
+                  </div>
+
+                  <h3 class="h3 blog-item-title">不一样的普通人：从标签到锚点</h3>
+
+                  <p class="blog-text">
+                    我们既渴望与众不同，又不想承认自己是七十亿分之一。
+                  </p>
+
+                </div>
+
+              </a>
+            </li>
+
+          </ul>
+
+        </section>
+
+      </article>
+
+
+
+
+
+      <!--
+        - #CONTACT
+      -->
+
+      <article class="contact" data-page="contact">
+
+        <header>
+          <h2 class="h2 article-title">联系</h2>
+        </header>
+
+        <section class="mapbox" data-mapbox>
+          <figure>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26536.43564625068!2d108.9347734948969!3d34.217222876026944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x366cd8c4ba5b3e5f%3A0x6a40cec9e18f9ff3!2z5rWZ6KW_5aSn5a2m!5e0!3m2!1szh-CN!2scn!4v1680000000000!5m2!1szh-CN!2scn"
+              width="400" height="300" loading="lazy"></iframe>
+          </figure>
+        </section>
+
+        <section class="contact-form">
+
+          <h3 class="h3 form-title">联系我</h3>
+
+          <form action="mailto:wojtek@mail.nwpu.edu.cn" method="post" enctype="text/plain" class="form" data-form>
+
+            <div class="input-wrapper">
+              <input type="text" name="姓名" class="form-input" placeholder="你的名字" required data-form-input>
+
+              <input type="email" name="邮箱" class="form-input" placeholder="你的邮箱" required data-form-input>
+            </div>
+
+            <textarea name="留言" class="form-input" placeholder="留言内容" required data-form-input></textarea>
+
+            <button class="form-btn" type="submit" disabled data-form-btn>
+              <ion-icon name="paper-plane"></ion-icon>
+              <span>发送消息</span>
+            </button>
+
+          </form>
+
+        </section>
+
+      </article>
+
+    </div>
+
+  </main>
+
+
+
+
+
+
+  <!--
+    - custom js link
+  -->
+  <script src="./assets/js/script.js"></script>
+
+  <!--
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html>

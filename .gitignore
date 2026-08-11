@@ -19,5 +19,11 @@ package-lock.json
 # Ignore folders related to IDEs
 .vscode/
 
+# Ignore CodeBuddy workspace memory
+.codebuddy/
+
+# Ignore legacy Jekyll template backup (kept locally for rollback only)
+_legacy_jekyll/
+
 # Ignore files created by MacOS
 .DS_Store
