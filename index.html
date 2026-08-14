@@ -28,6 +28,11 @@
 <body>
 
   <!--
+    - #PARTICLES CANVAS (炫酷粒子背景)
+  -->
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+  <!--
     - #MAIN
   -->
 
@@ -49,6 +54,10 @@
           <h1 class="name" title="佀佳超">佀佳超</h1>
 
           <p class="title">AI 应用开发者</p>
+
+          <p class="typewriter" id="typewriter"
+             data-phrases='["把想法变成能跑的东西", "项目 + 文档 &gt; 看书", "端侧 AI IDE 制造者", "AI 教育探索者"]'
+             aria-label="动态标语"></p>
         </div>
 
         <button class="info_more-btn" data-sidebar-btn>
@@ -763,6 +772,7 @@
     - custom js link
   -->
   <script src="./assets/js/script.js"></script>
+  <script src="./assets/js/effects.js"></script>
 
   <!--
     - ionicon link
