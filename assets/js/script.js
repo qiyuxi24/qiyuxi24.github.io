@@ -101,11 +101,28 @@ for (let i = 0; i < formInputs.length; i++) {
 const navigationLinks = document.querySelectorAll("[data-nav-link]");
 const pages = document.querySelectorAll("[data-page]");
 
+// 科技树以全屏覆盖层展示，由 tree.js 暴露的 API 控制
+function openTreeFullscreen() {
+  if (window.TreeFullscreen) {
+    window.TreeFullscreen.open();
+  }
+}
+
 // add event to all nav link
 for (let i = 0; i < navigationLinks.length; i++) {
   navigationLinks[i].addEventListener("click", function () {
 
     const targetPage = this.dataset.navPage;
+
+    if (targetPage === "tree") {
+      // 科技树：全屏展示，不清空当前文章页（被覆盖层遮住即可）
+      for (let k = 0; k < navigationLinks.length; k++) {
+        navigationLinks[k].classList.remove("active");
+      }
+      this.classList.add("active");
+      openTreeFullscreen();
+      return;
+    }
 
     for (let j = 0; j < pages.length; j++) {
       if (pages[j].dataset.page === targetPage) {

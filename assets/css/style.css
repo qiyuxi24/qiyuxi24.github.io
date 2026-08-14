@@ -1942,3 +1942,293 @@ textarea.form-input::-webkit-resizer { display: none; }
   .title-word { transform: none !important; opacity: 1 !important; }
   .type-cursor { animation: none; }
 }
+
+
+/*-----------------------------------*\
+  #TREE (科技树)
+\*-----------------------------------*/
+
+.tree-intro {
+  color: var(--light-gray);
+  font-size: var(--fs-6);
+  line-height: 1.8;
+  margin-bottom: 20px;
+  max-width: 640px;
+}
+
+.tree-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  border-radius: 16px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 45%,
+      hsla(45, 100%, 60%, 0.06) 0%,
+      transparent 60%),
+    var(--eerie-black-1);
+  border: 1px solid var(--jet);
+  box-shadow: var(--shadow-2);
+}
+
+#tree-canvas,
+#tree-canvas-fullscreen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+#tree-canvas:active,
+#tree-canvas-fullscreen:active { cursor: grabbing; }
+
+/* 连线 */
+.tree-link {
+  stroke: hsla(45, 100%, 72%, 0.22);
+  stroke-width: 1.5;
+  fill: none;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.tree-link.is-lit {
+  stroke: hsla(45, 100%, 72%, 0.6);
+  stroke-width: 2;
+}
+
+.tree-link.is-active {
+  stroke: var(--orange-yellow-crayola);
+  stroke-width: 2.5;
+}
+
+/* 节点 */
+.tree-node { cursor: pointer; }
+
+.tree-node-circle {
+  transition: r 0.25s ease, fill 0.25s ease, stroke 0.25s ease;
+}
+
+.tree-node.dimmed .tree-node-circle {
+  opacity: 0.25;
+}
+
+/* 节点图标 */
+.tree-node-icon {
+  pointer-events: none;
+  font-size: 16px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  user-select: none;
+}
+
+.tree-node-label {
+  font-size: 12px;
+  fill: var(--light-gray);
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--ff-poppins);
+}
+
+.tree-node:hover .tree-node-label {
+  fill: var(--white-1);
+}
+
+.tree-node.is-root .tree-node-circle {
+  filter: drop-shadow(0 0 8px hsla(45, 100%, 72%, 0.6));
+}
+
+.tree-node.is-branch .tree-node-circle {
+  filter: drop-shadow(0 0 5px hsla(45, 100%, 60%, 0.35));
+}
+
+/* 节点呼吸动画 */
+@keyframes node-pulse {
+  0%, 100% { r: 26; }
+  50% { r: 30; }
+}
+
+.tree-node.is-root .tree-node-circle {
+  animation: node-pulse 3s ease-in-out infinite;
+}
+
+/* 工具栏 */
+.tree-toolbar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 12px;
+  background: hsla(240, 2%, 13%, 0.85);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--jet);
+  box-shadow: var(--shadow-1);
+}
+
+.tree-tool-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--jet);
+  background: var(--eerie-black-2);
+  color: var(--light-gray);
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition-1);
+}
+
+.tree-tool-btn:hover {
+  color: var(--orange-yellow-crayola);
+  border-color: var(--orange-yellow-crayola);
+}
+
+.tree-toolbar-hint {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-size: 11px;
+  color: var(--light-gray-70);
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+/* 提示框 */
+.tree-tooltip {
+  position: absolute;
+  z-index: 10;
+  max-width: 260px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: hsla(240, 2%, 12%, 0.96);
+  border: 1px solid var(--orange-yellow-crayola);
+  box-shadow: var(--shadow-3);
+  color: var(--light-gray);
+  font-size: var(--fs-7);
+  line-height: 1.6;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(6px);
+}
+
+.tree-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tree-tooltip .tt-title {
+  color: var(--orange-yellow-crayola);
+  font-weight: var(--fw-600);
+  font-size: var(--fs-6);
+  margin-bottom: 6px;
+}
+
+.tree-tooltip .tt-sub {
+  color: var(--vegas-gold);
+  font-size: var(--fs-8);
+  margin-bottom: 4px;
+}
+
+.tree-tooltip .tt-desc {
+  font-size: var(--fs-8);
+  color: var(--light-gray-70);
+}
+
+/* 响应式 */
+@media (min-width: 768px) {
+  .tree-canvas-wrap { height: 680px; }
+}
+
+@media (min-width: 1024px) {
+  .tree-canvas-wrap { height: 760px; }
+}
+
+/*-----------------------------------*\
+  #TREE-FULLSCREEN (全屏技能树)
+\*-----------------------------------*/
+
+.tree-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;             /* 高于 sidebar / main-content 的 z-index:1 */
+  display: flex;
+  align-items: stretch;
+  background: var(--eerie-black-1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.tree-fullscreen.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 全屏画布容器铺满 */
+.tree-fullscreen .tree-canvas-wrap {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+/* 退出按钮 + 标题：固定左上角横排 */
+.tree-fullscreen-top {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tree-exit-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: hsla(240, 2%, 13%, 0.9);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--jet);
+  color: var(--light-gray);
+  font-size: var(--fs-6);
+  font-weight: var(--fw-500);
+  cursor: pointer;
+  transition: var(--transition-1);
+  box-shadow: var(--shadow-1);
+}
+
+.tree-exit-btn:hover {
+  color: var(--orange-yellow-crayola);
+  border-color: var(--orange-yellow-crayola);
+}
+
+.tree-exit-btn ion-icon {
+  font-size: 18px;
+}
+
+/* 全屏模式下顶部标题 */
+.tree-fullscreen-title {
+  color: var(--orange-yellow-crayola);
+  font-size: var(--fs-2);
+  font-weight: var(--fw-600);
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+/* 全屏模式下工具栏 hint 移到左下 */
+.tree-fullscreen .tree-toolbar-hint {
+  left: 20px;
+  bottom: 18px;
+}

@@ -197,6 +197,10 @@
           </li>
 
           <li class="navbar-item">
+            <button class="navbar-link" data-nav-link data-nav-page="tree">科技树</button>
+          </li>
+
+          <li class="navbar-item">
             <button class="navbar-link" data-nav-link data-nav-page="contact">联系</button>
           </li>
 
@@ -721,6 +725,45 @@
 
 
       <!--
+        - #TREE (科技树)
+      -->
+
+      <article class="tree" data-page="tree">
+
+        <header>
+          <h2 class="h2 article-title">科技树</h2>
+        </header>
+
+        <section class="tree-intro">
+          <p>
+            把「爱好 · 经历 · 技术栈」种成一棵树——每个分支都是一条探索路径，
+            节点会随我的成长逐步点亮。拖动 / 缩放，自由漫游。
+          </p>
+        </section>
+
+        <!-- 科技树画布 -->
+        <div class="tree-canvas-wrap">
+          <div class="tree-toolbar">
+            <button class="tree-tool-btn" data-tree-zoom="in" title="放大">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
+            <button class="tree-tool-btn" data-tree-zoom="out" title="缩小">
+              <ion-icon name="remove-outline"></ion-icon>
+            </button>
+            <button class="tree-tool-btn" data-tree-reset title="重置视角">
+              <ion-icon name="locate-outline"></ion-icon>
+            </button>
+          </div>
+          <span class="tree-toolbar-hint">滚轮缩放 · 拖拽平移 · 点击节点展开</span>
+          <div id="tree-canvas"></div>
+          <div id="tree-tooltip" class="tree-tooltip"></div>
+        </div>
+
+      </article>
+
+
+
+      <!--
         - #CONTACT
       -->
 
@@ -768,6 +811,51 @@
   </main>
 
 
+  <!--
+    - #TREE-FULLSCREEN (全屏科技树覆盖层)
+    点击导航「科技树」时铺满整个视口，隐去 sidebar / navbar，
+    保留一个退出按钮回到原状态。
+  -->
+  <div class="tree-fullscreen" id="tree-fullscreen" data-tree-fullscreen aria-hidden="true">
+
+    <!-- 退出按钮 + 标题（左上角） -->
+    <div class="tree-fullscreen-top">
+      <button type="button" class="tree-exit-btn" data-tree-exit aria-label="退出科技树">
+        <ion-icon name="arrow-back"></ion-icon>
+        <span>退出</span>
+      </button>
+      <h2 class="tree-fullscreen-title">科技树</h2>
+    </div>
+
+    <div class="tree-canvas-wrap tree-canvas-wrap--fullscreen">
+
+      <div class="tree-toolbar">
+        <button class="tree-tool-btn" data-tree-zoom="in" title="放大">
+          <ion-icon name="add-outline"></ion-icon>
+        </button>
+        <button class="tree-tool-btn" data-tree-zoom="out" title="缩小">
+          <ion-icon name="remove-outline"></ion-icon>
+        </button>
+        <button class="tree-tool-btn" data-tree-reset title="重置视角">
+          <ion-icon name="locate-outline"></ion-icon>
+        </button>
+      </div>
+
+      <span class="tree-toolbar-hint">滚轮缩放 · 拖拽平移 · 点击节点查看详情</span>
+
+      <div id="tree-canvas-fullscreen"></div>
+      <div id="tree-tooltip-fullscreen" class="tree-tooltip"></div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
 
 
 
@@ -784,6 +872,7 @@
   -->
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/effects.js"></script>
+  <script src="./assets/js/tree.js"></script>
 
   <!--
     - ionicon link
