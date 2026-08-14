@@ -2013,6 +2013,19 @@ textarea.form-input::-webkit-resizer { display: none; }
   opacity: 0.25;
 }
 
+/* 搜索过滤：未命中的节点淡出，命中的节点高亮 */
+.tree-node.search-hidden { opacity: 0.08; pointer-events: none; }
+.tree-node.search-hidden .tree-node-label { opacity: 0; }
+.tree-node.search-hit .tree-node-circle {
+  filter: drop-shadow(0 0 10px currentColor);
+  stroke-width: 3;
+}
+.tree-node.search-hit .tree-node-label {
+  fill: var(--white-1);
+  font-weight: 600;
+}
+.tree-link.search-dim { opacity: 0.1; }
+
 /* 节点图标 */
 .tree-node-icon {
   pointer-events: none;
@@ -2043,7 +2056,23 @@ textarea.form-input::-webkit-resizer { display: none; }
   filter: drop-shadow(0 0 5px hsla(45, 100%, 60%, 0.35));
 }
 
-/* 节点呼吸动画 */
+/* 星云光晕：核心圆外圈扩散的柔和光斑 */
+.tree-node-halo {
+  opacity: 0.22;
+  pointer-events: none;
+  animation: halo-pulse 4s ease-in-out infinite;
+}
+
+.tree-node.dimmed .tree-node-halo {
+  opacity: 0.04;
+}
+
+@keyframes halo-pulse {
+  0%, 100% { opacity: 0.18; }
+  50% { opacity: 0.34; }
+}
+
+/* 节点呼吸动画（根节点微微脉动） */
 @keyframes node-pulse {
   0%, 100% { r: 26; }
   50% { r: 30; }
@@ -2052,6 +2081,8 @@ textarea.form-input::-webkit-resizer { display: none; }
 .tree-node.is-root .tree-node-circle {
   animation: node-pulse 3s ease-in-out infinite;
 }
+
+
 
 /* 工具栏 */
 .tree-toolbar {
@@ -2155,21 +2186,42 @@ textarea.form-input::-webkit-resizer { display: none; }
   #TREE-FULLSCREEN (全屏技能树)
 \*-----------------------------------*/
 
+/* 背景星云层：与粒子同一背景层(透明)，常驻于页面 */
 .tree-fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 100;             /* 高于 sidebar / main-content 的 z-index:1 */
+  z-index: 0;               /* 与粒子同层，位于卡片(main z-index:1)之下 */
   display: flex;
   align-items: stretch;
-  background: var(--eerie-black-1);
+  background: transparent;  /* 透明，露出粒子背景 */
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
 .tree-fullscreen.show {
   opacity: 1;
   visibility: visible;
+}
+
+/* 星云层中的画布容器：透明、全屏铺满，让粒子在节点间流动 */
+.tree-fullscreen .tree-canvas-wrap {
+  background: transparent;
+}
+
+/* tree-mode：淡出上层卡片，露出背景科技树 */
+body.tree-mode .sidebar,
+body.tree-mode .main-content {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.985);
+  transition: opacity 0.55s ease, transform 0.55s ease, visibility 0.55s ease;
+  pointer-events: none;
+}
+
+body:not(.tree-mode) .sidebar,
+body:not(.tree-mode) .main-content {
+  transition: opacity 0.55s ease, transform 0.55s ease, visibility 0.55s ease;
 }
 
 /* 全屏画布容器铺满 */
@@ -2231,4 +2283,348 @@ textarea.form-input::-webkit-resizer { display: none; }
 .tree-fullscreen .tree-toolbar-hint {
   left: 20px;
   bottom: 18px;
+}
+
+
+/*-----------------------------------*\
+  #TREE-SEARCH (节点搜索)
+\*-----------------------------------*/
+
+.tree-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  height: 34px;
+  width: 190px;
+  border-radius: 10px;
+  background: var(--eerie-black-2);
+  border: 1px solid var(--jet);
+  transition: var(--transition-1);
+}
+
+.tree-search:focus-within {
+  border-color: var(--orange-yellow-crayola);
+  box-shadow: 0 0 0 3px hsla(45, 100%, 72%, 0.12);
+}
+
+.tree-search ion-icon {
+  font-size: 15px;
+  color: var(--light-gray-70);
+  flex-shrink: 0;
+}
+
+.tree-search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white-1);
+  font-size: var(--fs-7);
+  font-family: inherit;
+}
+
+.tree-search input::placeholder { color: var(--light-gray-70); }
+
+.tree-search-clear {
+  cursor: pointer;
+  color: var(--light-gray-70);
+  font-size: 16px;
+  line-height: 1;
+  display: none;
+}
+
+.tree-search-clear.show { display: block; }
+.tree-search-clear:hover { color: var(--orange-yellow-crayola); }
+
+
+/*-----------------------------------*\
+  #TREE-LEGEND (分支图例)
+\*-----------------------------------*/
+
+.tree-legend {
+  position: absolute;
+  left: 20px;
+  bottom: 44px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: hsla(240, 2%, 13%, 0.82);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--jet);
+  font-size: 12px;
+  color: var(--light-gray);
+  pointer-events: none;
+}
+
+.tree-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.tree-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.tree-legend-name { letter-spacing: 0.3px; }
+
+.tree-legend-count { color: var(--light-gray-70); margin-left: auto; }
+
+
+/*-----------------------------------*\
+  #TREE-MODAL (节点详情卡片，Markdown 渲染)
+\*-----------------------------------*/
+
+.tree-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.tree-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tree-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: hsla(240, 3%, 6%, 0.55);
+  backdrop-filter: blur(3px);
+}
+
+.tree-modal-card {
+  position: relative;
+  width: min(520px, calc(100vw - 48px));
+  max-height: min(76vh, 640px);
+  display: flex;
+  flex-direction: column;
+  background: hsla(240, 2%, 12%, 0.92);
+  backdrop-filter: blur(18px);
+  border: 1px solid hsla(45, 100%, 72%, 0.28);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px hsla(0, 0%, 0%, 0.55), 0 0 0 1px hsla(0, 0%, 0%, 0.2);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.25, 1);
+  overflow: hidden;
+}
+
+.tree-modal.show .tree-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.tree-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: none;
+  background: hsla(0, 0%, 0%, 0.35);
+  color: var(--light-gray);
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition-1);
+}
+
+.tree-modal-close:hover {
+  color: var(--orange-yellow-crayola);
+  background: hsla(45, 100%, 72%, 0.12);
+}
+
+.tree-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid hsla(0, 0%, 30%, 0.25);
+}
+
+.tree-modal-icon {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.tree-modal-title {
+  font-size: var(--fs-3);
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+  margin: 0;
+  flex: 1;
+}
+
+.tree-modal-branch {
+  font-size: 11px;
+  font-weight: var(--fw-500);
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  color: var(--light-gray);
+  background: hsla(0, 0%, 0%, 0.25);
+  border: 1px solid var(--jet);
+}
+
+.tree-modal-body {
+  padding: 18px 22px 22px;
+  overflow-y: auto;
+  color: var(--light-gray);
+  font-size: var(--fs-6);
+  line-height: 1.75;
+}
+
+.tree-modal-body::-webkit-scrollbar { width: 6px; }
+.tree-modal-body::-webkit-scrollbar-thumb {
+  background: hsla(0, 0%, 45%, 0.4);
+  border-radius: 3px;
+}
+
+/* Markdown 渲染样式 */
+.tree-modal-body h1,
+.tree-modal-body h2,
+.tree-modal-body h3,
+.tree-modal-body h4 {
+  color: var(--orange-yellow-crayola);
+  font-weight: var(--fw-600);
+  line-height: 1.4;
+  margin: 18px 0 8px;
+}
+.tree-modal-body h1:first-child,
+.tree-modal-body h2:first-child { margin-top: 0; }
+.tree-modal-body h1 { font-size: var(--fs-4); }
+.tree-modal-body h2 { font-size: var(--fs-5); }
+.tree-modal-body h3 { font-size: var(--fs-6); }
+
+.tree-modal-body p { margin: 8px 0; }
+
+.tree-modal-body ul,
+.tree-modal-body ol {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+.tree-modal-body li { margin: 4px 0; }
+.tree-modal-body li::marker { color: var(--vegas-gold); }
+
+.tree-modal-body a {
+  color: var(--orange-yellow-crayola);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.tree-modal-body a:hover { opacity: 0.8; }
+
+.tree-modal-body strong { color: var(--white-1); }
+.tree-modal-body em { color: var(--light-gray-70); }
+
+.tree-modal-body blockquote {
+  margin: 10px 0;
+  padding: 6px 14px;
+  border-left: 3px solid var(--vegas-gold);
+  color: var(--light-gray-70);
+  font-style: italic;
+}
+
+.tree-modal-body code {
+  background: hsla(0, 0%, 0%, 0.35);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 0.88em;
+  color: var(--vegas-gold);
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.tree-modal-body pre {
+  background: hsla(0, 0%, 0%, 0.4);
+  padding: 12px 14px;
+  border-radius: 10px;
+  overflow-x: auto;
+  border: 1px solid hsla(0, 0%, 30%, 0.2);
+}
+.tree-modal-body pre code { background: none; padding: 0; }
+
+.tree-modal-body img {
+  max-width: 100%;
+  border-radius: 10px;
+  display: block;
+  margin: 10px auto;
+  border: 1px solid hsla(0, 0%, 30%, 0.2);
+}
+
+.tree-modal-body hr {
+  border: none;
+  height: 1px;
+  background: hsla(0, 0%, 30%, 0.25);
+  margin: 16px 0;
+}
+
+.tree-modal-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+  font-size: var(--fs-7);
+}
+.tree-modal-body th,
+.tree-modal-body td {
+  border: 1px solid hsla(0, 0%, 30%, 0.25);
+  padding: 6px 10px;
+  text-align: left;
+}
+.tree-modal-body th { color: var(--white-1); background: hsla(0, 0%, 0%, 0.2); }
+
+/* 卡片内的"相关节点"链接区 */
+.tree-modal-related {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid hsla(0, 0%, 30%, 0.25);
+}
+.tree-modal-related-label {
+  font-size: 12px;
+  color: var(--light-gray-70);
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.tree-modal-related-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tree-modal-related-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--light-gray);
+  background: hsla(0, 0%, 0%, 0.28);
+  border: 1px solid var(--jet);
+  cursor: pointer;
+  transition: var(--transition-1);
+}
+.tree-modal-related-link:hover {
+  color: var(--orange-yellow-crayola);
+  border-color: var(--orange-yellow-crayola);
+}
+
+@media (max-width: 480px) {
+  .tree-search { width: 120px; }
+  .tree-modal-card { width: calc(100vw - 28px); }
 }
