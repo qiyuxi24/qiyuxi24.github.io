@@ -116,8 +116,10 @@
 
 
 /*------------------------------------*\
-  #2. 打字机标语效果
+  #2. 打字机标语效果（已禁用，保留死代码）
+  恢复方法：取消本段注释，并在 index.html 里取消 #typewriter 元素注释。
 \*------------------------------------*/
+/*
 (function () {
   const el = document.getElementById('typewriter');
   if (!el) return;
@@ -160,75 +162,166 @@
 
   type();
 })();
+*/
 
 
 /*------------------------------------*\
-  #3. 滚动进场动画 (适配 vCard 页面切换)
+  #3. 平滑滚动 + GSAP 滚动动效 (适配 vCard 页面切换)
+  - Lenis: 全局惯性平滑滚动
+  - ScrollTrigger: 元素随滚动淡入上浮、技能条滚动填充、标题渐显
 \*------------------------------------*/
 (function () {
-  // 只对文章内部子元素做进场动画，避免与 article 的 display 切换冲突
-  const selector = [
-    '.service-list li', '.timeline', '.skill', '.clients',
-    '.project-item', '.blog-post-item', '.contact-form', '.mapbox',
-    '.about-text', '.article-title'
-  ].join(',');
+  const prefersReducedMotion =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const revealSel = function (root) {
-    const targets = root.querySelectorAll(selector);
-    // 清空旧状态，重新标记
-    targets.forEach(function (t) {
-      t.classList.remove('reveal', 'reveal-visible');
+  // 若用户偏好减少动态，直接跳过所有动效
+  if (prefersReducedMotion || !window.gsap) return;
+
+  const gsap = window.gsap;
+  gsap.registerPlugin(ScrollTrigger);
+
+  /*------------------------------------*\
+    A. Lenis 平滑滚动
+  \*------------------------------------*/
+  let lenis = null;
+  if (window.Lenis) {
+    lenis = new Lenis({
+      duration: 1.1,
+      easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+      smoothWheel: true,
+      touchMultiplier: 1.6
     });
-    return targets;
-  };
-
-  const observeItems = function (items, observer) {
-    items.forEach(function (t) {
-      t.classList.add('reveal');
-      observer.observe(t);
-    });
-  };
-
-  const initForPage = function (article, observer) {
-    const items = revealSel(article);
-    observeItems(items, observer);
-  };
-
-  // 当前激活的 page
-  const getActivePage = function () {
-    const page = document.querySelector('article.active');
-    return page || document.querySelector('article[data-page="about"]') || document.body;
-  };
-
-  if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('article').forEach(function (a) {
-      a.querySelectorAll(selector).forEach(function (t) { t.classList.add('reveal-visible'); });
-    });
-    return;
+    // 让 ScrollTrigger 跟随 Lenis 的滚动
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
   }
 
-  const observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('reveal-visible');
-        observer.unobserve(entry.target);
-      }
+  /*------------------------------------*\
+    B. 元素进场动效（淡入上浮）
+  \*------------------------------------*/
+  const revealSelector = [
+    '.service-list li', '.timeline', '.skill', '.clients',
+    '.project-item', '.blog-post-item', '.contact-form', '.mapbox',
+    '.about-text'
+  ].join(',');
+
+  // 给指定容器内的元素创建进场动效
+  function createRevealAnim(root) {
+    const targets = root.querySelectorAll(revealSelector);
+    targets.forEach(function (t) {
+      gsap.fromTo(t, {
+        opacity: 0,
+        y: 28
+      }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: t,
+          start: 'top 88%',
+          toggleActions: 'play none none none'
+        }
+      });
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  }
+
+  /*------------------------------------*\
+    C. 标题逐字/渐显
+  \*------------------------------------*/
+  function createTitleAnim(root) {
+    root.querySelectorAll('.article-title').forEach(function (title) {
+      const text = title.textContent.trim();
+      // 已拆过分词则跳过（避免重复包裹）
+      if (title.querySelector('.title-word')) return;
+
+      title.setAttribute('aria-label', text);
+      title.innerHTML = text.split('').map(function (ch) {
+        // 空格保留为空格，不参与动画位移
+        return '<span class="title-word" aria-hidden="true">' +
+          (ch === ' ' ? '&nbsp;' : ch) + '</span>';
+      }).join('');
+
+      gsap.fromTo(title.querySelectorAll('.title-word'), {
+        opacity: 0,
+        y: 18,
+        rotateX: 60
+      }, {
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        duration: 0.6,
+        stagger: 0.03,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 90%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+  }
+
+  /*------------------------------------*\
+    D. 技能条滚动填充
+  \*------------------------------------*/
+  function createSkillAnim(root) {
+    root.querySelectorAll('.skill-progress-fill').forEach(function (fill) {
+      const targetWidth = fill.getAttribute('style')
+        ? parseFloat(fill.style.width || '0')
+        : 0;
+      if (targetWidth <= 0) return;
+
+      // 先把宽度置 0，由 GSAP 动画到目标宽度
+      gsap.set(fill, { width: '0%' });
+      gsap.to(fill, {
+        width: targetWidth + '%',
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: fill,
+          start: 'top 90%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+  }
+
+  /*------------------------------------*\
+    E. 页面激活时的动效初始化
+  \*------------------------------------*/
+  const getActivePage = function () {
+    return document.querySelector('article.active') ||
+      document.querySelector('article[data-page="about"]') ||
+      document.body;
+  };
+
+  function initPage(page) {
+    createRevealAnim(page);
+    createTitleAnim(page);
+    createSkillAnim(page);
+    // 刷新 ScrollTrigger 以重新计算位置
+    requestAnimationFrame(function () { ScrollTrigger.refresh(); });
+  }
 
   // 初始化当前可见页面
-  initForPage(getActivePage(), observer);
+  initPage(getActivePage());
 
-  // 监听 vCard 导航切换，重新触发对应页面的进场动画
-  const navLinks = document.querySelectorAll('[data-nav-link]');
-  navLinks.forEach(function (link) {
+  // 监听 vCard 导航切换，为切入的页面重新初始化动效
+  document.querySelectorAll('[data-nav-link]').forEach(function (link) {
     link.addEventListener('click', function () {
-      const targetPage = link.dataset.navPage;
-      const page = document.querySelector('article[data-page="' + targetPage + '"]');
+      const page = document.querySelector('article[data-page="' + link.dataset.navPage + '"]');
       if (page) {
-        // 延迟到 article 变为 active(display:block) 后再初始化动画
-        setTimeout(function () { initForPage(page, observer); }, 60);
+        // 延迟到 article 变为 active(display:block) 后再初始化
+        setTimeout(function () { initPage(page); }, 80);
+        if (lenis) lenis.scrollTo(0, { immediate: true });
       }
     });
+  });
+
+  // 页面销毁时清理（保留 Lenis 实例复用）
+  window.addEventListener('beforeunload', function () {
+    if (lenis) lenis.destroy();
   });
 })();

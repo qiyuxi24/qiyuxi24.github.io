@@ -1928,22 +1928,17 @@ textarea.form-input::-webkit-resizer { display: none; }
   50% { opacity: 0; }
 }
 
-/* 滚动进场动画 */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-  will-change: opacity, transform;
-}
-
-.reveal-visible {
-  opacity: 1;
-  transform: translateY(0);
+/* 标题逐字动画：JS 用 GSAP fromTo 控制初始透明，
+   此规则仅为防止 JS 未加载时的闪烁回退 */
+.title-word {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform, opacity;
 }
 
 /* 尊重用户减少动态偏好 */
 @media (prefers-reduced-motion: reduce) {
   #particles-canvas { display: none; }
-  .reveal { opacity: 1; transform: none; }
+  .title-word { transform: none !important; opacity: 1 !important; }
   .type-cursor { animation: none; }
 }
