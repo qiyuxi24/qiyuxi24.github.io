@@ -28,5 +28,9 @@ _legacy_jekyll/
 # Ignore playwright-cli local test artifacts
 .playwright-cli/
 
+# Ignore ad-hoc debug scripts / screenshots at repo root (e.g. _check_*.js, _shot.js, view-*.png)
+/_*.js
+/view-*.png
+
 # Ignore files created by MacOS
 .DS_Store

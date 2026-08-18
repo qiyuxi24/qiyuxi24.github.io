@@ -430,21 +430,37 @@ main {
 .contact-info address { font-style: normal; }
 
 .social-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
   justify-content: flex-start;
   align-items: center;
-  gap: 15px;
+  gap: 14px;
   padding-bottom: 4px;
   padding-left: 7px;
 }
 
-.social-item .social-link {
-  color: var(--light-gray-70);
-  font-size: 18px;
+.social-item {
+  line-height: 0;
 }
 
+.social-item .social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--light-gray-70);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
 
-.social-item .social-link:hover { color: var(--light-gray); }
+.social-item .social-link svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.social-item .social-link:hover {
+  color: var(--brand, var(--light-gray));
+  transform: translateY(-2px);
+}
 
 
 
@@ -1141,6 +1157,68 @@ main {
   filter: grayscale(1) invert(1);
 }
 
+/* 位置信息卡（取代不可用的 Google Maps iframe） */
+.mapbox-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: var(--light-gray);
+  overflow: hidden;
+  transition: transform var(--transition-1);
+}
+
+.mapbox-card:hover { transform: scale(1.01); }
+
+.mapbox-card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.mapbox-card-bg svg { width: 100%; height: 100%; display: block; }
+
+.mapbox-card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(180deg, hsla(0, 0%, 0%, 0.25) 0%, hsla(0, 0%, 0%, 0.55) 100%);
+}
+
+.mapbox-card-content ion-icon {
+  font-size: 36px;
+  color: var(--orange-yellow-crayola);
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px hsla(45, 100%, 72%, 0.5));
+}
+
+.mapbox-title {
+  font-size: var(--fs-3);
+  font-weight: var(--fw-500);
+  color: var(--white-2);
+  margin-bottom: 4px;
+}
+
+.mapbox-sub {
+  font-size: var(--fs-7);
+  color: var(--light-gray);
+  font-weight: var(--fw-300);
+  margin-bottom: 6px;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.mapbox-hint {
+  font-size: 11px;
+  color: var(--orange-yellow-crayola);
+  letter-spacing: 0.3px;
+}
+
 .contact-form { margin-bottom: 10px; }
 
 .form-title { margin-bottom: 20px; }
@@ -1220,6 +1298,66 @@ textarea.form-input::-webkit-resizer { display: none; }
 .form-btn:disabled:hover { background: var(--border-gradient-onyx); }
 
 .form-btn:disabled:hover::before { background: var(--bg-gradient-jet); }
+
+
+/* 联系区：邮件主按钮 + 社交快捷列表 */
+.contact-text {
+  color: var(--light-gray);
+  font-size: var(--fs-6);
+  font-weight: var(--fw-300);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  max-width: 520px;
+}
+
+.contact-email-btn {
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.contact-quick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+  border: 1px solid var(--jet);
+  border-radius: 14px;
+  background: var(--bg-gradient-jet);
+  box-shadow: var(--shadow-1);
+}
+
+.contact-quick-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--light-gray);
+  font-size: var(--fs-6);
+}
+
+.contact-quick-list ion-icon,
+.contact-quick-list .contact-social-icon {
+  font-size: 16px;
+  color: var(--orange-yellow-crayola);
+  flex-shrink: 0;
+}
+
+.contact-quick-list .contact-social-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.contact-quick-list a {
+  color: var(--light-gray-70);
+  text-decoration: none;
+  word-break: break-all;
+  transition: color var(--transition-1);
+}
+
+.contact-quick-list a:hover {
+  color: var(--orange-yellow-crayola);
+}
 
 
 
@@ -1943,9 +2081,24 @@ textarea.form-input::-webkit-resizer { display: none; }
   .type-cursor { animation: none; }
 }
 
+/* 键盘焦点态（不显式加 mouse-focus 边框，避免鼠标点击也亮黄圈） */
+:focus-visible {
+  outline: 2px solid var(--orange-yellow-crayola);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline-offset: 4px;
+}
+
 
 /*-----------------------------------*\
-  #TREE (科技树)
+  #TREE (科技树 · Obsidian Graph View 风格)
+  - 极简克制：纯黑底、节点灰描边无填充、连线极细渐变
+  - 颜色仅在 hover/选中/搜索命中时才显著发光
+  - 字号小、字色淡、无玻璃拟态卡片
 \*-----------------------------------*/
 
 .tree-intro {
@@ -1960,15 +2113,11 @@ textarea.form-input::-webkit-resizer { display: none; }
   position: relative;
   width: 100%;
   height: 560px;
-  border-radius: 16px;
+  border-radius: 0;                 /* Obsidian：无圆角 */
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 45%,
-      hsla(45, 100%, 60%, 0.06) 0%,
-      transparent 60%),
-    var(--eerie-black-1);
-  border: 1px solid var(--jet);
-  box-shadow: var(--shadow-2);
+  background: transparent;          /* 让粒子透出，极简 */
+  border: none;
+  box-shadow: none;
 }
 
 #tree-canvas,
@@ -1984,193 +2133,189 @@ textarea.form-input::-webkit-resizer { display: none; }
 #tree-canvas:active,
 #tree-canvas-fullscreen:active { cursor: grabbing; }
 
-/* 连线 */
+/* 连线：极细、渐变（两端节点 hue 混合） */
 .tree-link {
-  stroke: hsla(45, 100%, 72%, 0.22);
-  stroke-width: 1.5;
+  stroke: hsla(0, 0%, 60%, 0.18);   /* 默认极淡灰，几乎看不见 */
+  stroke-width: 0.75;
   fill: none;
-  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+  stroke-linecap: round;
+  transition: stroke 0.25s ease, stroke-width 0.25s ease, opacity 0.25s ease;
 }
 
 .tree-link.is-lit {
-  stroke: hsla(45, 100%, 72%, 0.6);
-  stroke-width: 2;
+  stroke-width: 1.25;
+  opacity: 1;
 }
 
 .tree-link.is-active {
-  stroke: var(--orange-yellow-crayola);
-  stroke-width: 2.5;
+  stroke-width: 1.5;
+  opacity: 1;
 }
 
-/* 节点 */
+/* 节点：默认无填充，仅极淡描边，hover 才上色 */
 .tree-node { cursor: pointer; }
 
 .tree-node-circle {
-  transition: r 0.25s ease, fill 0.25s ease, stroke 0.25s ease;
+  fill: hsl(0, 0%, 8%);             /* 与背景几乎一致 */
+  stroke-width: 1;
+  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease, r 0.2s ease;
 }
 
-.tree-node.dimmed .tree-node-circle {
-  opacity: 0.25;
+/* 节点默认不发光 */
+.tree-node-halo { display: none; }   /* Obsidian 没有大光晕 */
+
+/* hover/选中态才显著着色 */
+.tree-node.is-hover .tree-node-circle,
+.tree-node.is-active .tree-node-circle {
+  stroke-width: 2;
 }
 
-/* 搜索过滤：未命中的节点淡出，命中的节点高亮 */
-.tree-node.search-hidden { opacity: 0.08; pointer-events: none; }
+/* dimmed 状态（邻居未关联的节点） */
+.tree-node.dimmed .tree-node-circle { opacity: 0.18; }
+.tree-node.dimmed .tree-node-label  { opacity: 0.18; }
+
+/* 搜索过滤 */
+.tree-node.search-hidden { opacity: 0.1; pointer-events: none; }
 .tree-node.search-hidden .tree-node-label { opacity: 0; }
 .tree-node.search-hit .tree-node-circle {
-  filter: drop-shadow(0 0 10px currentColor);
-  stroke-width: 3;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 4px currentColor);
 }
 .tree-node.search-hit .tree-node-label {
   fill: var(--white-1);
   font-weight: 600;
 }
-.tree-link.search-dim { opacity: 0.1; }
+.tree-link.search-dim { opacity: 0.05; }
 
-/* 节点图标 */
+/* 节点图标（emoji）：默认灰色、选中时着色 */
 .tree-node-icon {
   pointer-events: none;
-  font-size: 16px;
   text-anchor: middle;
   dominant-baseline: central;
   user-select: none;
+  fill: hsl(0, 0%, 55%);            /* 默认极淡灰 */
+  transition: fill 0.2s ease;
 }
+.tree-node.is-hover .tree-node-icon,
+.tree-node.is-active .tree-node-icon { fill: var(--white-1); }
 
+/* 节点圆点（无 icon 的子节点） */
+.tree-node-dot {
+  fill: hsl(0, 0%, 55%);
+  transition: fill 0.2s ease;
+}
+.tree-node.is-hover .tree-node-dot,
+.tree-node.is-active .tree-node-dot { fill: var(--white-1); }
+
+/* 标签：无背景、直接贴在节点上方，字号小、字色淡 */
 .tree-node-label {
-  font-size: 12px;
-  fill: var(--light-gray);
+  font-size: 11px;
+  fill: hsl(0, 0%, 70%);            /* 默认浅灰 */
   text-anchor: middle;
   pointer-events: none;
   user-select: none;
   font-family: var(--ff-poppins);
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  transition: fill 0.2s ease;
 }
 
-.tree-node:hover .tree-node-label {
+.tree-node.is-hover .tree-node-label,
+.tree-node.is-active .tree-node-label { fill: var(--white-1); }
+
+.tree-node.is-root .tree-node-label {
+  font-size: 13px;
+  font-weight: 500;
   fill: var(--white-1);
 }
-
-.tree-node.is-root .tree-node-circle {
-  filter: drop-shadow(0 0 8px hsla(45, 100%, 72%, 0.6));
+.tree-node.is-branch .tree-node-label {
+  font-size: 12px;
+  font-weight: 500;
+  fill: hsl(0, 0%, 85%);
 }
 
-.tree-node.is-branch .tree-node-circle {
-  filter: drop-shadow(0 0 5px hsla(45, 100%, 60%, 0.35));
-}
-
-/* 星云光晕：核心圆外圈扩散的柔和光斑 */
-.tree-node-halo {
-  opacity: 0.22;
-  pointer-events: none;
-  animation: halo-pulse 4s ease-in-out infinite;
-}
-
-.tree-node.dimmed .tree-node-halo {
-  opacity: 0.04;
-}
-
-@keyframes halo-pulse {
-  0%, 100% { opacity: 0.18; }
-  50% { opacity: 0.34; }
-}
-
-/* 节点呼吸动画（根节点微微脉动） */
-@keyframes node-pulse {
-  0%, 100% { r: 26; }
-  50% { r: 30; }
-}
-
-.tree-node.is-root .tree-node-circle {
-  animation: node-pulse 3s ease-in-out infinite;
-}
-
-
-
-/* 工具栏 */
+/* 工具栏：flat 图标按钮，无背景框 */
 .tree-toolbar {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
   z-index: 5;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 6px;
-  border-radius: 12px;
-  background: hsla(240, 2%, 13%, 0.85);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--jet);
-  box-shadow: var(--shadow-1);
+  gap: 2px;
+  padding: 4px;
+  border-radius: 6px;
+  background: hsla(0, 0%, 0%, 0.55);
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  box-shadow: none;
 }
 
 .tree-tool-btn {
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   display: grid;
   place-items: center;
-  border-radius: 8px;
-  border: 1px solid var(--jet);
-  background: var(--eerie-black-2);
-  color: var(--light-gray);
-  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: hsl(0, 0%, 70%);
+  font-size: 14px;
   cursor: pointer;
-  transition: var(--transition-1);
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
 .tree-tool-btn:hover {
-  color: var(--orange-yellow-crayola);
-  border-color: var(--orange-yellow-crayola);
+  color: var(--white-1);
+  background: hsla(0, 0%, 100%, 0.08);
 }
 
 .tree-toolbar-hint {
   position: absolute;
-  left: 12px;
-  bottom: 10px;
-  font-size: 11px;
-  color: var(--light-gray-70);
+  left: 16px;
+  bottom: 12px;
+  font-size: 10px;
+  color: hsl(0, 0%, 50%);
   white-space: nowrap;
   pointer-events: none;
   letter-spacing: 0.5px;
 }
 
-/* 提示框 */
+/* 提示框：flat，无玻璃，无边框 */
 .tree-tooltip {
   position: absolute;
   z-index: 10;
-  max-width: 260px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: hsla(240, 2%, 12%, 0.96);
-  border: 1px solid var(--orange-yellow-crayola);
-  box-shadow: var(--shadow-3);
+  max-width: 240px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: hsla(0, 0%, 8%, 0.96);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  box-shadow: none;
   color: var(--light-gray);
-  font-size: var(--fs-7);
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.5;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  transform: translateY(6px);
+  transition: opacity 0.15s ease;
 }
 
-.tree-tooltip.show {
-  opacity: 1;
-  transform: translateY(0);
-}
+.tree-tooltip.show { opacity: 1; }
 
 .tree-tooltip .tt-title {
-  color: var(--orange-yellow-crayola);
-  font-weight: var(--fw-600);
-  font-size: var(--fs-6);
-  margin-bottom: 6px;
+  color: var(--white-1);
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 3px;
 }
 
 .tree-tooltip .tt-sub {
-  color: var(--vegas-gold);
-  font-size: var(--fs-8);
-  margin-bottom: 4px;
+  color: hsl(0, 0%, 60%);
+  font-size: 10px;
+  margin-bottom: 2px;
 }
 
 .tree-tooltip .tt-desc {
-  font-size: var(--fs-8);
-  color: var(--light-gray-70);
+  font-size: 11px;
+  color: hsl(0, 0%, 70%);
 }
 
 /* 响应式 */
@@ -2183,17 +2328,16 @@ textarea.form-input::-webkit-resizer { display: none; }
 }
 
 /*-----------------------------------*\
-  #TREE-FULLSCREEN (全屏技能树)
+  #TREE-FULLSCREEN (全屏科技树)
 \*-----------------------------------*/
 
-/* 背景星云层：与粒子同一背景层(透明)，常驻于页面 */
 .tree-fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 0;               /* 与粒子同层，位于卡片(main z-index:1)之下 */
+  z-index: 0;
   display: flex;
   align-items: stretch;
-  background: transparent;  /* 透明，露出粒子背景 */
+  background: transparent;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.6s ease, visibility 0.6s ease;
@@ -2204,12 +2348,15 @@ textarea.form-input::-webkit-resizer { display: none; }
   visibility: visible;
 }
 
-/* 星云层中的画布容器：透明、全屏铺满，让粒子在节点间流动 */
 .tree-fullscreen .tree-canvas-wrap {
   background: transparent;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
 }
 
-/* tree-mode：淡出上层卡片，露出背景科技树 */
 body.tree-mode .sidebar,
 body.tree-mode .main-content {
   opacity: 0;
@@ -2224,16 +2371,12 @@ body:not(.tree-mode) .main-content {
   transition: opacity 0.55s ease, transform 0.55s ease, visibility 0.55s ease;
 }
 
-/* 全屏画布容器铺满 */
-.tree-fullscreen .tree-canvas-wrap {
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
+/* tree-mode：压暗粒子背景，让图关系更突出（Obsidian 极简黑底感） */
+body.tree-mode #particles-canvas {
+  opacity: 0.18;
 }
 
-/* 退出按钮 + 标题：固定左上角横排 */
+/* 退出按钮 + 标题：左上角横排，flat 风格 */
 .tree-fullscreen-top {
   position: fixed;
   top: 20px;
@@ -2248,41 +2391,39 @@ body:not(.tree-mode) .main-content {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: hsla(240, 2%, 13%, 0.9);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--jet);
-  color: var(--light-gray);
-  font-size: var(--fs-6);
-  font-weight: var(--fw-500);
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: hsla(0, 0%, 0%, 0.55);
+  backdrop-filter: none;
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  color: hsl(0, 0%, 75%);
+  font-size: 12px;
+  font-weight: var(--fw-400);
   cursor: pointer;
-  transition: var(--transition-1);
-  box-shadow: var(--shadow-1);
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  box-shadow: none;
 }
 
 .tree-exit-btn:hover {
-  color: var(--orange-yellow-crayola);
-  border-color: var(--orange-yellow-crayola);
+  color: var(--white-1);
+  border-color: hsla(0, 0%, 100%, 0.3);
 }
 
 .tree-exit-btn ion-icon {
-  font-size: 18px;
+  font-size: 14px;
 }
 
-/* 全屏模式下顶部标题 */
 .tree-fullscreen-title {
-  color: var(--orange-yellow-crayola);
-  font-size: var(--fs-2);
-  font-weight: var(--fw-600);
+  color: hsl(0, 0%, 75%);
+  font-size: 13px;
+  font-weight: var(--fw-500);
   pointer-events: none;
   letter-spacing: 0.5px;
 }
 
-/* 全屏模式下工具栏 hint 移到左下 */
 .tree-fullscreen .tree-toolbar-hint {
-  left: 20px;
-  bottom: 18px;
+  left: 24px;
+  bottom: 20px;
 }
 
 
@@ -2295,23 +2436,22 @@ body:not(.tree-mode) .main-content {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0 10px;
-  height: 34px;
-  width: 190px;
-  border-radius: 10px;
-  background: var(--eerie-black-2);
-  border: 1px solid var(--jet);
-  transition: var(--transition-1);
+  padding: 0 8px;
+  height: 28px;
+  width: 180px;
+  border-radius: 4px;
+  background: hsla(0, 0%, 0%, 0.55);
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  transition: border-color 0.15s ease;
 }
 
 .tree-search:focus-within {
-  border-color: var(--orange-yellow-crayola);
-  box-shadow: 0 0 0 3px hsla(45, 100%, 72%, 0.12);
+  border-color: hsla(0, 0%, 100%, 0.25);
 }
 
 .tree-search ion-icon {
-  font-size: 15px;
-  color: var(--light-gray-70);
+  font-size: 13px;
+  color: hsl(0, 0%, 55%);
   flex-shrink: 0;
 }
 
@@ -2322,67 +2462,67 @@ body:not(.tree-mode) .main-content {
   border: none;
   outline: none;
   color: var(--white-1);
-  font-size: var(--fs-7);
+  font-size: 11px;
   font-family: inherit;
 }
 
-.tree-search input::placeholder { color: var(--light-gray-70); }
+.tree-search input::placeholder { color: hsl(0, 0%, 45%); }
 
 .tree-search-clear {
   cursor: pointer;
-  color: var(--light-gray-70);
-  font-size: 16px;
+  color: hsl(0, 0%, 55%);
+  font-size: 13px;
   line-height: 1;
   display: none;
 }
 
 .tree-search-clear.show { display: block; }
-.tree-search-clear:hover { color: var(--orange-yellow-crayola); }
+.tree-search-clear:hover { color: var(--white-1); }
 
 
 /*-----------------------------------*\
-  #TREE-LEGEND (分支图例)
+  #TREE-LEGEND (分支图例 · flat)
 \*-----------------------------------*/
 
 .tree-legend {
   position: absolute;
-  left: 20px;
+  left: 24px;
   bottom: 44px;
   z-index: 6;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: hsla(240, 2%, 13%, 0.82);
-  backdrop-filter: blur(6px);
-  border: 1px solid var(--jet);
-  font-size: 12px;
-  color: var(--light-gray);
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: hsla(0, 0%, 0%, 0.55);
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  font-size: 11px;
+  color: hsl(0, 0%, 75%);
   pointer-events: none;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .tree-legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   white-space: nowrap;
 }
 
 .tree-legend-dot {
-  width: 9px;
-  height: 9px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  box-shadow: 0 0 6px currentColor;
+  box-shadow: none;                  /* Obsidian：色块无发光 */
 }
 
-.tree-legend-name { letter-spacing: 0.3px; }
-
-.tree-legend-count { color: var(--light-gray-70); margin-left: auto; }
+.tree-legend-name { letter-spacing: 0.2px; }
+.tree-legend-count { color: hsl(0, 0%, 50%); margin-left: auto; }
 
 
 /*-----------------------------------*\
-  #TREE-MODAL (节点详情卡片，Markdown 渲染)
+  #TREE-MODAL (节点详情 · 极简)
 \*-----------------------------------*/
 
 .tree-modal {
@@ -2394,7 +2534,7 @@ body:not(.tree-mode) .main-content {
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
 .tree-modal.show {
@@ -2405,23 +2545,22 @@ body:not(.tree-mode) .main-content {
 .tree-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: hsla(240, 3%, 6%, 0.55);
-  backdrop-filter: blur(3px);
+  background: hsla(0, 0%, 4%, 0.7);
+  backdrop-filter: blur(2px);
 }
 
 .tree-modal-card {
   position: relative;
-  width: min(520px, calc(100vw - 48px));
-  max-height: min(76vh, 640px);
+  width: min(440px, calc(100vw - 48px));
+  max-height: min(72vh, 580px);
   display: flex;
   flex-direction: column;
-  background: hsla(240, 2%, 12%, 0.92);
-  backdrop-filter: blur(18px);
-  border: 1px solid hsla(45, 100%, 72%, 0.28);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px hsla(0, 0%, 0%, 0.55), 0 0 0 1px hsla(0, 0%, 0%, 0.2);
-  transform: translateY(16px) scale(0.97);
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.25, 1);
+  background: hsl(240, 2%, 11%);
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  border-radius: 4px;                /* Obsidian：小圆角 */
+  box-shadow: 0 8px 32px hsla(0, 0%, 0%, 0.6);
+  transform: translateY(12px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.25, 1);
   overflow: hidden;
 }
 
@@ -2431,197 +2570,202 @@ body:not(.tree-mode) .main-content {
 
 .tree-modal-close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 10px;
+  right: 10px;
   z-index: 2;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
-  border-radius: 8px;
+  border-radius: 3px;
   border: none;
-  background: hsla(0, 0%, 0%, 0.35);
-  color: var(--light-gray);
-  font-size: 18px;
+  background: transparent;
+  color: hsl(0, 0%, 60%);
+  font-size: 14px;
   cursor: pointer;
-  transition: var(--transition-1);
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
 .tree-modal-close:hover {
-  color: var(--orange-yellow-crayola);
-  background: hsla(45, 100%, 72%, 0.12);
+  color: var(--white-1);
+  background: hsla(0, 0%, 100%, 0.08);
 }
 
 .tree-modal-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 20px 22px 16px;
-  border-bottom: 1px solid hsla(0, 0%, 30%, 0.25);
+  gap: 10px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid hsla(0, 0%, 100%, 0.06);
 }
 
 .tree-modal-icon {
-  font-size: 30px;
+  font-size: 22px;
   line-height: 1;
 }
 
 .tree-modal-title {
-  font-size: var(--fs-3);
-  font-weight: var(--fw-600);
+  font-size: 15px;
+  font-weight: 500;
   color: var(--white-1);
   margin: 0;
   flex: 1;
+  letter-spacing: 0.2px;
 }
 
 .tree-modal-branch {
-  font-size: 11px;
-  font-weight: var(--fw-500);
+  font-size: 10px;
+  font-weight: var(--fw-400);
   letter-spacing: 0.5px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  color: var(--light-gray);
-  background: hsla(0, 0%, 0%, 0.25);
-  border: 1px solid var(--jet);
+  padding: 2px 8px;
+  border-radius: 3px;
+  color: hsl(0, 0%, 75%);
+  background: transparent;
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
 }
 
 .tree-modal-body {
-  padding: 18px 22px 22px;
+  padding: 14px 18px 18px;
   overflow-y: auto;
-  color: var(--light-gray);
-  font-size: var(--fs-6);
-  line-height: 1.75;
+  color: hsl(0, 0%, 80%);
+  font-size: 13px;
+  line-height: 1.7;
 }
 
-.tree-modal-body::-webkit-scrollbar { width: 6px; }
+.tree-modal-body::-webkit-scrollbar { width: 4px; }
 .tree-modal-body::-webkit-scrollbar-thumb {
-  background: hsla(0, 0%, 45%, 0.4);
-  border-radius: 3px;
+  background: hsla(0, 0%, 40%, 0.3);
+  border-radius: 2px;
 }
 
-/* Markdown 渲染样式 */
+/* Markdown 渲染样式（Obsidian 极简） */
 .tree-modal-body h1,
 .tree-modal-body h2,
 .tree-modal-body h3,
 .tree-modal-body h4 {
-  color: var(--orange-yellow-crayola);
-  font-weight: var(--fw-600);
+  color: var(--white-1);
+  font-weight: 500;
   line-height: 1.4;
-  margin: 18px 0 8px;
+  margin: 14px 0 6px;
 }
 .tree-modal-body h1:first-child,
 .tree-modal-body h2:first-child { margin-top: 0; }
-.tree-modal-body h1 { font-size: var(--fs-4); }
-.tree-modal-body h2 { font-size: var(--fs-5); }
-.tree-modal-body h3 { font-size: var(--fs-6); }
+.tree-modal-body h1 { font-size: 15px; }
+.tree-modal-body h2 { font-size: 14px; }
+.tree-modal-body h3 { font-size: 13px; }
+.tree-modal-body h4 { font-size: 12px; }
 
-.tree-modal-body p { margin: 8px 0; }
+.tree-modal-body p { margin: 6px 0; }
 
 .tree-modal-body ul,
 .tree-modal-body ol {
-  margin: 8px 0;
-  padding-left: 22px;
+  margin: 6px 0;
+  padding-left: 18px;
 }
-.tree-modal-body li { margin: 4px 0; }
-.tree-modal-body li::marker { color: var(--vegas-gold); }
+.tree-modal-body li { margin: 2px 0; }
+.tree-modal-body li::marker { color: hsl(0, 0%, 55%); }
 
 .tree-modal-body a {
-  color: var(--orange-yellow-crayola);
+  color: hsl(0, 0%, 85%);
   text-decoration: underline;
   text-underline-offset: 2px;
+  text-decoration-color: hsla(0, 0%, 100%, 0.3);
 }
-.tree-modal-body a:hover { opacity: 0.8; }
+.tree-modal-body a:hover { color: var(--white-1); }
 
-.tree-modal-body strong { color: var(--white-1); }
-.tree-modal-body em { color: var(--light-gray-70); }
+.tree-modal-body strong { color: var(--white-1); font-weight: 500; }
+.tree-modal-body em { color: hsl(0, 0%, 70%); }
 
 .tree-modal-body blockquote {
-  margin: 10px 0;
-  padding: 6px 14px;
-  border-left: 3px solid var(--vegas-gold);
-  color: var(--light-gray-70);
+  margin: 8px 0;
+  padding: 4px 12px;
+  border-left: 2px solid hsl(0, 0%, 40%);
+  color: hsl(0, 0%, 70%);
   font-style: italic;
 }
 
 .tree-modal-body code {
-  background: hsla(0, 0%, 0%, 0.35);
-  padding: 2px 6px;
-  border-radius: 5px;
-  font-size: 0.88em;
-  color: var(--vegas-gold);
+  background: hsla(0, 0%, 100%, 0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: hsl(0, 0%, 85%);
   font-family: 'Consolas', 'Courier New', monospace;
 }
 
 .tree-modal-body pre {
   background: hsla(0, 0%, 0%, 0.4);
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: 10px 12px;
+  border-radius: 3px;
   overflow-x: auto;
-  border: 1px solid hsla(0, 0%, 30%, 0.2);
+  border: 1px solid hsla(0, 0%, 100%, 0.06);
 }
 .tree-modal-body pre code { background: none; padding: 0; }
 
 .tree-modal-body img {
   max-width: 100%;
-  border-radius: 10px;
+  border-radius: 3px;
   display: block;
-  margin: 10px auto;
-  border: 1px solid hsla(0, 0%, 30%, 0.2);
+  margin: 8px auto;
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
 }
 
 .tree-modal-body hr {
   border: none;
   height: 1px;
-  background: hsla(0, 0%, 30%, 0.25);
-  margin: 16px 0;
+  background: hsla(0, 0%, 100%, 0.08);
+  margin: 12px 0;
 }
 
 .tree-modal-body table {
   border-collapse: collapse;
   width: 100%;
-  margin: 10px 0;
-  font-size: var(--fs-7);
+  margin: 8px 0;
+  font-size: 12px;
 }
 .tree-modal-body th,
 .tree-modal-body td {
-  border: 1px solid hsla(0, 0%, 30%, 0.25);
-  padding: 6px 10px;
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  padding: 4px 8px;
   text-align: left;
 }
-.tree-modal-body th { color: var(--white-1); background: hsla(0, 0%, 0%, 0.2); }
+.tree-modal-body th { color: var(--white-1); background: hsla(0, 0%, 100%, 0.03); }
 
-/* 卡片内的"相关节点"链接区 */
+/* 相关节点链接区 */
 .tree-modal-related {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid hsla(0, 0%, 30%, 0.25);
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid hsla(0, 0%, 100%, 0.06);
 }
 .tree-modal-related-label {
-  font-size: 12px;
-  color: var(--light-gray-70);
+  font-size: 10px;
+  color: hsl(0, 0%, 50%);
   letter-spacing: 0.5px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
 }
 .tree-modal-related-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 .tree-modal-related-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  color: var(--light-gray);
-  background: hsla(0, 0%, 0%, 0.28);
-  border: 1px solid var(--jet);
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: hsl(0, 0%, 80%);
+  background: hsla(0, 0%, 100%, 0.04);
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
   cursor: pointer;
-  transition: var(--transition-1);
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .tree-modal-related-link:hover {
-  color: var(--orange-yellow-crayola);
-  border-color: var(--orange-yellow-crayola);
+  color: var(--white-1);
+  background: hsla(0, 0%, 100%, 0.08);
+  border-color: hsla(0, 0%, 100%, 0.18);
 }
 
 @media (max-width: 480px) {

@@ -76,26 +76,9 @@ for (let i = 0; i < filterBtn.length; i++) {
 
 
 
-// contact form variables
-const form = document.querySelector("[data-form]");
-const formInputs = document.querySelectorAll("[data-form-input]");
-const formBtn = document.querySelector("[data-form-btn]");
-
-// add event to all form input field
-for (let i = 0; i < formInputs.length; i++) {
-  formInputs[i].addEventListener("input", function () {
-
-    // check form validation
-    if (form.checkValidity()) {
-      formBtn.removeAttribute("disabled");
-    } else {
-      formBtn.setAttribute("disabled", "");
-    }
-
-  });
-}
-
-
+// contact form：已改为 mailto + 社交列表按钮，无表单需校验。
+// 此处保留原校验逻辑注释作历史参考：旧版监听 [data-form-input] 的 input 事件，
+// 通过 form.checkValidity() 切换 [data-form-btn] 的 disabled 状态。
 
 // page navigation variables
 const navigationLinks = document.querySelectorAll("[data-nav-link]");
