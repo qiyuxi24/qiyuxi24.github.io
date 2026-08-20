@@ -30,7 +30,12 @@ _legacy_jekyll/
 
 # Ignore ad-hoc debug scripts / screenshots at repo root (e.g. _check_*.js, _shot.js, view-*.png)
 /_*.js
+/.tmp-server.js
 /view-*.png
+/hobbies-*.png
+
+# Ignore personal source-material .md at root (not for public web)
+/佀佳超的思考与阅读（对话摘录）.md
 
 # Ignore files created by MacOS
 .DS_Store

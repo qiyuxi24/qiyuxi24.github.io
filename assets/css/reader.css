@@ -1,0 +1,358 @@
+/*-----------------------------------*\
+  #reader.css — 文章阅读页
+  设计语言与主页一致：暗色 + 金色点缀 + 极简
+\*-----------------------------------*/
+
+/* 兜底背景（粒子画布为空时使用） */
+body {
+  background: hsl(240, 2%, 13%);
+  color: var(--light-gray);
+  font-family: var(--ff-poppins);
+  -webkit-font-smoothing: antialiased;
+}
+
+.reader-main {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+/* ---------- 顶部工具栏 ---------- */
+.reader-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 28px;
+}
+
+.reader-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--light-gray-70);
+  font-size: var(--fs-5);
+  font-weight: var(--fw-500);
+  transition: var(--transition-1);
+}
+
+.reader-back:hover {
+  color: var(--orange-yellow-crayola);
+}
+
+.reader-back ion-icon {
+  font-size: 20px;
+}
+
+.reader-brand {
+  color: var(--light-gray-70);
+  font-size: var(--fs-7);
+  letter-spacing: 0.05em;
+}
+
+/* ---------- 文章头部 ---------- */
+.reader-content {
+  background: var(--bg-gradient-jet);
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow-3);
+}
+
+.reader-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+}
+
+.reader-category {
+  color: var(--orange-yellow-crayola);
+  font-weight: var(--fw-600);
+}
+
+.reader-dot {
+  color: hsla(0, 0%, 84%, 0.4);
+}
+
+.reader-title {
+  font-size: 28px;
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.reader-summary {
+  margin-top: 14px;
+  padding-left: 12px;
+  border-left: 3px solid var(--orange-yellow-crayola);
+  color: var(--light-gray-70);
+  font-size: var(--fs-5);
+  line-height: 1.8;
+}
+
+.reader-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.reader-tag {
+  padding: 4px 12px;
+  border: 1px solid hsla(0, 0%, 25%, 0.6);
+  border-radius: 999px;
+  font-size: var(--fs-8);
+  color: var(--light-gray-70);
+}
+
+/* ---------- 文章正文 ---------- */
+.reader-body {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
+  color: var(--light-gray);
+  font-size: var(--fs-4);
+  line-height: 1.9;
+}
+
+.reader-body h2,
+.reader-body h3,
+.reader-body h4 {
+  color: var(--white-1);
+  font-weight: var(--fw-600);
+  line-height: 1.4;
+  margin: 1.8em 0 0.7em;
+}
+
+.reader-body h2 {
+  font-size: 22px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid hsla(0, 0%, 25%, 0.3);
+}
+
+.reader-body h3 {
+  font-size: 19px;
+}
+
+.reader-body h4 {
+  font-size: 17px;
+}
+
+.reader-body p {
+  margin: 1em 0;
+}
+
+.reader-body a {
+  color: var(--orange-yellow-crayola);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: var(--transition-1);
+}
+
+.reader-body a:hover {
+  color: var(--vegas-gold);
+}
+
+.reader-body strong {
+  color: var(--white-1);
+  font-weight: var(--fw-600);
+}
+
+.reader-body ul,
+.reader-body ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
+
+.reader-body ul { list-style: disc; }
+.reader-body ol { list-style: decimal; }
+
+.reader-body li {
+  margin: 0.4em 0;
+  line-height: 1.8;
+}
+
+.reader-body blockquote {
+  margin: 1.2em 0;
+  padding: 0.6em 1em;
+  border-left: 3px solid var(--orange-yellow-crayola);
+  background: hsla(45, 100%, 72%, 0.05);
+  color: var(--light-gray-70);
+  border-radius: 0 8px 8px 0;
+}
+
+.reader-body blockquote p { margin: 0.3em 0; }
+
+.reader-body img {
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 1.2em 0;
+  border: 1px solid hsla(0, 0%, 25%, 0.4);
+}
+
+.reader-body hr {
+  border: none;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.4);
+  margin: 2em 0;
+}
+
+.reader-body code {
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 0.88em;
+  background: hsla(0, 0%, 22%, 0.6);
+  color: var(--orange-yellow-crayola);
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+
+.reader-body pre {
+  position: relative;
+  margin: 1.4em 0;
+  padding: 16px 18px;
+  background: hsl(0, 0%, 9%);
+  border: 1px solid hsla(0, 0%, 25%, 0.4);
+  border-radius: 10px;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+.reader-body pre code {
+  display: block;
+  background: none;
+  color: var(--light-gray);
+  padding: 0;
+  font-size: 13px;
+}
+
+.reader-code-lang {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 11px;
+  color: hsla(0, 0%, 84%, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reader-code-copy {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--light-gray-70);
+  background: hsla(0, 0%, 22%, 0.6);
+  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-1);
+}
+
+.reader-code-copy:hover {
+  color: var(--orange-yellow-crayola);
+  border-color: var(--orange-yellow-crayola);
+}
+
+.reader-body table {
+  width: 100%;
+  margin: 1.2em 0;
+  border-collapse: collapse;
+  font-size: var(--fs-6);
+}
+
+.reader-body th,
+.reader-body td {
+  padding: 8px 12px;
+  border: 1px solid hsla(0, 0%, 25%, 0.4);
+  text-align: left;
+}
+
+.reader-body th {
+  background: hsla(0, 0%, 22%, 0.5);
+  color: var(--white-1);
+  font-weight: var(--fw-600);
+}
+
+/* ---------- 页脚 ---------- */
+.reader-foot {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
+  text-align: center;
+}
+
+.reader-foot p {
+  color: var(--light-gray-70);
+  font-size: var(--fs-6);
+  margin-bottom: 16px;
+}
+
+.reader-btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 8px;
+  background: var(--orange-yellow-crayola);
+  color: hsl(240, 2%, 13%);
+  font-weight: var(--fw-600);
+  font-size: var(--fs-6);
+  transition: var(--transition-1);
+}
+
+.reader-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ---------- 加载 / 错误态 ---------- */
+.reader-loading {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--light-gray-70);
+}
+
+.reader-spinner {
+  display: block;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 16px;
+  border: 3px solid hsla(0, 0%, 25%, 0.5);
+  border-top-color: var(--orange-yellow-crayola);
+  border-radius: 50%;
+  animation: reader-spin 0.8s linear infinite;
+}
+
+@keyframes reader-spin {
+  to { transform: rotate(360deg); }
+}
+
+.reader-error {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--light-gray-70);
+}
+
+.reader-error ion-icon {
+  font-size: 48px;
+  color: var(--bittersweet-shimmer);
+  margin: 0 auto 16px;
+}
+
+.reader-error p {
+  margin-bottom: 20px;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 480px) {
+  .reader-content {
+    padding: 24px 18px;
+  }
+
+  .reader-title {
+    font-size: 23px;
+  }
+}

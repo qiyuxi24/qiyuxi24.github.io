@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>佀佳超 | 同州禹斋</title>
+    <link>https://qiyuxi24.github.io</link>
+    <description>AI 应用开发者 · 西工大在读 · 把想法变成能跑的东西</description>
+    <language>zh-CN</language>
+    <atom:link href="https://qiyuxi24.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>Thu, 20 Aug 2026 14:23:35 GMT</lastBuildDate>
+    <generator>build-feed.mjs</generator>
+  <item>
+    <title>不一样的普通人：从标签到锚点</title>
+    <link>https://qiyuxi24.github.io/reader.html?slug=ordinary-people</link>
+    <guid isPermaLink="false">ordinary-people</guid>
+    <pubDate>Thu, 25 Jun 2026 00:00:00 GMT</pubDate>
+    <description>我们既渴望与众不同，又不想承认自己是七十亿分之一。</description>
+    <category>随笔</category>
+  </item>
+  <item>
+    <title>男女对立：一场所有人都输的战争</title>
+    <link>https://qiyuxi24.github.io/reader.html?slug=gender-war</link>
+    <guid isPermaLink="false">gender-war</guid>
+    <pubDate>Sat, 20 Jun 2026 00:00:00 GMT</pubDate>
+    <description>性别议题已经从「讨论问题」变成「表演愤怒」，没有人赢只有伤。</description>
+    <category>随笔</category>
+  </item>
+  <item>
+    <title>技术不是中立的：短视频的阶级压迫性</title>
+    <link>https://qiyuxi24.github.io/reader.html?slug=tech-is-not-neutral</link>
+    <guid isPermaLink="false">tech-is-not-neutral</guid>
+    <pubDate>Mon, 15 Jun 2026 00:00:00 GMT</pubDate>
+    <description>技术有倾向，短视频的倾向是阶级压迫。</description>
+    <category>随笔</category>
+  </item>
+  </channel>
+</rss>

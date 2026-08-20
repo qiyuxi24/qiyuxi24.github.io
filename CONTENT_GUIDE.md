@@ -206,3 +206,78 @@ python -m http.server 8000
 ## 备份说明
 
 旧的 Jekyll（Academic Pages）模板内容已备份到 **`_legacy_jekyll/`** 目录，如果你不需要可以删除该目录；需要时也可从中找回旧内容。
+
+---
+
+## 8. 博客 + 项目工作流（Markdown 驱动）
+
+主页的文章/项目除了能手动改 `index.html`，还支持**用 Markdown 写、脚本一键管理**。
+
+### 8.1 写一篇新文章
+
+```bash
+node scripts/new-post.mjs "我的文章标题" --category 技术
+```
+
+这会在 `content/posts/` 生成一个带 front-matter 的 `.md` 模板，并自动更新 `content/posts/index.json`。
+
+打开生成的 `.md`，改 front-matter（title/summary/tags 等）+ 写正文（Markdown），保存即可。
+
+> 💡 标题是中文时需手动指定 `--slug`（英文小写连字符），如：
+> `node scripts/new-post.mjs "从零实现CNN" --slug cnn-from-scratch`
+
+### 8.2 发一个新项目
+
+```bash
+node scripts/new-project.mjs "项目名" --repo https://github.com/qiyuxi24/xx --demo https://...
+```
+
+会在 `content/projects/` 生成项目模板 + 更新 `content/projects/index.json`。
+
+### 8.3 更新清单 + RSS
+
+手写/修改过 Markdown 后，运行：
+
+```bash
+node scripts/build-index.mjs   # 重建文章/项目清单 index.json
+node scripts/build-feed.mjs    # 从清单生成 feed.xml（RSS 订阅）
+```
+
+> 需要 Node.js（任何版本，无需 npm install，纯内置模块）。
+
+### 8.4 文章怎么在线上展示
+
+文章渲染页是 `reader.html`，通过 URL 参数定位：
+```
+https://qiyuxi24.github.io/reader.html?slug=tech-is-not-neutral
+```
+主页博客卡片点进去会自动跳到对应文章。新写的文章把卡片 `href` 改成 `./reader.html?slug=你的slug` 即可。
+
+### 8.5 front-matter 字段说明
+
+| 字段 | 说明 |
+|------|------|
+| `title` | 标题 |
+| `slug` | URL 标识（英文小写连字符），唯一 |
+| `date` | 日期 YYYY-MM-DD |
+| `category` | 分类（技术/随笔/项目/学习） |
+| `tags` | 标签数组 `[a, b]` |
+| `summary` | 摘要（卡片/列表/RSS 用） |
+| `cover` | 封面图路径 |
+| `repo` / `demo` | 仅项目用：GitHub 仓库 / 在线 Demo |
+| `published` | `false` 则不显示在列表和 RSS |
+
+### 8.6 站点访问统计（不蒜子）
+
+已内置不蒜子纯前端统计：
+- 侧边栏底部显示"本站累计 N 次访问"
+- 文章阅读页自动统计
+
+无需配置，线上自动生效。
+
+### 8.7 GitHub 动态数据
+
+- **项目卡片**：`index.html` 里项目 `<li>` 加 `data-github-repo="仓库名"`，就会自动显示 star/fork/语言
+- **关于页**："GitHub 足迹"区块显示公开仓库数 / 关注者 / 累计 Star / 常用语言占比
+
+数据来自 GitHub 公开 API，结果缓存 1 小时。请求失败时静默保留静态内容，不影响页面。

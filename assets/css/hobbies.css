@@ -1,0 +1,509 @@
+/*-----------------------------------*\
+  #hobbies.css — 爱好页
+  设计语言与主页一致：暗色 + 金色点缀 + 极简
+\*-----------------------------------*/
+
+/* 兜底背景（粒子画布为空时使用） */
+body {
+  background: hsl(240, 2%, 13%);
+  color: var(--light-gray);
+  font-family: var(--ff-poppins);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+}
+
+.hobbies-main {
+  position: relative;
+  z-index: 2;
+  display: block;          /* 覆盖 style.css 大屏 main { display:flex } */
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 20px 90px;
+}
+
+/* ---------- 顶部工具栏 ---------- */
+.hobbies-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 20px;
+}
+
+.hobbies-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--light-gray-70);
+  font-size: var(--fs-5);
+  font-weight: var(--fw-500);
+  transition: var(--transition-1);
+}
+
+.hobbies-back:hover {
+  color: var(--orange-yellow-crayola);
+}
+
+.hobbies-back ion-icon {
+  font-size: 20px;
+}
+
+.hobbies-brand {
+  color: var(--light-gray-70);
+  font-size: var(--fs-7);
+  letter-spacing: 0.05em;
+}
+
+/* ---------- 页面标题 ---------- */
+.hobbies-head {
+  padding: 16px 0 8px;
+}
+
+.hobbies-title {
+  font-size: 40px;
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+  letter-spacing: -0.02em;
+}
+
+.hobbies-subtitle {
+  margin-top: 8px;
+  color: var(--light-gray-70);
+  font-size: var(--fs-5);
+}
+
+/* ---------- 精神坐标引言 ---------- */
+.hobbies-intro {
+  margin-top: 24px;
+  padding: 28px 26px;
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 16px;
+  background: var(--bg-gradient-jet);
+  box-shadow: var(--shadow-3);
+}
+
+.hobbies-intro-quote {
+  font-size: 20px;
+  font-weight: var(--fw-500);
+  color: var(--orange-yellow-crayola);
+  font-style: italic;
+}
+
+.hobbies-intro-text {
+  margin-top: 12px;
+  color: var(--light-gray);
+  font-size: var(--fs-4);
+}
+
+.hobbies-intro-text strong {
+  color: var(--white-1);
+  font-weight: var(--fw-600);
+}
+
+/* ---------- 板块导航 ---------- */
+.hobbies-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 26px 0 8px;
+  position: sticky;
+  top: 0;
+  padding: 12px 0;
+  background: linear-gradient(to bottom, hsl(240, 2%, 13%) 85%, transparent);
+  z-index: 5;
+}
+
+.hobbies-nav-item {
+  padding: 7px 16px;
+  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  border-radius: 999px;
+  font-size: var(--fs-6);
+  color: var(--light-gray-70);
+  transition: var(--transition-1);
+}
+
+.hobbies-nav-item:hover {
+  color: var(--orange-yellow-crayola);
+  border-color: hsla(45, 100%, 72%, 0.4);
+  transform: translateY(-1px);
+}
+
+.hobbies-nav-item.is-active {
+  color: hsl(240, 2%, 13%);
+  background: var(--orange-yellow-crayola);
+  border-color: var(--orange-yellow-crayola);
+  font-weight: var(--fw-600);
+}
+
+/* ---------- 板块 ---------- */
+.hobbies-block {
+  margin-top: 42px;
+}
+
+.hobbies-block-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+  padding-bottom: 12px;
+  border-bottom: 1px solid hsla(0, 0%, 25%, 0.35);
+  position: relative;
+  padding-left: 16px;
+}
+
+.hobbies-block-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 22px;
+  background: var(--orange-yellow-crayola);
+  border-radius: 2px;
+}
+
+.hobbies-block-desc {
+  margin-top: 10px;
+  color: var(--light-gray-70);
+  font-size: var(--fs-5);
+}
+
+/* ---------- 卡片网格 ---------- */
+.hobbies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.hobby-card {
+  padding: 22px 20px;
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 14px;
+  background: var(--bg-gradient-jet);
+  transition: var(--transition-2);
+}
+
+.hobby-card:hover {
+  transform: translateY(-3px);
+  border-color: hsla(45, 100%, 72%, 0.35);
+  box-shadow: var(--shadow-3);
+}
+
+.hobby-card-title {
+  font-size: var(--fs-3);
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+}
+
+.hobby-card-text {
+  margin-top: 10px;
+  font-size: var(--fs-6);
+  color: var(--light-gray-70);
+  line-height: 1.8;
+}
+
+.hobby-card-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: var(--fs-7);
+  color: var(--orange-yellow-crayola);
+  transition: var(--transition-1);
+}
+
+.hobby-card-link:hover {
+  color: var(--vegas-gold);
+}
+
+/* ---------- 页脚 ---------- */
+.hobbies-foot {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
+  text-align: center;
+}
+
+.hobbies-foot p {
+  color: var(--light-gray-70);
+  font-size: var(--fs-6);
+  margin-bottom: 18px;
+}
+
+.hobbies-btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 8px;
+  background: var(--orange-yellow-crayola);
+  color: hsl(240, 2%, 13%);
+  font-weight: var(--fw-600);
+  font-size: var(--fs-6);
+  transition: var(--transition-1);
+}
+
+.hobbies-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ---------- 板块淡入动画 ---------- */
+/* 默认可见（无 JS 也能正常显示）；JS 启用后由 is-visible 触发淡入 */
+.hobbies-block {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+body.js-hobbies .hobbies-block {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+body.js-hobbies .hobbies-block.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/*-----------------------------------*\
+  #资源管理器风格树（阅读等板块）
+  极简风：无 emoji 图标，箭头用 CSS 绘制
+\*-----------------------------------*/
+
+/* 搜索框 */
+.tree-search-wrap {
+  padding: 14px 16px;
+  border-bottom: 1px solid hsla(0, 0%, 25%, 0.3);
+}
+
+.tree-search-input {
+  width: 100%;
+  padding: 9px 14px;
+  background: hsl(240, 2%, 8%);
+  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  border-radius: 8px;
+  color: var(--white-1);
+  font-family: var(--ff-poppins);
+  font-size: var(--fs-6);
+  outline: none;
+  transition: border-color var(--transition-1);
+}
+
+.tree-search-input::placeholder {
+  color: hsla(0, 0%, 84%, 0.4);
+}
+
+.tree-search-input:focus {
+  border-color: hsla(45, 100%, 72%, 0.5);
+}
+
+.tree {
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 14px;
+  background: hsl(240, 2%, 11%);
+  overflow: hidden;
+}
+
+/* 根：每个大分类（文件夹） */
+.tree-folder {
+  border-bottom: 1px solid hsla(0, 0%, 25%, 0.15);
+}
+
+.tree-folder:last-child {
+  border-bottom: none;
+}
+
+/* 文件夹头（可点击展开） */
+.tree-folder-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: background var(--transition-1);
+}
+
+.tree-folder-head:hover {
+  background: hsla(0, 0%, 100%, 0.04);
+}
+
+/* 展开箭头：CSS 绘制的小三角 */
+.tree-arrow {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.tree-arrow::before,
+.tree-arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 1.5px;
+  background: var(--light-gray-70);
+  border-radius: 1px;
+}
+
+.tree-arrow::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+  transform-origin: center;
+}
+
+.tree-arrow::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+  transform-origin: center;
+}
+
+.tree-folder.open .tree-arrow {
+  transform: rotate(90deg);
+}
+
+.tree-folder-name {
+  flex: 1;
+  text-align: left;
+  font-size: var(--fs-5);
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+}
+
+/* 文件夹内容（默认收起） */
+.tree-folder-content {
+  display: none;
+}
+
+.tree-folder.open .tree-folder-content {
+  display: block;
+}
+
+/* 子项：书/叶子（纯文字，hover 金色竖线） */
+.tree-item {
+  position: relative;
+  padding: 9px 18px 9px 52px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.12);
+  font-size: var(--fs-6);
+  color: var(--light-gray);
+  transition: background var(--transition-1), color var(--transition-1);
+}
+
+.tree-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background var(--transition-1);
+}
+
+.tree-item:hover {
+  background: hsla(0, 0%, 100%, 0.02);
+  color: var(--white-1);
+}
+
+.tree-item:hover::before {
+  background: var(--orange-yellow-crayola);
+}
+
+.tree-item-title {
+  display: inline;
+}
+
+/* 精神导师子项 */
+.tree-mentor {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 18px 12px 52px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.12);
+}
+
+.tree-mentor-title {
+  font-size: var(--fs-6);
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+}
+
+.tree-mentor-meta {
+  font-size: var(--fs-7);
+  color: var(--orange-yellow-crayola);
+}
+
+.tree-mentor-note {
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+}
+
+/* 精选书目子项（可点击展开感想） */
+.tree-featured {
+  display: block;
+  padding: 12px 18px 12px 52px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.12);
+  cursor: pointer;
+  transition: background var(--transition-1);
+}
+
+.tree-featured:hover {
+  background: hsla(0, 0%, 100%, 0.02);
+}
+
+.tree-featured-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tree-featured-head .tree-arrow {
+  transform: rotate(90deg); /* 收起时 + 号 */
+}
+
+.tree-featured.open .tree-arrow {
+  transform: rotate(0deg); /* 展开时变横线 */
+}
+
+.tree-featured-title {
+  font-size: var(--fs-6);
+  font-weight: var(--fw-600);
+  color: var(--white-1);
+}
+
+.tree-featured-meta {
+  font-size: var(--fs-8);
+  color: var(--light-gray-70);
+  margin-left: auto;
+}
+
+.tree-featured-note {
+  display: none;
+  margin-top: 8px;
+  padding-left: 18px;
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+  line-height: 1.8;
+}
+
+.tree-featured.open .tree-featured-note {
+  display: block;
+}
+
+/* 单卡片网格（如阅读板块下的播客卡片） */
+.hobbies-grid--single {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.hobbies-grid--single .hobby-card:first-child:nth-last-child(1) {
+  grid-column: 1 / -1;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 600px) {
+  .hobbies-grid { grid-template-columns: 1fr; }
+  .hobbies-grid--single { grid-template-columns: 1fr; }
+  .hobbies-title { font-size: 32px; }
+}
+

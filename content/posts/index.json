@@ -1,0 +1,42 @@
+[
+  {
+    "title": "不一样的普通人：从标签到锚点",
+    "slug": "ordinary-people",
+    "date": "2026-06-25",
+    "category": "随笔",
+    "tags": [
+      "自我认知"
+    ],
+    "summary": "我们既渴望与众不同，又不想承认自己是七十亿分之一。",
+    "cover": "./assets/images/blog-3.jpg",
+    "published": true,
+    "file": "ordinary-people.md"
+  },
+  {
+    "title": "男女对立：一场所有人都输的战争",
+    "slug": "gender-war",
+    "date": "2026-06-20",
+    "category": "随笔",
+    "tags": [
+      "社会观察"
+    ],
+    "summary": "性别议题已经从「讨论问题」变成「表演愤怒」，没有人赢只有伤。",
+    "cover": "./assets/images/blog-2.jpg",
+    "published": true,
+    "file": "gender-war.md"
+  },
+  {
+    "title": "技术不是中立的：短视频的阶级压迫性",
+    "slug": "tech-is-not-neutral",
+    "date": "2026-06-15",
+    "category": "随笔",
+    "tags": [
+      "技术批判",
+      "社会"
+    ],
+    "summary": "技术有倾向，短视频的倾向是阶级压迫。",
+    "cover": "./assets/images/blog-1.jpg",
+    "published": true,
+    "file": "tech-is-not-neutral.md"
+  }
+]

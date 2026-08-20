@@ -2772,3 +2772,247 @@ body.tree-mode #particles-canvas {
   .tree-search { width: 120px; }
   .tree-modal-card { width: calc(100vw - 28px); }
 }
+
+/*-----------------------------------*\
+  #GITHUB STATS（项目卡片 + 足迹总览）
+\*-----------------------------------*/
+
+/* 项目卡片底部的仓库数据 */
+.github-repo-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: var(--fs-8);
+}
+
+.gh-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: hsla(0, 0%, 100%, 0.05);
+  border: 1px solid hsla(0, 0%, 100%, 0.08);
+  color: var(--light-gray-70);
+  line-height: 1.4;
+}
+
+.gh-stat.gh-lang {
+  color: var(--orange-yellow-crayola);
+  border-color: hsla(45, 100%, 72%, 0.25);
+}
+
+.gh-stat.gh-loading {
+  color: hsla(0, 0%, 84%, 0.4);
+}
+
+.gh-stat.gh-failed {
+  display: none;
+}
+
+/* 关于页的 GitHub 足迹总览 */
+.github-overview-section {
+  margin-top: 30px;
+}
+
+.github-overview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.gh-overview-placeholder {
+  grid-column: 1 / -1;
+  color: var(--light-gray-70);
+  font-size: var(--fs-6);
+  text-align: center;
+  padding: 20px;
+  border: 1px dashed hsla(0, 0%, 25%, 0.5);
+  border-radius: 10px;
+}
+
+.gh-overview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  background: var(--bg-gradient-jet);
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.gh-overview-value {
+  font-size: 24px;
+  font-weight: var(--fw-600);
+  color: var(--orange-yellow-crayola);
+}
+
+.gh-overview-label {
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+}
+
+/* 语言占比条 */
+.gh-overview-langs {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+
+.gh-lang-track {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: hsla(0, 0%, 22%, 0.6);
+}
+
+.gh-lang-bar {
+  height: 100%;
+}
+
+@media (max-width: 480px) {
+  .github-overview { grid-template-columns: repeat(2, 1fr); }
+}
+
+/*-----------------------------------*\
+  #BLOG 订阅条 + 站点访问统计
+\*-----------------------------------*/
+
+.blog-subscribe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding: 14px 18px;
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 12px;
+  background: var(--bg-gradient-jet);
+}
+
+.blog-subscribe-text {
+  font-size: var(--fs-6);
+  color: var(--light-gray-70);
+}
+
+.blog-subscribe-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--orange-yellow-crayola);
+  color: hsl(240, 2%, 13%);
+  font-size: var(--fs-6);
+  font-weight: var(--fw-600);
+  transition: var(--transition-1);
+}
+
+.blog-subscribe-link:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.blog-subscribe-link ion-icon {
+  font-size: 16px;
+}
+
+/* 站点访问统计（侧边栏底部） */
+.site-visits {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
+  font-size: var(--fs-8);
+  color: var(--light-gray-70);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.site-visits .busuanzi-value {
+  color: var(--orange-yellow-crayola);
+  font-weight: var(--fw-600);
+}
+
+/* 导航栏外部链接（跳转到独立页面，如"爱好"） */
+.navbar-link-ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.navbar-link-ext::after {
+  content: "↗";
+  font-size: 0.85em;
+  opacity: 0.6;
+  transition: var(--transition-1);
+}
+
+.navbar-link-ext:hover::after {
+  opacity: 1;
+}
+
+/*-----------------------------------*\
+  #联系页（去地图，Email + QQ 卡片）
+\*-----------------------------------*/
+
+.contact-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.contact-quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 22px 16px;
+  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-radius: 14px;
+  background: var(--bg-gradient-jet);
+  text-align: center;
+  transition: var(--transition-2);
+}
+
+.contact-quick-card:hover {
+  transform: translateY(-3px);
+  border-color: hsla(45, 100%, 72%, 0.45);
+  box-shadow: var(--shadow-3);
+}
+
+.contact-quick-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: hsla(45, 100%, 72%, 0.12);
+  color: var(--orange-yellow-crayola);
+  font-size: 22px;
+}
+
+.contact-quick-label {
+  font-size: var(--fs-7);
+  color: var(--light-gray-70);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.contact-quick-value {
+  font-size: var(--fs-5);
+  font-weight: var(--fw-500);
+  color: var(--white-1);
+  word-break: break-all;
+}
+
+@media (max-width: 480px) {
+  .contact-quick-grid { grid-template-columns: 1fr; }
+}
