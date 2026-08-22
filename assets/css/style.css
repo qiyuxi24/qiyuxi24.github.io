@@ -2923,6 +2923,61 @@ body.tree-mode #particles-canvas {
 }
 
 /* 站点访问统计（侧边栏底部） */
+/* 侧边栏语言切换滑块（中 / EN） */
+.site-lang-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 140px;
+  height: 36px;
+  margin: 18px auto 0;
+  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  border-radius: 999px;
+  background: hsl(240, 2%, 15%);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: var(--transition-1);
+}
+
+.site-lang-toggle:focus-visible {
+  border-color: var(--orange-yellow-crayola);
+  box-shadow: 0 0 0 3px hsla(45, 100%, 72%, 0.12);
+}
+
+.site-lang-toggle .lang-thumb {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: calc(50% - 4px);
+  height: 26px;
+  border-radius: 999px;
+  background: var(--orange-yellow-crayola);
+  box-shadow: 0 4px 12px hsla(45, 100%, 72%, 0.3);
+  transition: transform var(--transition-2);
+}
+
+.site-lang-toggle[data-lang="en"] .lang-thumb {
+  transform: translateX(100%);
+}
+
+.site-lang-toggle .lang-option {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  text-align: center;
+  font-size: var(--fs-7);
+  font-weight: var(--fw-500);
+  color: var(--light-gray-70);
+  transition: color var(--transition-1);
+}
+
+.site-lang-toggle[data-lang="zh"] .lang-option--zh,
+.site-lang-toggle[data-lang="en"] .lang-option--en {
+  color: var(--eerie-black-1);
+  font-weight: var(--fw-600);
+}
+
 .site-visits {
   margin-top: 18px;
   padding-top: 14px;

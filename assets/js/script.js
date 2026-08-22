@@ -28,10 +28,11 @@ select.addEventListener("click", function () { elementToggleFunc(this); });
 for (let i = 0; i < selectItems.length; i++) {
   selectItems[i].addEventListener("click", function () {
 
-    let selectedValue = this.innerText.toLowerCase();
+    // 用稳定的 data-filter-key 匹配（显示文本可被翻译）
+    let selectedKey = this.dataset.filterKey || this.innerText.toLowerCase();
     selectValue.innerText = this.innerText;
     elementToggleFunc(select);
-    filterFunc(selectedValue);
+    filterFunc(selectedKey);
 
   });
 }
@@ -39,13 +40,14 @@ for (let i = 0; i < selectItems.length; i++) {
 // filter variables
 const filterItems = document.querySelectorAll("[data-filter-item]");
 
-const filterFunc = function (selectedValue) {
+// filterFunc 用 data-category-key 匹配（与显示文本解耦，翻译不影响筛选）
+const filterFunc = function (selectedKey) {
 
   for (let i = 0; i < filterItems.length; i++) {
 
-    if (selectedValue === "all") {
+    if (selectedKey === "all") {
       filterItems[i].classList.add("active");
-    } else if (selectedValue === filterItems[i].dataset.category) {
+    } else if (selectedKey === (filterItems[i].dataset.categoryKey || filterItems[i].dataset.category)) {
       filterItems[i].classList.add("active");
     } else {
       filterItems[i].classList.remove("active");
@@ -62,9 +64,9 @@ for (let i = 0; i < filterBtn.length; i++) {
 
   filterBtn[i].addEventListener("click", function () {
 
-    let selectedValue = this.innerText.toLowerCase();
+    let selectedKey = this.dataset.filterKey || this.innerText.toLowerCase();
     selectValue.innerText = this.innerText;
-    filterFunc(selectedValue);
+    filterFunc(selectedKey);
 
     lastClickedBtn.classList.remove("active");
     this.classList.add("active");

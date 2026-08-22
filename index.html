@@ -56,6 +56,7 @@
     - custom css link
   -->
   <link rel="stylesheet" href="./assets/css/style.css">
+  <link rel="stylesheet" href="./assets/css/hobbies.css">
 
   <!--
     - google font link
@@ -99,7 +100,7 @@
         <div class="info-content">
           <h1 class="name" title="佀佳超">佀佳超</h1>
 
-          <p class="title">AI 应用开发者</p>
+          <p class="title" data-i18n="sidebar_title">AI 应用开发者</p>
 
           <!-- 打字机标语已禁用（保留死代码，恢复时取消下面注释）
           <p class="typewriter" id="typewriter"
@@ -111,7 +112,7 @@
         </div>
 
         <button class="info_more-btn" data-sidebar-btn>
-          <span>Show Contacts</span>
+          <span data-i18n="sidebar_contacts">Show Contacts</span>
 
           <ion-icon name="chevron-down"></ion-icon>
         </button>
@@ -131,7 +132,7 @@
             </div>
 
             <div class="contact-info">
-              <p class="contact-title">Email</p>
+              <p class="contact-title" data-i18n="contact_email">Email</p>
 
               <a href="mailto:wojtek@mail.nwpu.edu.cn" class="contact-link">wojtek@mail.nwpu.edu.cn</a>
             </div>
@@ -145,7 +146,7 @@
             </div>
 
             <div class="contact-info">
-              <p class="contact-title">Birthday</p>
+              <p class="contact-title" data-i18n="contact_birthday">Birthday</p>
 
               <time datetime="2006-11-16">Nov 16, 2006</time>
             </div>
@@ -159,7 +160,7 @@
             </div>
 
             <div class="contact-info">
-              <p class="contact-title">Location</p>
+              <p class="contact-title" data-i18n="contact_location">Location</p>
 
               <address>Xi'an, Shaanxi, China</address>
             </div>
@@ -234,9 +235,16 @@
 
         </ul>
 
+        <!-- 语言切换滑块（中 / EN） -->
+        <div class="site-lang-toggle" role="switch" aria-checked="false" tabindex="0" id="lang-toggle" aria-label="切换中英文">
+          <span class="lang-thumb"></span>
+          <span class="lang-option lang-option--zh">中文</span>
+          <span class="lang-option lang-option--en">EN</span>
+        </div>
+
         <!-- 站点访问统计（不蒜子） -->
         <div class="site-visits" aria-live="polite">
-          本站累计 <span class="busuanzi-value" id="busuanzi_value_site_pv">…</span> 次访问
+          <span data-i18n="site_visits">本站累计</span> <span class="busuanzi-value" id="busuanzi_value_site_pv">…</span> <span data-i18n="site_visits_times">次访问</span>
         </div>
 
       </div>
@@ -262,31 +270,31 @@
         <ul class="navbar-list">
 
           <li class="navbar-item">
-            <button class="navbar-link  active" data-nav-link data-nav-page="about">关于</button>
+            <button class="navbar-link  active" data-nav-link data-nav-page="about" data-i18n="nav_about">关于</button>
           </li>
 
           <li class="navbar-item">
-            <button class="navbar-link" data-nav-link data-nav-page="resume">简历</button>
+            <button class="navbar-link" data-nav-link data-nav-page="resume" data-i18n="nav_resume">简历</button>
           </li>
 
           <li class="navbar-item">
-            <button class="navbar-link" data-nav-link data-nav-page="portfolio">项目</button>
+            <button class="navbar-link" data-nav-link data-nav-page="portfolio" data-i18n="nav_portfolio">项目</button>
           </li>
 
           <li class="navbar-item">
-            <button class="navbar-link" data-nav-link data-nav-page="blog">文章</button>
+            <button class="navbar-link" data-nav-link data-nav-page="blog" data-i18n="nav_blog">文章</button>
           </li>
 
           <li class="navbar-item">
-            <button class="navbar-link" data-nav-link data-nav-page="tree">科技树</button>
+            <button class="navbar-link" data-nav-link data-nav-page="tree" data-i18n="nav_tree">科技树</button>
           </li>
 
           <li class="navbar-item">
-            <a href="./hobbies.html" class="navbar-link navbar-link-ext" title="爱好与生活">爱好</a>
+            <button class="navbar-link" data-nav-link data-nav-page="hobbies" data-i18n="nav_hobbies">爱好</button>
           </li>
 
           <li class="navbar-item">
-            <button class="navbar-link" data-nav-link data-nav-page="contact">联系</button>
+            <button class="navbar-link" data-nav-link data-nav-page="contact" data-i18n="nav_contact">联系</button>
           </li>
 
         </ul>
@@ -304,16 +312,16 @@
       <article class="about  active" data-page="about">
 
         <header>
-          <h2 class="h2 article-title">关于我</h2>
+          <h2 class="h2 article-title" data-i18n="about_title">关于我</h2>
         </header>
 
         <section class="about-text">
-          <p>
+          <p data-i18n="about_p1">
             西北工业大学人工智能专业在读，AI 应用方向开发者。
             做过桌面 AI IDE、AI 教育导师、快应用等项目，拿过 AIGC 大赛地区二等奖。
           </p>
 
-          <p>
+          <p data-i18n="about_p2">
             信奉「项目 + 文档 &gt; 看书」，正把每个想法变成能跑的东西。
           </p>
         </section>
@@ -325,7 +333,7 @@
 
         <section class="service">
 
-          <h3 class="h3 service-title">我在做什么</h3>
+          <h3 class="h3 service-title" data-i18n="about_service_title">我在做什么</h3>
 
           <ul class="service-list">
 
@@ -336,9 +344,9 @@
               </div>
 
               <div class="service-content-box">
-                <h4 class="h4 service-item-title">AI 应用开发</h4>
+                <h4 class="h4 service-item-title" data-i18n="service_ai_title">AI 应用开发</h4>
 
-                <p class="service-item-text">
+                <p class="service-item-text" data-i18n="service_ai_text">
                   LLM 调用、Agent、流式对话，从零搭过完整的 AI 教育系统。
                 </p>
               </div>
@@ -352,9 +360,9 @@
               </div>
 
               <div class="service-content-box">
-                <h4 class="h4 service-item-title">桌面应用</h4>
+                <h4 class="h4 service-item-title" data-i18n="service_app_title">桌面应用</h4>
 
-                <p class="service-item-text">
+                <p class="service-item-text" data-i18n="service_app_text">
                   Tauri v2 + Rust + React，做出 ~5MB 的端侧 AI IDE。
                 </p>
               </div>
@@ -368,9 +376,9 @@
               </div>
 
               <div class="service-content-box">
-                <h4 class="h4 service-item-title">全栈 Web</h4>
+                <h4 class="h4 service-item-title" data-i18n="service_web_title">全栈 Web</h4>
 
-                <p class="service-item-text">
+                <p class="service-item-text" data-i18n="service_web_text">
                   Vue 3 / FastAPI 前后端分离，JWT 认证、限流、SSE 流式全套。
                 </p>
               </div>
@@ -384,9 +392,9 @@
               </div>
 
               <div class="service-content-box">
-                <h4 class="h4 service-item-title">深度学习</h4>
+                <h4 class="h4 service-item-title" data-i18n="service_dl_title">深度学习</h4>
 
-                <p class="service-item-text">
+                <p class="service-item-text" data-i18n="service_dl_text">
                   纯 NumPy 手写神经网络与 CNN，MNIST 实战，正在上 PyTorch。
                 </p>
               </div>
@@ -399,9 +407,9 @@
 
         <!-- GitHub 动态数据总览（由 github-stats.js 拉取填充） -->
         <section class="github-overview-section">
-          <h3 class="h3 service-title">GitHub 足迹</h3>
+          <h3 class="h3 service-title" data-i18n="github_title">GitHub 足迹</h3>
           <div class="github-overview" id="github-overview" aria-live="polite">
-            <div class="gh-overview-placeholder">正在同步 GitHub 数据…</div>
+            <div class="gh-overview-placeholder" data-i18n="github_loading">正在同步 GitHub 数据…</div>
           </div>
         </section>
 
@@ -418,7 +426,7 @@
       <article class="resume" data-page="resume">
 
         <header>
-          <h2 class="h2 article-title">简历</h2>
+          <h2 class="h2 article-title" data-i18n="resume_title">简历</h2>
         </header>
 
         <section class="timeline">
@@ -428,18 +436,18 @@
               <ion-icon name="book-outline"></ion-icon>
             </div>
 
-            <h3 class="h3">教育经历</h3>
+            <h3 class="h3" data-i18n="resume_edu">教育经历</h3>
           </div>
 
           <ol class="timeline-list">
 
             <li class="timeline-item">
 
-              <h4 class="h4 timeline-item-title">西北工业大学 · 人工智能专业</h4>
+              <h4 class="h4 timeline-item-title" data-i18n="resume_edu_uni">西北工业大学 · 人工智能专业</h4>
 
               <span>2024 — 2028</span>
 
-              <p class="timeline-text">
+              <p class="timeline-text" data-i18n="resume_edu_desc">
                 西工大人工智能学院在读，AI 应用方向，主攻大模型应用、Agent 与桌面软件开发。
               </p>
 
@@ -456,18 +464,18 @@
               <ion-icon name="book-outline"></ion-icon>
             </div>
 
-            <h3 class="h3">项目经历</h3>
+            <h3 class="h3" data-i18n="resume_projects">项目经历</h3>
           </div>
 
           <ol class="timeline-list">
 
             <li class="timeline-item">
 
-              <h4 class="h4 timeline-item-title">Votek · 桌面 AI IDE</h4>
+              <h4 class="h4 timeline-item-title">Votek · <span data-i18n="resume_proj_votek">桌面 AI IDE</span></h4>
 
-              <span>2026.07 — 至今</span>
+              <span data-i18n="resume_proj_votek_dates">2026.07 — 至今</span>
 
-              <p class="timeline-text">
+              <p class="timeline-text" data-i18n="resume_proj_votek_desc">
                 Tauri v2 + React 19，流式对话、多模型一键切换、MCP 服务器管理、Skills 技能市场、内置浏览器，
                 安装包 ~5MB，纯端侧运行。
               </p>
@@ -476,11 +484,11 @@
 
             <li class="timeline-item">
 
-              <h4 class="h4 timeline-item-title">AI-tutor · AI 教育导师</h4>
+              <h4 class="h4 timeline-item-title">AI-tutor · <span data-i18n="resume_proj_tutor">AI 教育导师</span></h4>
 
-              <span>NWPU-CS 创新训练项目</span>
+              <span data-i18n="resume_proj_tutor_tag">NWPU-CS 创新训练项目</span>
 
-              <p class="timeline-text">
+              <p class="timeline-text" data-i18n="resume_proj_tutor_desc">
                 Vue 3 + FastAPI + 知识图谱，两阶段流式对话（Function Calling 后台执行），
                 JWT + bcrypt + IP 限流安全体系。
               </p>
@@ -493,7 +501,7 @@
 
         <section class="skill">
 
-          <h3 class="h3 skills-title">技能</h3>
+          <h3 class="h3 skills-title" data-i18n="resume_skills">技能</h3>
 
           <ul class="skills-list content-card">
 
@@ -566,7 +574,7 @@
       <article class="portfolio" data-page="portfolio">
 
         <header>
-          <h2 class="h2 article-title">项目</h2>
+          <h2 class="h2 article-title" data-i18n="portfolio_title">项目</h2>
         </header>
 
         <section class="projects">
@@ -574,19 +582,19 @@
           <ul class="filter-list">
 
             <li class="filter-item">
-              <button class="active" data-filter-btn>All</button>
+              <button class="active" data-filter-btn data-filter-key="all">All</button>
             </li>
 
             <li class="filter-item">
-              <button data-filter-btn>AI 应用</button>
+              <button data-filter-btn data-filter-key="ai" data-i18n="filter_ai">AI 应用</button>
             </li>
 
             <li class="filter-item">
-              <button data-filter-btn>桌面应用</button>
+              <button data-filter-btn data-filter-key="desktop" data-i18n="filter_desktop">桌面应用</button>
             </li>
 
             <li class="filter-item">
-              <button data-filter-btn>学习项目</button>
+              <button data-filter-btn data-filter-key="learn" data-i18n="filter_learn">学习项目</button>
             </li>
 
           </ul>
@@ -595,7 +603,7 @@
 
             <button class="filter-select" data-select>
 
-              <div class="select-value" data-selecct-value>选择分类</div>
+              <div class="select-value" data-selecct-value data-i18n="filter_select_placeholder">选择分类</div>
 
               <div class="select-icon">
                 <ion-icon name="chevron-down"></ion-icon>
@@ -606,19 +614,19 @@
             <ul class="select-list">
 
               <li class="select-item">
-                <button data-select-item>All</button>
+                <button data-select-item data-filter-key="all">All</button>
               </li>
 
               <li class="select-item">
-                <button data-select-item>AI 应用</button>
+                <button data-select-item data-filter-key="ai" data-i18n="filter_ai">AI 应用</button>
               </li>
 
               <li class="select-item">
-                <button data-select-item>桌面应用</button>
+                <button data-select-item data-filter-key="desktop" data-i18n="filter_desktop">桌面应用</button>
               </li>
 
               <li class="select-item">
-                <button data-select-item>学习项目</button>
+                <button data-select-item data-filter-key="learn" data-i18n="filter_learn">学习项目</button>
               </li>
 
             </ul>
@@ -627,7 +635,7 @@
 
           <ul class="project-list">
 
-            <li class="project-item  active" data-filter-item data-category="桌面应用" data-github-repo="Agent">
+            <li class="project-item  active" data-filter-item data-category="桌面应用" data-category-key="desktop" data-github-repo="Agent">
               <a href="https://github.com/qiyuxi24/Agent" target="_blank" rel="noopener noreferrer" aria-label="Votek · 端侧桌面 AI IDE（GitHub 仓库，新窗口打开）">
 
                 <figure class="project-img">
@@ -640,14 +648,14 @@
 
                 <h3 class="project-title">Votek</h3>
 
-                <p class="project-category">桌面应用 · 端侧桌面 AI IDE</p>
+                <p class="project-category" data-i18n="proj_votek_cat">桌面应用 · 端侧桌面 AI IDE</p>
 
                 <div class="github-repo-stats" aria-label="GitHub 仓库数据"></div>
 
               </a>
             </li>
 
-            <li class="project-item  active" data-filter-item data-category="ai 应用" data-github-repo="AI-tutor">
+            <li class="project-item  active" data-filter-item data-category="ai 应用" data-category-key="ai" data-github-repo="AI-tutor">
               <a href="https://github.com/qiyuxi24/AI-tutor" target="_blank" rel="noopener noreferrer" aria-label="AI-tutor · AI 教育导师（GitHub 仓库，新窗口打开）">
 
                 <figure class="project-img">
@@ -660,14 +668,14 @@
 
                 <h3 class="project-title">AI-tutor</h3>
 
-                <p class="project-category">AI 应用 · 知识图谱驱动的 AI 教育导师</p>
+                <p class="project-category" data-i18n="proj_tutor_cat">AI 应用 · 知识图谱驱动的 AI 教育导师</p>
 
                 <div class="github-repo-stats" aria-label="GitHub 仓库数据"></div>
 
               </a>
             </li>
 
-            <li class="project-item  active" data-filter-item data-category="ai 应用" data-github-repo="KinVoice">
+            <li class="project-item  active" data-filter-item data-category="ai 应用" data-category-key="ai" data-github-repo="KinVoice">
               <a href="https://github.com/qiyuxi24/KinVoice" target="_blank" rel="noopener noreferrer" aria-label="KinVoice 家语 AI · 陪伴式对话（GitHub 仓库，新窗口打开）">
 
                 <figure class="project-img">
@@ -680,14 +688,14 @@
 
                 <h3 class="project-title">家语 AI / KinVoice</h3>
 
-                <p class="project-category">AI 应用 · vivo+南开 AIGC 大赛地区二等奖</p>
+                <p class="project-category" data-i18n="proj_kinvoice_cat">AI 应用 · vivo+南开 AIGC 大赛地区二等奖</p>
 
                 <div class="github-repo-stats" aria-label="GitHub 仓库数据"></div>
 
               </a>
             </li>
 
-            <li class="project-item  active" data-filter-item data-category="学习项目" data-github-repo="CNN-learning">
+            <li class="project-item  active" data-filter-item data-category="学习项目" data-category-key="learn" data-github-repo="CNN-learning">
               <a href="https://github.com/qiyuxi24/CNN-learning" target="_blank" rel="noopener noreferrer" aria-label="CNN-learning · 从零实现神经网络（GitHub 仓库，新窗口打开）">
 
                 <figure class="project-img">
@@ -698,9 +706,9 @@
                   <img src="./assets/images/project-4.png" alt="CNN 项目截图" loading="lazy">
                 </figure>
 
-                <h3 class="project-title">从零实现神经网络与 CNN</h3>
+                <h3 class="project-title" data-i18n="proj_cnn_title">从零实现神经网络与 CNN</h3>
 
-                <p class="project-category">学习项目 · 纯 NumPy 手写，MNIST 实战</p>
+                <p class="project-category" data-i18n="proj_cnn_cat">学习项目 · 纯 NumPy 手写，MNIST 实战</p>
 
                 <div class="github-repo-stats" aria-label="GitHub 仓库数据"></div>
 
@@ -724,14 +732,14 @@
       <article class="blog" data-page="blog">
 
         <header>
-          <h2 class="h2 article-title">文章</h2>
+          <h2 class="h2 article-title" data-i18n="blog_title">文章</h2>
         </header>
 
         <div class="blog-subscribe">
-          <p class="blog-subscribe-text">用 RSS 订阅最新文章，不错过每一次更新。</p>
+          <p class="blog-subscribe-text" data-i18n="blog_subscribe_text">用 RSS 订阅最新文章，不错过每一次更新。</p>
           <a href="./feed.xml" class="blog-subscribe-link" target="_blank" rel="noopener noreferrer" title="RSS 订阅">
             <ion-icon name="radio-outline"></ion-icon>
-            <span>订阅 RSS</span>
+            <span data-i18n="blog_subscribe_btn">订阅 RSS</span>
           </a>
         </div>
 
@@ -749,16 +757,16 @@
                 <div class="blog-content">
 
                   <div class="blog-meta">
-                    <p class="blog-category">随笔</p>
+                    <p class="blog-category" data-i18n="blog_cat_essay">随笔</p>
 
                     <span class="dot"></span>
 
                     <time datetime="2026-06">Jun 2026</time>
                   </div>
 
-                  <h3 class="h3 blog-item-title">技术不是中立的：短视频的阶级压迫性</h3>
+                  <h3 class="h3 blog-item-title" data-i18n="blog1_title">技术不是中立的：短视频的阶级压迫性</h3>
 
-                  <p class="blog-text">
+                  <p class="blog-text" data-i18n="blog1_text">
                     技术有倾向，短视频的倾向是阶级压迫。
                   </p>
 
@@ -777,16 +785,16 @@
                 <div class="blog-content">
 
                   <div class="blog-meta">
-                    <p class="blog-category">随笔</p>
+                    <p class="blog-category" data-i18n="blog_cat_essay">随笔</p>
 
                     <span class="dot"></span>
 
                     <time datetime="2026-06">Jun 2026</time>
                   </div>
 
-                  <h3 class="h3 blog-item-title">男女对立：一场所有人都输的战争</h3>
+                  <h3 class="h3 blog-item-title" data-i18n="blog2_title">男女对立：一场所有人都输的战争</h3>
 
-                  <p class="blog-text">
+                  <p class="blog-text" data-i18n="blog2_text">
                     性别议题已经从「讨论问题」变成「表演愤怒」，没有人赢只有伤。
                   </p>
 
@@ -805,16 +813,16 @@
                 <div class="blog-content">
 
                   <div class="blog-meta">
-                    <p class="blog-category">随笔</p>
+                    <p class="blog-category" data-i18n="blog_cat_essay">随笔</p>
 
                     <span class="dot"></span>
 
                     <time datetime="2026-06">Jun 2026</time>
                   </div>
 
-                  <h3 class="h3 blog-item-title">不一样的普通人：从标签到锚点</h3>
+                  <h3 class="h3 blog-item-title" data-i18n="blog3_title">不一样的普通人：从标签到锚点</h3>
 
-                  <p class="blog-text">
+                  <p class="blog-text" data-i18n="blog3_text">
                     我们既渴望与众不同，又不想承认自己是七十亿分之一。
                   </p>
 
@@ -840,14 +848,14 @@
       <article class="contact" data-page="contact">
 
         <header>
-          <h2 class="h2 article-title">联系</h2>
+          <h2 class="h2 article-title" data-i18n="contact_title">联系</h2>
         </header>
 
         <section class="contact-form">
 
-          <h3 class="h3 form-title">联系我</h3>
+          <h3 class="h3 form-title" data-i18n="contact_form_title">联系我</h3>
 
-          <p class="contact-text">
+          <p class="contact-text" data-i18n="contact_text">
             欢迎交流 AI 应用、Agent、桌面开发或合作事宜。
             最快的方式是直接发邮件，我会在 1-2 个工作日内回复。
           </p>
@@ -869,6 +877,215 @@
 
       </article>
 
+
+
+      <!--
+        - #HOBBIES
+      -->
+
+      <article class="hobbies" data-page="hobbies">
+
+        <header>
+          <h2 class="h2 article-title" data-i18n="hobbies_title">爱好</h2>
+        </header>
+
+        <!-- 精神坐标引言 -->
+        <section class="hobbies-intro" data-hobbies-section="intro">
+          <p class="hobbies-intro-quote">
+            "读史使人明智，写作使人清醒。"
+          </p>
+          <p class="hobbies-intro-text">
+            精神导师是 <strong>帅健翔</strong>、<strong>林语堂</strong>、<strong>毛泽东</strong>、<strong>塔勒布</strong> 这一挂——
+            重思辨、重体系、重不确定性，这些也潜移默化地塑造了我的思维方式。
+          </p>
+        </section>
+
+        <!-- 板块导航（锚点跳转） -->
+        <nav class="hobbies-nav" aria-label="板块目录">
+          <a href="#reading" class="hobbies-nav-item">阅读</a>
+          <a href="#games" class="hobbies-nav-item">游戏</a>
+          <a href="#music" class="hobbies-nav-item">音乐</a>
+          <a href="#create" class="hobbies-nav-item">创作</a>
+          <a href="#sport" class="hobbies-nav-item">运动</a>
+          <a href="#record" class="hobbies-nav-item">知识记录</a>
+        </nav>
+
+        <!-- ========== 板块：阅读 ========== -->
+        <section class="hobbies-block" id="reading" data-hobbies-block>
+          <h2 class="hobbies-block-title">阅读</h2>
+          <p class="hobbies-block-desc">
+            历史、传记、哲学为主，量大且成体系。按主题分好了文件夹，点开一层层看。
+          </p>
+
+          <!-- 资源管理器风格树（由 hobbies.js 根据数据渲染） -->
+          <div class="tree" id="reading-tree" data-reading-tree>
+            <noscript>
+              <p class="hobbies-block-desc">（需要启用 JavaScript 才能查看可展开的书单树。书单涵盖历史、传记、哲学、心理、小说、经济、技术等，精神导师：帅健翔、林语堂、毛泽东、塔勒布。）</p>
+            </noscript>
+          </div>
+
+          <!-- 播客（爱好而非书单，单独一张卡片） -->
+          <div class="hobbies-grid hobbies-grid--single">
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">播客</h3>
+              <p class="hobby-card-text">
+                放松方式之一，也在考虑自己做一档。想聊的话题之一：二战。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== 板块：游戏 ========== -->
+        <section class="hobbies-block" id="games" data-hobbies-block>
+          <h2 class="hobbies-block-title">游戏</h2>
+          <p class="hobbies-block-desc">策略类为主，图的是历史沉浸，不是竞技。</p>
+
+          <div class="hobbies-grid">
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">HOI4 · 钢铁雄心4</h3>
+              <p class="hobby-card-text">
+                二战战略游戏。玩 5 小时腻了于是删了 —— 我管这叫"多巴胺代谢"。运营能力一般，玩的是历史沉浸。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">KARDS · 二战卡牌</h3>
+              <p class="hobby-card-text">
+                二战主题卡牌游戏，和 HOI4 一脉相承的历史情怀。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">CSGO</h3>
+              <p class="hobby-card-text">
+                150 小时，室友入坑才跟着玩的。竞技性作品，但我的重心始终在历史题材上。
+              </p>
+              <a class="hobby-card-link" href="https://steamcommunity.com/profiles/76561199513171599/" target="_blank" rel="noopener noreferrer">Steam 主页 ↗</a>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========== 板块：音乐 ========== -->
+        <section class="hobbies-block" id="music" data-hobbies-block>
+          <h2 class="hobbies-block-title">音乐</h2>
+          <p class="hobbies-block-desc">网易云重度用户，德语歌收藏是一大特色。</p>
+
+          <div class="hobbies-grid">
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">德语歌收藏</h3>
+              <p class="hobby-card-text">
+                和二战历史一脉相承的音乐品味。德语歌收藏是我的一个辨识度标签。
+              </p>
+              <a class="hobby-card-link" href="https://music.163.com/#/user/home?id=8729151050" target="_blank" rel="noopener noreferrer">网易云主页 ↗</a>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">钢琴</h3>
+              <p class="hobby-card-text">
+                正在啃《城南花已开》的左右手合并 —— 从单音到和声的一小步。
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========== 板块：创作 ========== -->
+        <section class="hobbies-block" id="create" data-hobbies-block>
+          <h2 class="hobbies-block-title">创作</h2>
+          <p class="hobbies-block-desc">输出创造是我的主战场。</p>
+
+          <div class="hobbies-grid">
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">写公众号 · 同州禹斋</h3>
+              <p class="hobby-card-text">
+                祛魅、社会观察这类思考型文章。把想法落成文字，是我表达的主阵地。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">调酒</h3>
+              <p class="hobby-card-text">
+                输出型爱好。目标清单上有一条：调一杯原创鸡尾酒并命名。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">调香</h3>
+              <p class="hobby-card-text">
+                自学的，不是玩票。下一步想摸专业调香师的原料库。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">写诗</h3>
+              <p class="hobby-card-text">
+                写过《山》，考虑投稿。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">Coding</h3>
+              <p class="hobby-card-text">
+                既是职业方向也是兴趣。GitHub 上有 11 个公开仓库，把每个想法变成能跑的东西。
+              </p>
+              <a class="hobby-card-link" href="https://github.com/qiyuxi24" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========== 板块：运动 ========== -->
+        <section class="hobbies-block" id="sport" data-hobbies-block>
+          <h2 class="hobbies-block-title">运动</h2>
+          <p class="hobbies-block-desc">动静之间，保持身体的在场。</p>
+
+          <div class="hobbies-grid">
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">羽毛球</h3>
+              <p class="hobby-card-text">常打的球类运动，节奏快、反应快。</p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">夜爬华山</h3>
+              <p class="hobby-card-text">
+                高中暑假两次，和同学，登南峰看日出。凌晨的群山和日出，是记忆里最亮的一笔。
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ========== 板块：知识记录 ========== -->
+        <section class="hobbies-block" id="record" data-hobbies-block>
+          <h2 class="hobbies-block-title">知识记录</h2>
+          <p class="hobbies-block-desc">写日记反思自己，还想把日记和对话电子化，搭一个"第二大脑"。</p>
+
+          <div class="hobbies-grid">
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">写日记 · 自我记录</h3>
+              <p class="hobby-card-text">
+                反思自己、记录轨迹。这不只是习惯，更是自我对话的方式。
+              </p>
+            </div>
+
+            <div class="hobby-card">
+              <h3 class="hobby-card-title">第二大脑 · RAG 项目</h3>
+              <p class="hobby-card-text">
+                想把日记和对话电子化，用 RAG 搭"第二大脑"。这已经不只是爱好了 —— 是项目雏形。
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+      </article>
+
     </div>
 
   </main>
@@ -886,9 +1103,9 @@
     <div class="tree-fullscreen-top">
       <button type="button" class="tree-exit-btn" data-tree-exit aria-label="返回">
         <ion-icon name="arrow-back"></ion-icon>
-        <span>返回</span>
+        <span data-i18n="tree_back">返回</span>
       </button>
-      <h2 class="tree-fullscreen-title">科技树</h2>
+      <h2 class="tree-fullscreen-title" data-i18n="nav_tree">科技树</h2>
     </div>
 
     <div class="tree-canvas-wrap tree-canvas-wrap--fullscreen">
@@ -897,7 +1114,7 @@
       <div class="tree-toolbar">
         <div class="tree-search">
           <ion-icon name="search-outline"></ion-icon>
-          <input type="text" id="tree-search-input" data-tree-search placeholder="搜索节点…" autocomplete="off">
+          <input type="text" id="tree-search-input" data-tree-search placeholder="搜索节点…" autocomplete="off" data-i18n-placeholder="tree_search_placeholder">
           <span class="tree-search-clear" data-tree-search-clear title="清空">&times;</span>
         </div>
         <button class="tree-tool-btn" data-tree-zoom="in" title="放大">
@@ -911,7 +1128,7 @@
         </button>
       </div>
 
-      <span class="tree-toolbar-hint">点击节点查看详情 · 滚轮缩放 · 拖拽平移</span>
+      <span class="tree-toolbar-hint" data-i18n="tree_hint">点击节点查看详情 · 滚轮缩放 · 拖拽平移</span>
 
       <div id="tree-canvas-fullscreen"></div>
       <div id="tree-tooltip-fullscreen" class="tree-tooltip"></div>
@@ -965,9 +1182,13 @@
   <!--
     - custom js link
   -->
+  <script src="./assets/js/i18n.js"></script>
+  <script src="./assets/js/i18n-app.js"></script>
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/effects.js"></script>
   <script src="./assets/js/github-stats.js"></script>
+  <script src="./assets/js/hobbies-data.js"></script>
+  <script src="./assets/js/hobbies.js"></script>
 
   <!-- 不蒜子站点访问统计（纯前端，无需后端） -->
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>

@@ -1,75 +1,7 @@
 /*-----------------------------------*\
-  #hobbies.css — 爱好页
+  #hobbies.css — 爱好 tab（嵌入 index.html 主内容区）
   设计语言与主页一致：暗色 + 金色点缀 + 极简
 \*-----------------------------------*/
-
-/* 兜底背景（粒子画布为空时使用） */
-body {
-  background: hsl(240, 2%, 13%);
-  color: var(--light-gray);
-  font-family: var(--ff-poppins);
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.7;
-}
-
-.hobbies-main {
-  position: relative;
-  z-index: 2;
-  display: block;          /* 覆盖 style.css 大屏 main { display:flex } */
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 24px 20px 90px;
-}
-
-/* ---------- 顶部工具栏 ---------- */
-.hobbies-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 0 20px;
-}
-
-.hobbies-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--light-gray-70);
-  font-size: var(--fs-5);
-  font-weight: var(--fw-500);
-  transition: var(--transition-1);
-}
-
-.hobbies-back:hover {
-  color: var(--orange-yellow-crayola);
-}
-
-.hobbies-back ion-icon {
-  font-size: 20px;
-}
-
-.hobbies-brand {
-  color: var(--light-gray-70);
-  font-size: var(--fs-7);
-  letter-spacing: 0.05em;
-}
-
-/* ---------- 页面标题 ---------- */
-.hobbies-head {
-  padding: 16px 0 8px;
-}
-
-.hobbies-title {
-  font-size: 40px;
-  font-weight: var(--fw-600);
-  color: var(--white-1);
-  letter-spacing: -0.02em;
-}
-
-.hobbies-subtitle {
-  margin-top: 8px;
-  color: var(--light-gray-70);
-  font-size: var(--fs-5);
-}
 
 /* ---------- 精神坐标引言 ---------- */
 .hobbies-intro {
@@ -108,7 +40,7 @@ body {
   position: sticky;
   top: 0;
   padding: 12px 0;
-  background: linear-gradient(to bottom, hsl(240, 2%, 13%) 85%, transparent);
+  background: linear-gradient(to bottom, var(--eerie-black-2) 85%, transparent);
   z-index: 5;
 }
 
@@ -215,36 +147,6 @@ body {
 
 .hobby-card-link:hover {
   color: var(--vegas-gold);
-}
-
-/* ---------- 页脚 ---------- */
-.hobbies-foot {
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
-  text-align: center;
-}
-
-.hobbies-foot p {
-  color: var(--light-gray-70);
-  font-size: var(--fs-6);
-  margin-bottom: 18px;
-}
-
-.hobbies-btn {
-  display: inline-block;
-  padding: 10px 24px;
-  border-radius: 8px;
-  background: var(--orange-yellow-crayola);
-  color: hsl(240, 2%, 13%);
-  font-weight: var(--fw-600);
-  font-size: var(--fs-6);
-  transition: var(--transition-1);
-}
-
-.hobbies-btn:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
 }
 
 /* ---------- 板块淡入动画 ---------- */
@@ -504,6 +406,4 @@ body.js-hobbies .hobbies-block.is-visible {
 @media (max-width: 600px) {
   .hobbies-grid { grid-template-columns: 1fr; }
   .hobbies-grid--single { grid-template-columns: 1fr; }
-  .hobbies-title { font-size: 32px; }
 }
-

@@ -1,0 +1,128 @@
+- main [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - figure [ref=e5]:
+        - img "佀佳超" [ref=e6]
+      - generic [ref=e7]:
+        - heading "佀佳超" [level=1] [ref=e8]
+        - paragraph [ref=e9]: AI 应用开发者
+    - generic [ref=e10]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - img "mail outline" [ref=e135]:
+            - img "Mail" [ref=e137]
+          - generic [ref=e15]:
+            - paragraph [ref=e16]: Email
+            - link "wojtek@mail.nwpu.edu.cn" [ref=e17] [cursor=pointer]:
+              - /url: mailto:wojtek@mail.nwpu.edu.cn
+        - listitem [ref=e18]:
+          - img "calendar outline" [ref=e140]:
+            - img "Calendar" [ref=e142]
+          - generic [ref=e20]:
+            - paragraph [ref=e21]: 生日
+            - time [ref=e22]: Nov 16, 2006
+        - listitem [ref=e23]:
+          - img "location outline" [ref=e154]:
+            - img "Location" [ref=e156]
+          - generic [ref=e25]:
+            - paragraph [ref=e26]: 位置
+            - generic [ref=e27]: Xi'an, Shaanxi, China
+      - list [ref=e29]:
+        - listitem [ref=e30]:
+          - link "GitHub 主页（新窗口打开）" [ref=e31] [cursor=pointer]:
+            - /url: https://github.com/qiyuxi24
+        - listitem [ref=e34]:
+          - link "发邮件给 wojtek@mail.nwpu.edu.cn" [ref=e35] [cursor=pointer]:
+            - /url: mailto:wojtek@mail.nwpu.edu.cn
+        - listitem [ref=e38]:
+          - link "哔哩哔哩主页（新窗口打开）" [ref=e39] [cursor=pointer]:
+            - /url: https://space.bilibili.com/2102911329
+        - listitem [ref=e42]:
+          - link "知乎主页（新窗口打开）" [ref=e43] [cursor=pointer]:
+            - /url: https://www.zhihu.com/people/hiver-18-23
+        - listitem [ref=e46]:
+          - link "网易云音乐主页（新窗口打开）" [ref=e47] [cursor=pointer]:
+            - /url: https://music.163.com/#/user/home?id=8729151050
+        - listitem [ref=e50]:
+          - link "抖音主页（新窗口打开）" [ref=e51] [cursor=pointer]:
+            - /url: https://www.douyin.com/user/MS4wLjABAAAAznpTdH31nF2ye81b0LprziOGq6phB8jlU54AZDjoVEmpRSnEYGc3XnhChsiJEMr1
+        - listitem [ref=e54]:
+          - link "掘金主页（新窗口打开）" [ref=e55] [cursor=pointer]:
+            - /url: https://juejin.cn/user/4091727127002512
+        - listitem [ref=e58]:
+          - link "Steam 主页（新窗口打开）" [ref=e59] [cursor=pointer]:
+            - /url: https://steamcommunity.com/profiles/76561199513171599/
+        - listitem [ref=e62]:
+          - link "LinkedIn 主页（链接待补）" [ref=e63] [cursor=pointer]:
+            - /url: "#"
+        - listitem [ref=e66]:
+          - link "YouTube 频道（新窗口打开）" [ref=e67] [cursor=pointer]:
+            - /url: https://www.youtube.com/@JiachaoSi
+      - switch "切换中英文" [ref=e70] [cursor=pointer]:
+        - generic [ref=e72]: 中文
+        - generic [ref=e73]: EN
+      - generic [ref=e74]:
+        - generic [ref=e75]: 本站累计
+        - generic [ref=e76]: …
+        - generic [ref=e77]: 次访问
+  - generic [ref=e78]:
+    - navigation [ref=e79]:
+      - list [ref=e80]:
+        - listitem [ref=e81]:
+          - button "关于" [ref=e82] [cursor=pointer]
+        - listitem [ref=e83]:
+          - button "简历" [ref=e84] [cursor=pointer]
+        - listitem [ref=e85]:
+          - button "项目" [ref=e86] [cursor=pointer]
+        - listitem [ref=e87]:
+          - button "文章" [ref=e88] [cursor=pointer]
+        - listitem [ref=e89]:
+          - button "科技树" [ref=e90] [cursor=pointer]
+        - listitem [ref=e91]:
+          - button "爱好" [ref=e92] [cursor=pointer]
+        - listitem [ref=e93]:
+          - button "联系" [ref=e94] [cursor=pointer]
+    - article [ref=e95]:
+      - heading "关于我" [level=2] [ref=e97]:
+        - generic [ref=e98]: 关
+        - generic [ref=e99]: 于
+        - generic [ref=e100]: 我
+      - generic [ref=e101]:
+        - paragraph [ref=e102]: 西北工业大学人工智能专业在读，AI 应用方向开发者。做过桌面 AI IDE、AI 教育导师、快应用等项目，拿过 AIGC 大赛地区二等奖。
+        - paragraph [ref=e103]: 信奉「项目 + 文档 > 看书」，正把每个想法变成能跑的东西。
+      - generic [ref=e104]:
+        - heading "我在做什么" [level=3] [ref=e105]
+        - list [ref=e106]:
+          - listitem [ref=e107]:
+            - img "AI 应用开发 icon" [ref=e109]
+            - generic [ref=e110]:
+              - heading "AI 应用开发" [level=4] [ref=e111]
+              - paragraph [ref=e112]: LLM 调用、Agent、流式对话，从零搭过完整的 AI 教育系统。
+          - listitem [ref=e113]:
+            - img "桌面应用 icon" [ref=e115]
+            - generic [ref=e116]:
+              - heading "桌面应用" [level=4] [ref=e117]
+              - paragraph [ref=e118]: Tauri v2 + Rust + React，做出 ~5MB 的端侧 AI IDE。
+          - listitem [ref=e119]:
+            - img "全栈 Web icon" [ref=e121]
+            - generic [ref=e122]:
+              - heading "全栈 Web" [level=4] [ref=e123]
+              - paragraph [ref=e124]: Vue 3 / FastAPI 前后端分离，JWT 认证、限流、SSE 流式全套。
+          - listitem [ref=e125]:
+            - img "深度学习 icon" [ref=e127]
+            - generic [ref=e128]:
+              - heading "深度学习" [level=4] [ref=e129]
+              - paragraph [ref=e130]: 纯 NumPy 手写神经网络与 CNN，MNIST 实战，正在上 PyTorch。
+      - generic [ref=e131]:
+        - heading "GitHub 足迹" [level=3] [ref=e132]
+        - generic [ref=e133]:
+          - generic [ref=e159]:
+            - generic [ref=e160]: "15"
+            - generic [ref=e161]: 公开仓库
+          - generic [ref=e162]:
+            - generic [ref=e163]: "2"
+            - generic [ref=e164]: 关注者
+          - generic [ref=e165]:
+            - generic [ref=e166]: "5"
+            - generic [ref=e167]: 累计 Star
+          - generic "常用语言" [ref=e168]

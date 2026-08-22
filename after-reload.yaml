@@ -1,0 +1,196 @@
+- main [ref=f1e2]:
+  - complementary [ref=f1e3]:
+    - generic:
+      - figure [ref=f1e4]:
+        - img "佀佳超" [ref=f1e5]
+      - generic [ref=f1e6]:
+        - heading "佀佳超" [level=1] [ref=f1e7]
+        - paragraph [ref=f1e8]: AI 应用开发者
+    - generic:
+      - list:
+        - listitem:
+          - img "mail outline" [ref=f1e10]:
+            - img "Mail" [ref=f1e12]
+          - generic:
+            - paragraph: Email
+            - link "wojtek@mail.nwpu.edu.cn":
+              - /url: mailto:wojtek@mail.nwpu.edu.cn
+        - listitem:
+          - img "calendar outline" [ref=f1e16]:
+            - img "Calendar" [ref=f1e18]
+          - generic:
+            - paragraph: 生日
+            - time: Nov 16, 2006
+        - listitem:
+          - img "location outline" [ref=f1e31]:
+            - img "Location" [ref=f1e33]
+          - generic:
+            - paragraph: 位置
+            - generic: Xi'an, Shaanxi, China
+      - list [ref=f1e36]:
+        - listitem [ref=f1e37]:
+          - link "GitHub 主页（新窗口打开）" [ref=f1e38] [cursor=pointer]:
+            - /url: https://github.com/qiyuxi24
+        - listitem [ref=f1e41]:
+          - link "发邮件给 wojtek@mail.nwpu.edu.cn" [ref=f1e42] [cursor=pointer]:
+            - /url: mailto:wojtek@mail.nwpu.edu.cn
+        - listitem [ref=f1e45]:
+          - link "哔哩哔哩主页（新窗口打开）" [ref=f1e46] [cursor=pointer]:
+            - /url: https://space.bilibili.com/2102911329
+        - listitem [ref=f1e49]:
+          - link "知乎主页（新窗口打开）" [ref=f1e50] [cursor=pointer]:
+            - /url: https://www.zhihu.com/people/hiver-18-23
+        - listitem [ref=f1e53]:
+          - link "网易云音乐主页（新窗口打开）" [ref=f1e54] [cursor=pointer]:
+            - /url: https://music.163.com/#/user/home?id=8729151050
+        - listitem [ref=f1e57]:
+          - link "抖音主页（新窗口打开）" [ref=f1e58] [cursor=pointer]:
+            - /url: https://www.douyin.com/user/MS4wLjABAAAAznpTdH31nF2ye81b0LprziOGq6phB8jlU54AZDjoVEmpRSnEYGc3XnhChsiJEMr1
+        - listitem [ref=f1e61]:
+          - link "掘金主页（新窗口打开）" [ref=f1e62] [cursor=pointer]:
+            - /url: https://juejin.cn/user/4091727127002512
+        - listitem [ref=f1e65]:
+          - link "Steam 主页（新窗口打开）" [ref=f1e66] [cursor=pointer]:
+            - /url: https://steamcommunity.com/profiles/76561199513171599/
+        - listitem [ref=f1e69]:
+          - link "LinkedIn 主页（链接待补）" [ref=f1e70] [cursor=pointer]:
+            - /url: "#"
+        - listitem [ref=f1e73]:
+          - link "YouTube 频道（新窗口打开）" [ref=f1e74] [cursor=pointer]:
+            - /url: https://www.youtube.com/@JiachaoSi
+      - switch "切换中英文" [ref=f1e77] [cursor=pointer]:
+        - generic [ref=f1e79]: 中文
+        - generic [ref=f1e80]: EN
+      - generic:
+        - generic: 本站累计
+        - generic: …
+        - generic: 次访问
+  - generic [ref=f1e81]:
+    - navigation [ref=f1e82]:
+      - list [ref=f1e83]:
+        - listitem [ref=f1e84]:
+          - button "关于" [ref=f1e85] [cursor=pointer]
+        - listitem [ref=f1e86]:
+          - button "简历" [ref=f1e87] [cursor=pointer]
+        - listitem [ref=f1e88]:
+          - button "项目" [ref=f1e89] [cursor=pointer]
+        - listitem [ref=f1e90]:
+          - button "文章" [ref=f1e91] [cursor=pointer]
+        - listitem [ref=f1e92]:
+          - button "科技树" [ref=f1e93] [cursor=pointer]
+        - listitem [ref=f1e94]:
+          - button "爱好" [ref=f1e95] [cursor=pointer]
+        - listitem [ref=f1e96]:
+          - button "联系" [ref=f1e97] [cursor=pointer]
+    - article [ref=f1e98]:
+      - heading "关于我" [level=2] [ref=f1e100]:
+        - generic [ref=f1e101]: 关
+        - generic [ref=f1e102]: 于
+        - generic [ref=f1e103]: 我
+      - generic [ref=f1e104]:
+        - paragraph [ref=f1e105]: 西北工业大学人工智能专业在读，AI 应用方向开发者。做过桌面 AI IDE、AI 教育导师、快应用等项目，拿过 AIGC 大赛地区二等奖。
+        - paragraph [ref=f1e106]: 信奉「项目 + 文档 > 看书」，正把每个想法变成能跑的东西。
+      - generic [ref=f1e107]:
+        - heading "我在做什么" [level=3] [ref=f1e108]
+        - list [ref=f1e109]:
+          - listitem [ref=f1e110]:
+            - img "AI 应用开发 icon" [ref=f1e112]
+            - generic [ref=f1e113]:
+              - heading "AI 应用开发" [level=4] [ref=f1e114]
+              - paragraph [ref=f1e115]: LLM 调用、Agent、流式对话，从零搭过完整的 AI 教育系统。
+          - listitem [ref=f1e116]:
+            - img "桌面应用 icon" [ref=f1e118]
+            - generic [ref=f1e119]:
+              - heading "桌面应用" [level=4] [ref=f1e120]
+              - paragraph [ref=f1e121]: Tauri v2 + Rust + React，做出 ~5MB 的端侧 AI IDE。
+          - listitem [ref=f1e122]:
+            - img "全栈 Web icon" [ref=f1e124]
+            - generic [ref=f1e125]:
+              - heading "全栈 Web" [level=4] [ref=f1e126]
+              - paragraph [ref=f1e127]: Vue 3 / FastAPI 前后端分离，JWT 认证、限流、SSE 流式全套。
+          - listitem [ref=f1e128]:
+            - img "深度学习 icon" [ref=f1e130]
+            - generic [ref=f1e131]:
+              - heading "深度学习" [level=4] [ref=f1e132]
+              - paragraph [ref=f1e133]: 纯 NumPy 手写神经网络与 CNN，MNIST 实战，正在上 PyTorch。
+      - generic [ref=f1e134]:
+        - heading "GitHub 足迹" [level=3] [ref=f1e135]
+        - generic [ref=f1e136]:
+          - generic [ref=f1e137]:
+            - generic [ref=f1e138]: "15"
+            - generic [ref=f1e139]: 公开仓库
+          - generic [ref=f1e140]:
+            - generic [ref=f1e141]: "2"
+            - generic [ref=f1e142]: 关注者
+          - generic [ref=f1e143]:
+            - generic [ref=f1e144]: "5"
+            - generic [ref=f1e145]: 累计 Star
+          - generic "常用语言" [ref=f1e146]
+  - generic [ref=f1e153]:
+    - heading "游戏" [level=2] [ref=f1e154]
+    - paragraph [ref=f1e155]: 策略类为主，图的是历史沉浸，不是竞技。
+    - generic [ref=f1e156]:
+      - generic [ref=f1e157]:
+        - heading "HOI4 · 钢铁雄心4" [level=3] [ref=f1e158]
+        - paragraph [ref=f1e159]: 二战战略游戏。玩 5 小时腻了于是删了 —— 我管这叫"多巴胺代谢"。运营能力一般，玩的是历史沉浸。
+      - generic [ref=f1e160]:
+        - heading "KARDS · 二战卡牌" [level=3] [ref=f1e161]
+        - paragraph [ref=f1e162]: 二战主题卡牌游戏，和 HOI4 一脉相承的历史情怀。
+      - generic [ref=f1e163]:
+        - heading "CSGO" [level=3] [ref=f1e164]
+        - paragraph [ref=f1e165]: 150 小时，室友入坑才跟着玩的。竞技性作品，但我的重心始终在历史题材上。
+        - link "Steam 主页 ↗" [ref=f1e166] [cursor=pointer]:
+          - /url: https://steamcommunity.com/profiles/76561199513171599/
+  - generic [ref=f1e167]:
+    - heading "音乐" [level=2] [ref=f1e168]
+    - paragraph [ref=f1e169]: 网易云重度用户，德语歌收藏是一大特色。
+    - generic [ref=f1e170]:
+      - generic [ref=f1e171]:
+        - heading "德语歌收藏" [level=3] [ref=f1e172]
+        - paragraph [ref=f1e173]: 和二战历史一脉相承的音乐品味。德语歌收藏是我的一个辨识度标签。
+        - link "网易云主页 ↗" [ref=f1e174] [cursor=pointer]:
+          - /url: https://music.163.com/#/user/home?id=8729151050
+      - generic [ref=f1e175]:
+        - heading "钢琴" [level=3] [ref=f1e176]
+        - paragraph [ref=f1e177]: 正在啃《城南花已开》的左右手合并 —— 从单音到和声的一小步。
+  - generic [ref=f1e178]:
+    - heading "创作" [level=2] [ref=f1e179]
+    - paragraph [ref=f1e180]: 输出创造是我的主战场。
+    - generic [ref=f1e181]:
+      - generic [ref=f1e182]:
+        - heading "写公众号 · 同州禹斋" [level=3] [ref=f1e183]
+        - paragraph [ref=f1e184]: 祛魅、社会观察这类思考型文章。把想法落成文字，是我表达的主阵地。
+      - generic [ref=f1e185]:
+        - heading "调酒" [level=3] [ref=f1e186]
+        - paragraph [ref=f1e187]: 输出型爱好。目标清单上有一条：调一杯原创鸡尾酒并命名。
+      - generic [ref=f1e188]:
+        - heading "调香" [level=3] [ref=f1e189]
+        - paragraph [ref=f1e190]: 自学的，不是玩票。下一步想摸专业调香师的原料库。
+      - generic [ref=f1e191]:
+        - heading "写诗" [level=3] [ref=f1e192]
+        - paragraph [ref=f1e193]: 写过《山》，考虑投稿。
+      - generic [ref=f1e194]:
+        - heading "Coding" [level=3] [ref=f1e195]
+        - paragraph [ref=f1e196]: 既是职业方向也是兴趣。GitHub 上有 11 个公开仓库，把每个想法变成能跑的东西。
+        - link "GitHub ↗" [ref=f1e197] [cursor=pointer]:
+          - /url: https://github.com/qiyuxi24
+  - generic [ref=f1e198]:
+    - heading "运动" [level=2] [ref=f1e199]
+    - paragraph [ref=f1e200]: 动静之间，保持身体的在场。
+    - generic [ref=f1e201]:
+      - generic [ref=f1e202]:
+        - heading "羽毛球" [level=3] [ref=f1e203]
+        - paragraph [ref=f1e204]: 常打的球类运动，节奏快、反应快。
+      - generic [ref=f1e205]:
+        - heading "夜爬华山" [level=3] [ref=f1e206]
+        - paragraph [ref=f1e207]: 高中暑假两次，和同学，登南峰看日出。凌晨的群山和日出，是记忆里最亮的一笔。
+  - generic [ref=f1e208]:
+    - heading "知识记录" [level=2] [ref=f1e209]
+    - paragraph [ref=f1e210]: 写日记反思自己，还想把日记和对话电子化，搭一个"第二大脑"。
+    - generic [ref=f1e211]:
+      - generic [ref=f1e212]:
+        - heading "写日记 · 自我记录" [level=3] [ref=f1e213]
+        - paragraph [ref=f1e214]: 反思自己、记录轨迹。这不只是习惯，更是自我对话的方式。
+      - generic [ref=f1e215]:
+        - heading "第二大脑 · RAG 项目" [level=3] [ref=f1e216]
+        - paragraph [ref=f1e217]: 想把日记和对话电子化，用 RAG 搭"第二大脑"。这已经不只是爱好了 —— 是项目雏形。
