@@ -7,10 +7,23 @@
 
   <meta name="description" content="佀佳超（同州禹斋）的博客文章阅读页">
   <meta name="author" content="佀佳超">
-  <meta name="theme-color" content="#1c1c1c">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#1a1d23">
+  <meta name="color-scheme" content="dark light">
 
   <title>文章 · 佀佳超 | 同州禹斋</title>
+
+  <!-- 主题防闪烁：在 CSS 生效前读取偏好 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('site-theme');
+        if (t !== 'light' && t !== 'dark') t = 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'light' ? '#f8f9fb' : '#1a1d23');
+      } catch (e) {}
+    })();
+  </script>
 
   <link rel="shortcut icon" href="./assets/images/logo.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/logo-1-color.png">
@@ -41,6 +54,15 @@
         <span>返回</span>
       </a>
       <span class="reader-brand">佀佳超 · 同州禹斋</span>
+      <button type="button" class="site-theme-toggle reader-theme-toggle" id="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+        <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"></path>
+        </svg>
+        <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
     </header>
 
     <!-- 文章主体 -->
@@ -64,9 +86,16 @@
 
   </main>
 
-  <!-- marked：Markdown 渲染引擎 -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <!-- KaTeX：公式渲染（本地优先，CDN 多源兜底，加载完成派发 katex-ready） -->
+  <script src="./assets/js/katex-loader.js"></script>
 
+  <!-- marked：Markdown 渲染引擎（本地文件，避免 CDN 失败导致空白页） -->
+  <script src="./assets/js/marked.min.js"></script>
+
+  <!-- 公式预处理（$...$ 行内 / $$...$$ 块级） -->
+  <script src="./assets/js/marked-math.js"></script>
+
+  <script src="./assets/js/theme.js"></script>
   <script src="./assets/js/reader.js"></script>
 
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

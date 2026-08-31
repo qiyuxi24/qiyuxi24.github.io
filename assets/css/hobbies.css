@@ -1,13 +1,14 @@
 /*-----------------------------------*\
   #hobbies.css — 爱好 tab（嵌入 index.html 主内容区）
-  设计语言与主页一致：暗色 + 金色点缀 + 极简
+  设计语言与主页一致：石墨蓝黑 + 琥珀橙 + 极简
+  颜色全部走 style.css 的 CSS 变量，深 / 浅主题自动适配
 \*-----------------------------------*/
 
 /* ---------- 精神坐标引言 ---------- */
 .hobbies-intro {
   margin-top: 24px;
   padding: 28px 26px;
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   background: var(--bg-gradient-jet);
   box-shadow: var(--shadow-3);
@@ -16,18 +17,18 @@
 .hobbies-intro-quote {
   font-size: 20px;
   font-weight: var(--fw-500);
-  color: var(--orange-yellow-crayola);
+  color: var(--accent);
   font-style: italic;
 }
 
 .hobbies-intro-text {
   margin-top: 12px;
-  color: var(--light-gray);
+  color: var(--text-secondary);
   font-size: var(--fs-4);
 }
 
 .hobbies-intro-text strong {
-  color: var(--white-1);
+  color: var(--text-primary);
   font-weight: var(--fw-600);
 }
 
@@ -40,29 +41,29 @@
   position: sticky;
   top: 0;
   padding: 12px 0;
-  background: linear-gradient(to bottom, var(--eerie-black-2) 85%, transparent);
+  background: linear-gradient(to bottom, var(--card-bg) 85%, transparent);
   z-index: 5;
 }
 
 .hobbies-nav-item {
   padding: 7px 16px;
-  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
   font-size: var(--fs-6);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   transition: var(--transition-1);
 }
 
 .hobbies-nav-item:hover {
-  color: var(--orange-yellow-crayola);
-  border-color: hsla(45, 100%, 72%, 0.4);
+  color: var(--accent);
+  border-color: hsla(35, 92%, 56%, 0.4);
   transform: translateY(-1px);
 }
 
 .hobbies-nav-item.is-active {
-  color: hsl(240, 2%, 13%);
-  background: var(--orange-yellow-crayola);
-  border-color: var(--orange-yellow-crayola);
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
   font-weight: var(--fw-600);
 }
 
@@ -77,9 +78,9 @@
   gap: 12px;
   font-size: 24px;
   font-weight: var(--fw-600);
-  color: var(--white-1);
+  color: var(--text-primary);
   padding-bottom: 12px;
-  border-bottom: 1px solid hsla(0, 0%, 25%, 0.35);
+  border-bottom: 1px solid var(--border-color);
   position: relative;
   padding-left: 16px;
 }
@@ -92,13 +93,13 @@
   transform: translateY(-50%);
   width: 3px;
   height: 22px;
-  background: var(--orange-yellow-crayola);
+  background: var(--accent);
   border-radius: 2px;
 }
 
 .hobbies-block-desc {
   margin-top: 10px;
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   font-size: var(--fs-5);
 }
 
@@ -112,7 +113,7 @@
 
 .hobby-card {
   padding: 22px 20px;
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   background: var(--bg-gradient-jet);
   transition: var(--transition-2);
@@ -120,20 +121,20 @@
 
 .hobby-card:hover {
   transform: translateY(-3px);
-  border-color: hsla(45, 100%, 72%, 0.35);
+  border-color: hsla(35, 92%, 56%, 0.35);
   box-shadow: var(--shadow-3);
 }
 
 .hobby-card-title {
   font-size: var(--fs-3);
   font-weight: var(--fw-600);
-  color: var(--white-1);
+  color: var(--text-primary);
 }
 
 .hobby-card-text {
   margin-top: 10px;
   font-size: var(--fs-6);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 
@@ -141,7 +142,7 @@
   display: inline-block;
   margin-top: 14px;
   font-size: var(--fs-7);
-  color: var(--orange-yellow-crayola);
+  color: var(--accent);
   transition: var(--transition-1);
 }
 
@@ -175,16 +176,16 @@ body.js-hobbies .hobbies-block.is-visible {
 /* 搜索框 */
 .tree-search-wrap {
   padding: 14px 16px;
-  border-bottom: 1px solid hsla(0, 0%, 25%, 0.3);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tree-search-input {
   width: 100%;
   padding: 9px 14px;
-  background: hsl(240, 2%, 8%);
-  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  color: var(--white-1);
+  color: var(--text-primary);
   font-family: var(--ff-poppins);
   font-size: var(--fs-6);
   outline: none;
@@ -192,23 +193,24 @@ body.js-hobbies .hobbies-block.is-visible {
 }
 
 .tree-search-input::placeholder {
-  color: hsla(0, 0%, 84%, 0.4);
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
 
 .tree-search-input:focus {
-  border-color: hsla(45, 100%, 72%, 0.5);
+  border-color: hsla(35, 92%, 56%, 0.5);
 }
 
 .tree {
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
-  background: hsl(240, 2%, 11%);
+  background: var(--panel-bg);
   overflow: hidden;
 }
 
 /* 根：每个大分类（文件夹） */
 .tree-folder {
-  border-bottom: 1px solid hsla(0, 0%, 25%, 0.15);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tree-folder:last-child {
@@ -227,7 +229,7 @@ body.js-hobbies .hobbies-block.is-visible {
 }
 
 .tree-folder-head:hover {
-  background: hsla(0, 0%, 100%, 0.04);
+  background: var(--onyx);
 }
 
 /* 展开箭头：CSS 绘制的小三角 */
@@ -247,7 +249,7 @@ body.js-hobbies .hobbies-block.is-visible {
   left: 50%;
   width: 6px;
   height: 1.5px;
-  background: var(--light-gray-70);
+  background: var(--text-secondary);
   border-radius: 1px;
 }
 
@@ -270,7 +272,7 @@ body.js-hobbies .hobbies-block.is-visible {
   text-align: left;
   font-size: var(--fs-5);
   font-weight: var(--fw-600);
-  color: var(--white-1);
+  color: var(--text-primary);
 }
 
 /* 文件夹内容（默认收起） */
@@ -286,9 +288,9 @@ body.js-hobbies .hobbies-block.is-visible {
 .tree-item {
   position: relative;
   padding: 9px 18px 9px 52px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.12);
+  border-top: 1px solid var(--border-color);
   font-size: var(--fs-6);
-  color: var(--light-gray);
+  color: var(--text-secondary);
   transition: background var(--transition-1), color var(--transition-1);
 }
 
@@ -304,12 +306,12 @@ body.js-hobbies .hobbies-block.is-visible {
 }
 
 .tree-item:hover {
-  background: hsla(0, 0%, 100%, 0.02);
-  color: var(--white-1);
+  background: var(--onyx);
+  color: var(--text-primary);
 }
 
 .tree-item:hover::before {
-  background: var(--orange-yellow-crayola);
+  background: var(--accent);
 }
 
 .tree-item-title {
@@ -322,36 +324,36 @@ body.js-hobbies .hobbies-block.is-visible {
   align-items: flex-start;
   gap: 2px;
   padding: 12px 18px 12px 52px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.12);
+  border-top: 1px solid var(--border-color);
 }
 
 .tree-mentor-title {
   font-size: var(--fs-6);
   font-weight: var(--fw-600);
-  color: var(--white-1);
+  color: var(--text-primary);
 }
 
 .tree-mentor-meta {
   font-size: var(--fs-7);
-  color: var(--orange-yellow-crayola);
+  color: var(--accent);
 }
 
 .tree-mentor-note {
   font-size: var(--fs-7);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
 }
 
 /* 精选书目子项（可点击展开感想） */
 .tree-featured {
   display: block;
   padding: 12px 18px 12px 52px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.12);
+  border-top: 1px solid var(--border-color);
   cursor: pointer;
   transition: background var(--transition-1);
 }
 
 .tree-featured:hover {
-  background: hsla(0, 0%, 100%, 0.02);
+  background: var(--onyx);
 }
 
 .tree-featured-head {
@@ -371,12 +373,12 @@ body.js-hobbies .hobbies-block.is-visible {
 .tree-featured-title {
   font-size: var(--fs-6);
   font-weight: var(--fw-600);
-  color: var(--white-1);
+  color: var(--text-primary);
 }
 
 .tree-featured-meta {
   font-size: var(--fs-8);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   margin-left: auto;
 }
 
@@ -385,7 +387,7 @@ body.js-hobbies .hobbies-block.is-visible {
   margin-top: 8px;
   padding-left: 18px;
   font-size: var(--fs-7);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 

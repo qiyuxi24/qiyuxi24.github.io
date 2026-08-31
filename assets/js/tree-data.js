@@ -68,8 +68,8 @@
         desc: '一路走来的里程碑',
         md: '## 我的经历\n\n一路走来的里程碑节点。\n\n- 西工大 AI 专业在读\n- AIGC 大赛地区二等奖\n- NWPU-CS 创新项目\n- AI+教育大赛备赛中',
         children: [
-          { name: '西工大 AI 专业', hue: 300, desc: '2024 — 2028，AI 应用方向', level: 4,
-            md: '## 西工大 · 人工智能\n\n2024 — 2028，AI 应用方向，主攻大模型应用、Agent 与桌面软件开发。' },
+          { name: '西工大 AI 专业', hue: 300, desc: '2025 — 2029，AI 应用方向', level: 4,
+            md: '## 西工大 · 人工智能\n\n2025 — 2029，AI 应用方向，主攻大模型应用、Agent 与桌面软件开发。' },
           { name: 'AIGC 大赛二等奖', hue: 300, desc: 'vivo+南开 AIGC 大赛地区二等奖', level: 4,
             md: '## AIGC 大赛 · 地区二等奖\n\nvivo + 南开 AIGC 大赛，参赛作品 **KinVoice（家语 AI）**。' },
           { name: 'NWPU-CS 创新项目', hue: 300, desc: 'AI 教育导师，知识图谱驱动', level: 4,

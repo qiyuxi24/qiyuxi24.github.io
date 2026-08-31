@@ -1,3 +1,27 @@
+/*==============================================*\
+  #tree-render.js
+  科技树渲染器（2026-08-31 重写）
+
+  定位：独立全屏覆盖层（不再做 z-index:0 背景星云层），
+       深色底 + 力导向图，Obsidian Graph View 风格。
+
+  相对旧版修复的问题：
+  1. 架构病根：旧版 z-index:0 + body.tree-mode"淡出上层卡片"
+     → 可见性依赖全局 class，状态散落易不同步。
+     新版为独立覆盖层(z-index:90)，状态自洽。
+  2. 力导向永动：旧版 pulseTimer 每 2.5s 无条件加热 + hover 加热
+     + focus 力把节点拉向中心 → 图一直蠕动、CPU 持续消耗。
+     新版静止化：只有拖拽/重置/首次打开才喂能量，自然衰减停摆。
+  3. 布局不持久：旧版每次刷新随机散布、拖过/缩过全丢。
+     新版 localStorage 持久化节点位置 + 视角。
+  4. 点击聚焦跳变：旧版点击时加热 simulation 又立即改 view。
+     新版用 gsap 平滑缩放定位（节点静止，不跳变）。
+  5. 进入/退出控制：旧版靠 MutationObserver 监听 body.tree-mode。
+     新版提供显式 setActive(bool)，由 tree.js 调用。
+
+  保留的交互：拖拽平移、滚轮缩放、节点拖拽、hover 高亮 + tooltip、
+       点击聚焦 + 详情 modal、搜索、图例、重置、触摸支持。
+\*==============================================*/
 (function () {
   'use strict';
 
@@ -13,6 +37,26 @@
     };
     return '#' + f(0) + f(8) + f(4);
   };
+
+  /*---- 布局持久化（节点位置 + 视角） ----*/
+  const STORE_KEY = 'qiyuxi24-tree-layout-v1';
+
+  /*---- 弱重力（仅科技树模式生效） ----
+     forceX/Y 持续把节点缓慢拉回屏幕中心（布局原点）：
+     - GRAVITY_ALPHA_TARGET：维持模拟运转的极低 alpha（> alphaMin 0.01，永不停摆），
+       所有力都以该比例弱化 → 缓慢、不可察觉的向心漂移；
+     - GRAVITY_ALPHA_BOOST：打开科技树时先喂一点能量，前 ~2s 有可见的"归位"感，
+       随后自然衰减到 target 转入持续的极弱重力。
+  */
+  const GRAVITY_ALPHA_TARGET = 0.03;
+  const GRAVITY_ALPHA_BOOST = 0.2;
+
+  function loadLayout() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { return null; }
+  }
+  function clearLayout() {
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* noop */ }
+  }
 
   function buildNodes() {
     const nodes = [];
@@ -78,7 +122,16 @@
     const nodeMap = {};
     nodes.forEach(function (n) { nodeMap[n.id] = n; });
 
+    // 恢复持久化布局：有存储位置则用之，否则随机散布
+    const stored = loadLayout();
+    const hasStoredLayout = !!(stored && stored.positions);
     nodes.forEach(function (n) {
+      if (stored && stored.positions && stored.positions[n.id]) {
+        n.x = stored.positions[n.id][0];
+        n.y = stored.positions[n.id][1];
+        return;
+      }
+      if (n.isRoot) { n.x = 0; n.y = 0; return; }
       const a = Math.random() * Math.PI * 2;
       const r = Math.sqrt(Math.random()) * 320;
       n.x = Math.cos(a) * r;
@@ -92,8 +145,12 @@
     svg.setAttribute('height', '100%');
     canvas.appendChild(svg);
 
-    let W = 0, H = 0;
+    let W = 0, H = 0, lastW = 0, lastH = 0;
     let view = { scale: 1, tx: 0, ty: 0 };
+    if (stored && stored.view) view = Object.assign({}, stored.view);
+    let isNodeDragging = false;       // 节点拖拽中（d3.drag）
+    let suppressClickUntil = 0;       // 拖拽结束后短暂抑制 click，避免误开 modal
+    let gravityActive = false;        // 弱重力开关：仅科技树模式（setActive(true)）开启
 
     const gMain = document.createElementNS(NS, 'g');
     svg.appendChild(gMain);
@@ -148,12 +205,15 @@
       gNode.appendChild(g);
       nodeGroups[n.id] = g;
 
-      g.addEventListener('mouseenter', function () { hoverNode(n.id); });
+      g.addEventListener('mouseenter', function () { if (!isNodeDragging) hoverNode(n.id); });
       g.addEventListener('mouseleave', function () { unhoverNode(); });
       g.addEventListener('mousemove', function (e) {
         if (tooltip.classList.contains('show')) moveTooltip(e);
       });
-      g.addEventListener('click', function () { clickNode(n.id); });
+      g.addEventListener('click', function () {
+        if (Date.now() < suppressClickUntil) return;
+        clickNode(n.id);
+      });
     });
 
     const linkEls = {};
@@ -167,7 +227,7 @@
 
     function ticked() {
       const root = nodeMap['root'];
-      if (root) { root.x = 0; root.y = 0; }
+      if (root && root.fx == null) { root.x = 0; root.y = 0; }   // 根节点默认锚定中心，拖拽时可临时解锁
       nodes.forEach(function (n) {
         const g = nodeGroups[n.id];
         if (g) g.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')');
@@ -182,54 +242,41 @@
       });
     }
 
+    /*---- 布局持久化 ----*/
+    let persistTimer = null;
+    function collectPositions() {
+      const pos = {};
+      nodes.forEach(function (n) { pos[n.id] = [n.x, n.y]; });
+      return pos;
+    }
+    function persist() {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify({ positions: collectPositions(), view: view }));
+      } catch (e) { /* 隐私模式等：静默失败 */ }
+    }
+    function schedulePersist() {
+      if (persistTimer) clearTimeout(persistTimer);
+      persistTimer = setTimeout(persist, 600);
+    }
+
     let simulation = null;
-    let focusNodeId = null;
-    let focusApi = { set: function () {}, get: function () { return null; } };
     if (window.d3 && d3.forceSimulation) {
+      // alphaDecay 0.02：初始布局约 2~3s 自然衰减停摆（树不可见时已完成），
+      // 此后保持静止，仅拖拽 / 重置 / 首次打开时短暂加热。
       simulation = d3.forceSimulation(nodes)
         .force('link', d3.forceLink(links).id(function (d) { return d.id; }).distance(150).strength(0.6))
         .force('charge', d3.forceManyBody().strength(-320))
         .force('collide', d3.forceCollide().radius(function (d) { return nodeRadius(d) + 8; }).iterations(2))
         .force('center', d3.forceCenter(0, 0))
-        .force('focus', d3.forceX(function (d) { return (focusNodeId === d.id) ? 0 : null; }).strength(function (d) { return (focusNodeId === d.id) ? 0.16 : 0; }))
-        .force('focusY', d3.forceY(function (d) { return (focusNodeId === d.id) ? 0 : null; }).strength(function (d) { return (focusNodeId === d.id) ? 0.16 : 0; }))
-        .force('x', d3.forceX(0).strength(0.03))
-        .force('y', d3.forceY(0).strength(0.03))
+        .force('x', d3.forceX(0).strength(0.05))
+        .force('y', d3.forceY(0).strength(0.05))
         .alphaMin(0.01)
-        .alphaDecay(0.006)
+        .alphaDecay(0.02)
         .velocityDecay(0.5)
-        .alpha(1)
+        .alpha(hasStoredLayout ? 0 : 1)   // 有持久化布局 → 直接静止；否则从随机布局自然收敛
         .on('tick', ticked);
-
-      const pulseTimer = setInterval(function () {
-        if (document.body.classList.contains('tree-mode')) {
-          simulation.alpha(Math.min(0.3, simulation.alpha() + 0.2)).restart();
-        }
-      }, 2500);
-      window.__treePulseTimer = pulseTimer;
-
-      // 能耗优化：进入 tree-mode 才"加热"模拟，离开时彻底停摆（alpha=0），
-      // 避免 d3-force 在背景层持续 tick 浪费 CPU。鼠标 hover / 重新打开时再喂能量。
-      const treeModeObserver = new MutationObserver(function () {
-        if (document.body.classList.contains('tree-mode')) {
-          simulation.alpha(0.3).restart();
-        } else {
-          simulation.alpha(0).stop();
-        }
-      });
-      treeModeObserver.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-      });
-      // 初始状态：不在 tree-mode 时直接停摆
-      if (!document.body.classList.contains('tree-mode')) {
-        simulation.alpha(0).stop();
-      }
-
-      function setFocusNode(id) { focusNodeId = id; }
-      function getFocusNode() { return focusNodeId; }
-      focusApi = { set: setFocusNode, get: getFocusNode };
     } else {
+      // 无 d3（CDN 失败）：降级为手动布局
       nodes.forEach(function (n) {
         if (n.isRoot) { n.x = 0; n.y = 0; }
         else if (n.isBranch) {
@@ -246,17 +293,91 @@
       ticked();
     }
 
+    /*---- 显式激活控制：tree.js 打开/关闭时调用 ----*/
+    // true：开启弱重力 —— 喂一点能量后维持极低 alpha（GRAVITY_ALPHA_TARGET），
+    //       forceX/Y 持续把节点缓慢拖回屏幕中心，图保持轻微呼吸、形态不散。
+    // false：关闭弱重力，彻底停摆，零 CPU 占用。
+    function setActive(active) {
+      if (!simulation) return;
+      gravityActive = !!active;
+      if (active) {
+        simulation.alphaTarget(GRAVITY_ALPHA_TARGET);
+        simulation.alpha(Math.max(GRAVITY_ALPHA_BOOST, simulation.alpha()));
+        simulation.restart();
+      } else {
+        simulation.alphaTarget(0).alpha(0).stop();
+      }
+    }
+
+    // Obsidian 风格节点拖拽：d3.drag 挂到每个节点上。
+    // 拖拽中节点 fx/fy 锁定跟随鼠标（世界坐标），simulation.alphaTarget 加热，
+    // 邻居被 forceLink 弹簧拉着一起走；松手后节点保持新位置并持久化。
+    if (window.d3 && d3.drag) {
+      nodes.forEach(function (n) {
+        const g = nodeGroups[n.id];
+        if (!g) return;
+        let dragMoved = false;
+        let startX = 0, startY = 0;
+        d3.drag()
+          .on('start', function (event) {
+            if (!simulation) return;
+            const se = event.sourceEvent;
+            if (se && se.stopPropagation) se.stopPropagation();
+            isNodeDragging = true;
+            dragMoved = false;
+            startX = event.x; startY = event.y;
+            n.fx = n.x; n.fy = n.y;                 // 锁定起始位置，防止跳动
+            simulation.alphaTarget(0.3).restart();  // 加热模拟，让邻居被弹簧带动
+            g.classList.add('is-dragging');
+            svg.style.cursor = 'grabbing';
+            unhoverNode();                          // 拖拽中不显示 tooltip / 高亮
+          })
+          .on('drag', function (event) {
+            if (!simulation) return;
+            if (!dragMoved && Math.hypot(event.x - startX, event.y - startY) > 4) dragMoved = true;
+            n.fx = event.x;                          // d3.pointer 已计入 gMain 的 transform，即世界坐标
+            n.fy = event.y;
+            simulation.alphaTarget(0.3);
+          })
+          .on('end', function () {
+            if (!simulation) return;
+            // 拖拽结束：树模式下回到弱重力 target，否则归零停摆
+            simulation.alphaTarget(gravityActive ? GRAVITY_ALPHA_TARGET : 0);
+            isNodeDragging = false;
+            g.classList.remove('is-dragging');
+            svg.style.cursor = '';
+            schedulePersist();                       // 保存新布局（邻居稳定后 600ms 再写）
+            if (dragMoved) {
+              // 真拖拽：节点保持固定位置，抑制随后可能派发的 click
+              suppressClickUntil = Date.now() + 350;
+            } else {
+              // 轻点：释放锁定，交给原生 click 打开详情
+              if (n.fx !== undefined) delete n.fx;
+              if (n.fy !== undefined) delete n.fy;
+            }
+          })(d3.select(g));  // d3 v7 的 drag 必须接收 selection，传原生 DOM 会抛 t.on is not a function
+      });
+    }
+
     function applyView() {
       gMain.setAttribute('transform', 'translate(' + view.tx + ',' + view.ty + ') scale(' + view.scale + ')');
     }
 
+    // resize：首次居中（并恢复持久化视角）；窗口变化时保持内容中心
     function resize() {
       W = canvas.clientWidth;
       H = canvas.clientHeight;
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-      view.tx = W / 2;
-      view.ty = H / 2;
-      view.scale = Math.max(0.4, Math.min(1.15, Math.min(W, H) / 780));
+      if (!lastW) {
+        view.tx = W / 2;
+        view.ty = H / 2;
+        view.scale = Math.max(0.4, Math.min(1.15, Math.min(W, H) / 780));
+        if (stored && stored.view) view = Object.assign({}, stored.view);
+      } else {
+        view.tx += (W - lastW) / 2;
+        view.ty += (H - lastH) / 2;
+      }
+      lastW = W; lastH = H;
       applyView();
     }
 
@@ -278,7 +399,7 @@
       applyView();
     });
     window.addEventListener('mouseup', function () {
-      if (isDragging) { isDragging = false; svg.style.cursor = 'grab'; }
+      if (isDragging) { isDragging = false; svg.style.cursor = 'grab'; schedulePersist(); }
     });
 
     canvas.addEventListener('wheel', function (e) {
@@ -292,15 +413,18 @@
       view.ty = my - (my - view.ty) * (newScale / view.scale);
       view.scale = newScale;
       applyView();
+      schedulePersist();
     }, { passive: false });
 
     let touchStart = null, pinchStart = null;
     function dist(ts) { return Math.hypot(ts[0].clientX - ts[1].clientX, ts[0].clientY - ts[1].clientY); }
     canvas.addEventListener('touchstart', function (e) {
+      if (e.target && e.target.closest && e.target.closest('.tree-node')) return; // 节点上的触摸交给 d3.drag
       if (e.touches.length === 1) touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: view.tx, ty: view.ty };
       else if (e.touches.length === 2) pinchStart = dist(e.touches);
     }, { passive: true });
     canvas.addEventListener('touchmove', function (e) {
+      if (isNodeDragging) return; // 正在拖节点：视图平移让位给 d3.drag
       e.preventDefault();
       if (e.touches.length === 1 && touchStart) {
         view.tx = touchStart.tx + (e.touches[0].clientX - touchStart.x);
@@ -315,7 +439,7 @@
         pinchStart = d;
       }
     }, { passive: false });
-    canvas.addEventListener('touchend', function () { touchStart = null; pinchStart = null; }, { passive: true });
+    canvas.addEventListener('touchend', function () { touchStart = null; pinchStart = null; schedulePersist(); }, { passive: true });
 
     wrap.querySelector('[data-tree-zoom="in"]').addEventListener('click', function () { zoomAt(1, W / 2, H / 2); });
     wrap.querySelector('[data-tree-zoom="out"]').addEventListener('click', function () { zoomAt(2, W / 2, H / 2); });
@@ -325,8 +449,20 @@
       view.tx = cx - (cx - view.tx) * (newScale / view.scale);
       view.ty = cy - (cy - view.ty) * (newScale / view.scale);
       view.scale = newScale; applyView();
+      schedulePersist();
     }
-    function resetView() { resize(); }
+
+    function resetView() {
+      clearLayout();                                // 丢弃持久化布局，重新力导向布局
+      nodes.forEach(function (n) {
+        if (n.fx !== undefined) delete n.fx;
+        if (n.fy !== undefined) delete n.fy;
+      });
+      if (simulation) simulation.alpha(0.8).restart();
+      lastW = 0;                                    // 重新居中视角
+      resize();
+      schedulePersist();
+    }
 
     function linkNode(l, side) {
       const v = l[side];
@@ -355,6 +491,7 @@
       }
     }
 
+    // hover：只做视觉（高亮 + tooltip + 邻接提亮），不加热 simulation —— 图保持静止
     function hoverNode(id) {
       const n = nodeMap[id];
       const related = new Set([id]);
@@ -375,14 +512,8 @@
       });
       colorNode(nodeGroups[id], n, 'hover');
       showTooltip(n);
-      focusApi.set(id);
-      if (simulation) simulation.alpha(Math.min(0.5, simulation.alpha() + 0.25)).restart();
     }
     function unhoverNode() {
-      if (focusApi.get() !== null) {
-        focusApi.set(null);
-        if (simulation) simulation.alpha(Math.min(0.4, simulation.alpha() + 0.2)).restart();
-      }
       nodes.forEach(function (node) {
         nodeGroups[node.id].classList.remove('dimmed');
         colorNode(nodeGroups[node.id], node, 'default');
@@ -414,25 +545,25 @@
     }
     function hideTooltip() { tooltip.classList.remove('show'); }
 
+    // 点击聚焦：节点此时已静止（无加热），直接 gsap 平滑缩放定位，不跳变
     function clickNode(id) {
       const n = nodeMap[id];
       unhoverNode();
       hoverNode(id);
-      focusApi.set(id);
-      if (simulation) {
-        simulation.alpha(Math.min(0.7, simulation.alpha() + 0.45)).restart();
-        simulation.force('x').strength(0.09);
-        simulation.force('y').strength(0.09);
-        setTimeout(function () {
-          simulation.force('x').strength(0.03);
-          simulation.force('y').strength(0.03);
-        }, 500);
-      }
       const targetScale = Math.max(view.scale, 1.3);
-      view.tx = W / 2 - n.x * targetScale;
-      view.ty = H / 2 - n.y * targetScale;
-      view.scale = targetScale;
-      applyView();
+      const tx = W / 2 - n.x * targetScale;
+      const ty = H / 2 - n.y * targetScale;
+      if (window.gsap) {
+        window.gsap.to(view, {
+          tx: tx, ty: ty, scale: targetScale,
+          duration: 0.5, ease: 'power2.out',
+          onUpdate: applyView,
+          onComplete: schedulePersist
+        });
+      } else {
+        view.tx = tx; view.ty = ty; view.scale = targetScale;
+        applyView(); schedulePersist();
+      }
       setTimeout(function () { hideTooltip(); }, 600);
       openModal(n.id);
     }
@@ -580,7 +711,8 @@
       resetView: resetView,
       svg: svg,
       openModal: openModal,
-      closeModal: closeModal
+      closeModal: closeModal,
+      setActive: setActive
     };
   }
 

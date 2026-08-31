@@ -10,8 +10,8 @@
   <meta name="description" content="佀佳超（同州禹斋），西北工业大学人工智能专业在读，AI 应用开发者。作品：Votek 桌面 AI IDE、AI-tutor 教育导师、KinVoice 家语 AI。从零实现神经网络与 CNN。">
   <meta name="keywords" content="佀佳超,同州禹斋,西工大,西北工业大学,人工智能,AI 应用,Votek,AI IDE,Tauri,Rust,深度学习,KinVoice,AI-tutor">
   <meta name="author" content="佀佳超">
-  <meta name="theme-color" content="#1c1c1c">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#1a1d23">
+  <meta name="color-scheme" content="dark light">
 
   <!-- SEO: 移动端 / 微信 / QQ 分享 -->
   <meta name="format-detection" content="telephone=no">
@@ -51,6 +51,21 @@
     - RSS 订阅
   -->
   <link rel="alternate" type="application/rss+xml" title="佀佳超 | 同州禹斋" href="./feed.xml">
+
+  <!--
+    - 主题防闪烁：在 CSS 生效前读取偏好（深色/浅色）
+  -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('site-theme');
+        if (t !== 'light' && t !== 'dark') t = 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'light' ? '#f8f9fb' : '#1a1d23');
+      } catch (e) {}
+    })();
+  </script>
 
   <!--
     - custom css link
@@ -134,7 +149,7 @@
             <div class="contact-info">
               <p class="contact-title" data-i18n="contact_email">Email</p>
 
-              <a href="mailto:wojtek@mail.nwpu.edu.cn" class="contact-link">wojtek@mail.nwpu.edu.cn</a>
+              <a href="mailto:wojtek@mail.nwpu.edu.cn" class="contact-link">wojtek@<wbr>mail.nwpu.edu.cn</a>
             </div>
 
           </li>
@@ -163,6 +178,20 @@
               <p class="contact-title" data-i18n="contact_location">Location</p>
 
               <address>Xi'an, Shaanxi, China</address>
+            </div>
+
+          </li>
+
+          <li class="contact-item">
+
+            <div class="icon-box">
+              <ion-icon name="school-outline"></ion-icon>
+            </div>
+
+            <div class="contact-info">
+              <p class="contact-title" data-i18n="contact_edu">Education</p>
+
+              <p class="contact-link">西北工业大学 · 人工智能</p>
             </div>
 
           </li>
@@ -244,6 +273,17 @@
           <span class="lang-option lang-option--zh">中文</span>
           <span class="lang-option lang-option--en">EN</span>
         </div>
+
+        <!-- 主题切换（深 / 浅） -->
+        <button type="button" class="site-theme-toggle" id="theme-toggle" aria-label="切换深浅色主题" title="切换深浅色主题">
+          <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32 1.41-1.41"></path>
+          </svg>
+          <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
 
         <!-- 站点访问统计（不蒜子） -->
         <div class="site-visits" aria-live="polite">
@@ -448,11 +488,21 @@
 
               <h4 class="h4 timeline-item-title" data-i18n="resume_edu_uni">西北工业大学 · 人工智能专业</h4>
 
-              <span>2024 — 2028</span>
+              <span data-i18n="resume_edu_uni_dates">2025 — 2029</span>
 
               <p class="timeline-text" data-i18n="resume_edu_desc">
                 西工大人工智能学院在读，AI 应用方向，主攻大模型应用、Agent 与桌面软件开发。
               </p>
+
+            </li>
+
+            <li class="timeline-item">
+
+              <h4 class="h4 timeline-item-title" data-i18n="resume_edu_high">西安国际港务区铁一中陆港高级中学</h4>
+
+              <span data-i18n="resume_edu_high_dates">2022 — 2025</span>
+
+              <p class="timeline-text" data-i18n="resume_edu_high_desc">高中</p>
 
             </li>
 
@@ -748,93 +798,7 @@
 
         <section class="blog-posts">
 
-          <ul class="blog-posts-list">
-
-            <li class="blog-post-item">
-              <a href="./reader.html?slug=tech-is-not-neutral">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-1.jpg" alt="技术不是中立的" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category" data-i18n="blog_cat_essay">随笔</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2026-06">Jun 2026</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title" data-i18n="blog1_title">技术不是中立的：短视频的阶级压迫性</h3>
-
-                  <p class="blog-text" data-i18n="blog1_text">
-                    技术有倾向，短视频的倾向是阶级压迫。
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="./reader.html?slug=gender-war">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-2.jpg" alt="男女对立" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category" data-i18n="blog_cat_essay">随笔</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2026-06">Jun 2026</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title" data-i18n="blog2_title">男女对立：一场所有人都输的战争</h3>
-
-                  <p class="blog-text" data-i18n="blog2_text">
-                    性别议题已经从「讨论问题」变成「表演愤怒」，没有人赢只有伤。
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-            <li class="blog-post-item">
-              <a href="./reader.html?slug=ordinary-people">
-
-                <figure class="blog-banner-box">
-                  <img src="./assets/images/blog-3.jpg" alt="不一样的普通人" loading="lazy">
-                </figure>
-
-                <div class="blog-content">
-
-                  <div class="blog-meta">
-                    <p class="blog-category" data-i18n="blog_cat_essay">随笔</p>
-
-                    <span class="dot"></span>
-
-                    <time datetime="2026-06">Jun 2026</time>
-                  </div>
-
-                  <h3 class="h3 blog-item-title" data-i18n="blog3_title">不一样的普通人：从标签到锚点</h3>
-
-                  <p class="blog-text" data-i18n="blog3_text">
-                    我们既渴望与众不同，又不想承认自己是七十亿分之一。
-                  </p>
-
-                </div>
-
-              </a>
-            </li>
-
-          </ul>
+          <ul class="blog-posts-list"></ul>
 
         </section>
 
@@ -1095,10 +1059,9 @@
 
 
   <!--
-    - #TREE-FULLSCREEN (背景星云科技树层)
-    作为背景层常驻于粒子宇宙之中（透明背景，不遮挡粒子）。
-    点击导航「科技树」时淡化上层卡片(sidebar/main-content)，露出本层；
-    点击「返回」再让上层卡片浮现。
+    - #TREE-FULLSCREEN (科技树全屏覆盖层)
+    独立全屏覆盖层（z-index:90，深色底，Obsidian Graph View 风格），
+    由 tree.js 控制 show / hide，退出走 PageManager.back() 与导航同步。
   -->
   <div class="tree-fullscreen" id="tree-fullscreen" data-tree-fullscreen aria-hidden="true">
 
@@ -1179,12 +1142,14 @@
   <!-- d3-force：Obsidian Graph View 同款力导向物理引擎（重力/斥力/弹簧/碰撞） -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 
-  <!-- marked：Markdown 渲染引擎（节点详情卡片用） -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <!-- marked：Markdown 渲染引擎（节点详情卡片用，本地化 + CDN 兜底） -->
+  <script src="./assets/js/marked.min.js"></script>
+  <script>window.marked || document.write('<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"><\/script>');</script>
 
   <!--
     - custom js link
   -->
+  <script src="./assets/js/theme.js"></script>
   <script src="./assets/js/i18n.js"></script>
   <script src="./assets/js/i18n-app.js"></script>
   <script src="./assets/js/script.js"></script>
@@ -1198,6 +1163,7 @@
   <script src="./assets/js/tree-data.js"></script>
   <script src="./assets/js/tree-render.js"></script>
   <script src="./assets/js/tree.js"></script>
+  <script src="./assets/js/page-manager.js"></script>
 
   <!--
     - ionicon link

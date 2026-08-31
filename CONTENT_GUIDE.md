@@ -213,6 +213,10 @@ python -m http.server 8000
 
 主页的文章/项目除了能手动改 `index.html`，还支持**用 Markdown 写、脚本一键管理**。
 
+> **推荐用 GUI 发布工作台**：双击根目录 `start-publish.bat`，浏览器打开 `http://localhost:3456/`，即可：
+> 文章列表管理、元数据表单（标题/slug/日期/分类/标签/摘要/封面）、Markdown 可视化编辑（内核复用开源 Vditor，所见即所得）、图片上传（工具栏 / 粘贴 / 拖拽）、公式实时渲染（KaTeX）、一键保存并重建索引 + RSS。保存后 `git add . && git commit && git push` 即上线。
+> 下面的命令行方式依然可用，二选一即可。
+
 ### 8.1 写一篇新文章
 
 ```bash
@@ -267,7 +271,29 @@ https://qiyuxi24.github.io/reader.html?slug=tech-is-not-neutral
 | `repo` / `demo` | 仅项目用：GitHub 仓库 / 在线 Demo |
 | `published` | `false` 则不显示在列表和 RSS |
 
-### 8.6 站点访问统计（不蒜子）
+### 8.6 正文里的图片和公式
+
+**图片**（发布工作台上传会自动存到 `assets/images/posts/` 并插好路径）：
+
+```markdown
+![图片说明](./assets/images/posts/我的图.png)
+```
+
+**公式**（`reader.html` 已内置 KaTeX，写作预览与线上一致）：
+
+```markdown
+行内公式：$E = mc^2$　紧贴中文也行：设$x$为未知数
+
+块级公式（独占一段，可跨多行）：
+
+$$
+\frac{-b \pm \sqrt{b^2-4ac}}{2a}
+$$
+```
+
+> 代码块（```）里的 `$` 不会被解析；价格类 `$5 和 $6` 不会被误判成公式。
+
+### 8.7 站点访问统计（不蒜子）
 
 已内置不蒜子纯前端统计：
 - 侧边栏底部显示"本站累计 N 次访问"
@@ -275,7 +301,7 @@ https://qiyuxi24.github.io/reader.html?slug=tech-is-not-neutral
 
 无需配置，线上自动生效。
 
-### 8.7 GitHub 动态数据
+### 8.8 GitHub 动态数据
 
 - **项目卡片**：`index.html` 里项目 `<li>` 加 `data-github-repo="仓库名"`，就会自动显示 star/fork/语言
 - **关于页**："GitHub 足迹"区块显示公开仓库数 / 关注者 / 累计 Star / 常用语言占比

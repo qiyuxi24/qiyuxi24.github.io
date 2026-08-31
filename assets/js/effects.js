@@ -195,6 +195,8 @@
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
+    // 暴露实例，供返回位置恢复等逻辑做精确滚动（见 script.js tryRestore）
+    window.__lenis = lenis;
   }
 
   /*------------------------------------*\

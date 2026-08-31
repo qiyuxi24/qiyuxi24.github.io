@@ -1,15 +1,15 @@
 /*==============================================*\
   #tree.js
-  科技树：背景星云力导向可视化（Obsidian Graph View 风格）
-  - 常驻于粒子宇宙背景层，透明画布，粒子在节点间流动
-  - 物理引擎：d3-force（Obsidian Graph View 同款）
-      · forceManyBody  万有引力（负值 = 斥力，节点互相推开）
-      · forceLink      弹簧（父子节点相互吸引，保持连接）
-      · forceCollide   碰撞（节点互不重叠）
-      · forceCenter + forceX/Y  中心引力（把整棵星云拉回中央）
-  - 节点 = 发光星云体（核心圆 + 光晕），连线 = 星尘轨迹
-  - 支持：拖拽平移、滚轮缩放、hover 高亮、tooltip、点击聚焦
-  - 进入/退出：由 body.tree-mode 控制上层卡片淡出/浮现
+  科技树入口（2026-08-31 重写）
+
+  定位：独立全屏覆盖层（z-index:90，自带深色底），
+       不再依赖 body.tree-mode 淡出上层卡片。
+
+  - 打开：tree-fullscreen.show + tree.setActive(true) 锁滚动
+  - 关闭：移除 show + tree.setActive(false)（力导向停摆，零 CPU）
+  - 退出统一走 PageManager（导航高亮/覆盖层状态同步），
+    无中间件时降级直接关闭
+  - 渲染细节见 tree-render.js
 \*==============================================*/
 'use strict';
 
@@ -30,24 +30,34 @@
     if (!fullscreen) return;
     fullscreen.classList.add('show');
     fullscreen.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('tree-mode');
     document.body.style.overflow = 'hidden';
-    setTimeout(function () { if (tree) tree.resize(); }, 80);
+    if (tree) {
+      tree.setActive(true);
+      setTimeout(function () { tree.resize(); }, 80);
+    }
   }
 
   function closeTree() {
     if (!fullscreen) return;
     fullscreen.classList.remove('show');
     fullscreen.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('tree-mode');
     document.body.style.overflow = '';
-    if (tree && tree.closeModal) tree.closeModal();
+    if (tree) {
+      tree.setActive(false);
+      if (tree.closeModal) tree.closeModal();
+    }
   }
 
   window.TreeFullscreen = { open: openTree, close: closeTree };
 
+  // 退出统一走 PageManager（导航高亮/覆盖层状态同步），无中间件时降级直接关闭
+  function exitTree() {
+    if (window.PageManager) window.PageManager.back();
+    else closeTree();
+  }
+
   const exitBtn = document.querySelector('[data-tree-exit]');
-  if (exitBtn) exitBtn.addEventListener('click', closeTree);
+  if (exitBtn) exitBtn.addEventListener('click', exitTree);
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
@@ -56,11 +66,11 @@
       if (tree && tree.closeModal) tree.closeModal();
       return;
     }
-    if (fullscreen && fullscreen.classList.contains('show')) closeTree();
+    if (fullscreen && fullscreen.classList.contains('show')) exitTree();
   });
 
   window.addEventListener('resize', function () {
-    if (tree) tree.resize();
+    if (tree && fullscreen && fullscreen.classList.contains('show')) tree.resize();
   });
 
   requestAnimationFrame(function () {

@@ -1,19 +1,22 @@
 /*-----------------------------------*\
   #reader.css — 文章阅读页
-  设计语言与主页一致：暗色 + 金色点缀 + 极简
+  设计语言与主页一致：石墨蓝黑 + 琥珀橙 + 极简
+  颜色全部走 style.css 的 CSS 变量，深 / 浅主题自动适配
 \*-----------------------------------*/
 
 /* 兜底背景（粒子画布为空时使用） */
 body {
-  background: hsl(240, 2%, 13%);
-  color: var(--light-gray);
+  background: var(--page-bg);
+  color: var(--text-secondary);
   font-family: var(--ff-poppins);
   -webkit-font-smoothing: antialiased;
+  transition: background var(--transition-2), color var(--transition-2);
 }
 
 .reader-main {
   position: relative;
   z-index: 2;
+  display: block; /* 覆盖 style.css 里 `main { display: flex }` 的污染 */
   max-width: 760px;
   margin: 0 auto;
   padding: 24px 20px 80px;
@@ -21,24 +24,25 @@ body {
 
 /* ---------- 顶部工具栏 ---------- */
 .reader-topbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 12px 0 28px;
 }
 
 .reader-back {
+  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   font-size: var(--fs-5);
   font-weight: var(--fw-500);
   transition: var(--transition-1);
 }
 
 .reader-back:hover {
-  color: var(--orange-yellow-crayola);
+  color: var(--accent);
 }
 
 .reader-back ion-icon {
@@ -46,18 +50,31 @@ body {
 }
 
 .reader-brand {
-  color: var(--light-gray-70);
+  justify-self: center;
+  color: var(--text-secondary);
   font-size: var(--fs-7);
   letter-spacing: 0.05em;
 }
 
+/* 主题切换按钮（阅读页变体：放入顶部工具栏） */
+.reader-theme-toggle {
+  justify-self: end;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+}
+
 /* ---------- 文章头部 ---------- */
 .reader-content {
+  /* 覆盖 style.css 里 `article { display: none }` 的污染
+     （vCard 模板用 article.active 做单页 tab 切换，会误伤阅读页容器） */
+  display: block;
   background: var(--bg-gradient-jet);
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 32px 28px;
   box-shadow: var(--shadow-3);
+  transition: background var(--transition-2), border-color var(--transition-2);
 }
 
 .reader-meta {
@@ -66,22 +83,23 @@ body {
   gap: 8px;
   margin-bottom: 14px;
   font-size: var(--fs-7);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
 }
 
 .reader-category {
-  color: var(--orange-yellow-crayola);
+  color: var(--accent);
   font-weight: var(--fw-600);
 }
 
 .reader-dot {
-  color: hsla(0, 0%, 84%, 0.4);
+  color: var(--text-secondary);
+  opacity: 0.5;
 }
 
 .reader-title {
   font-size: 28px;
   font-weight: var(--fw-600);
-  color: var(--white-1);
+  color: var(--text-primary);
   line-height: 1.35;
   letter-spacing: -0.01em;
 }
@@ -89,8 +107,8 @@ body {
 .reader-summary {
   margin-top: 14px;
   padding-left: 12px;
-  border-left: 3px solid var(--orange-yellow-crayola);
-  color: var(--light-gray-70);
+  border-left: 3px solid var(--accent);
+  color: var(--text-secondary);
   font-size: var(--fs-5);
   line-height: 1.8;
 }
@@ -104,18 +122,18 @@ body {
 
 .reader-tag {
   padding: 4px 12px;
-  border: 1px solid hsla(0, 0%, 25%, 0.6);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
   font-size: var(--fs-8);
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
 }
 
 /* ---------- 文章正文 ---------- */
 .reader-body {
   margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
-  color: var(--light-gray);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
   font-size: var(--fs-4);
   line-height: 1.9;
 }
@@ -123,7 +141,7 @@ body {
 .reader-body h2,
 .reader-body h3,
 .reader-body h4 {
-  color: var(--white-1);
+  color: var(--text-primary);
   font-weight: var(--fw-600);
   line-height: 1.4;
   margin: 1.8em 0 0.7em;
@@ -132,7 +150,7 @@ body {
 .reader-body h2 {
   font-size: 22px;
   padding-bottom: 8px;
-  border-bottom: 1px solid hsla(0, 0%, 25%, 0.3);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .reader-body h3 {
@@ -148,7 +166,7 @@ body {
 }
 
 .reader-body a {
-  color: var(--orange-yellow-crayola);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: var(--transition-1);
@@ -159,7 +177,7 @@ body {
 }
 
 .reader-body strong {
-  color: var(--white-1);
+  color: var(--text-primary);
   font-weight: var(--fw-600);
 }
 
@@ -180,9 +198,9 @@ body {
 .reader-body blockquote {
   margin: 1.2em 0;
   padding: 0.6em 1em;
-  border-left: 3px solid var(--orange-yellow-crayola);
-  background: hsla(45, 100%, 72%, 0.05);
-  color: var(--light-gray-70);
+  border-left: 3px solid var(--accent);
+  background: hsla(35, 92%, 56%, 0.07);
+  color: var(--text-secondary);
   border-radius: 0 8px 8px 0;
 }
 
@@ -192,20 +210,20 @@ body {
   max-width: 100%;
   border-radius: 10px;
   margin: 1.2em 0;
-  border: 1px solid hsla(0, 0%, 25%, 0.4);
+  border: 1px solid var(--border-color);
 }
 
 .reader-body hr {
   border: none;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.4);
+  border-top: 1px solid var(--border-color);
   margin: 2em 0;
 }
 
 .reader-body code {
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
   font-size: 0.88em;
-  background: hsla(0, 0%, 22%, 0.6);
-  color: var(--orange-yellow-crayola);
+  background: var(--onyx);
+  color: var(--accent);
   padding: 2px 6px;
   border-radius: 5px;
 }
@@ -214,8 +232,8 @@ body {
   position: relative;
   margin: 1.4em 0;
   padding: 16px 18px;
-  background: hsl(0, 0%, 9%);
-  border: 1px solid hsla(0, 0%, 25%, 0.4);
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   overflow-x: auto;
   line-height: 1.6;
@@ -224,7 +242,7 @@ body {
 .reader-body pre code {
   display: block;
   background: none;
-  color: var(--light-gray);
+  color: var(--text-secondary);
   padding: 0;
   font-size: 13px;
 }
@@ -234,7 +252,8 @@ body {
   top: 8px;
   right: 12px;
   font-size: 11px;
-  color: hsla(0, 0%, 84%, 0.4);
+  color: var(--text-secondary);
+  opacity: 0.6;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -245,17 +264,17 @@ body {
   right: 12px;
   padding: 3px 10px;
   font-size: 11px;
-  color: var(--light-gray-70);
-  background: hsla(0, 0%, 22%, 0.6);
-  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  color: var(--text-secondary);
+  background: var(--onyx);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   cursor: pointer;
   transition: var(--transition-1);
 }
 
 .reader-code-copy:hover {
-  color: var(--orange-yellow-crayola);
-  border-color: var(--orange-yellow-crayola);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .reader-body table {
@@ -268,26 +287,65 @@ body {
 .reader-body th,
 .reader-body td {
   padding: 8px 12px;
-  border: 1px solid hsla(0, 0%, 25%, 0.4);
+  border: 1px solid var(--border-color);
   text-align: left;
 }
 
 .reader-body th {
-  background: hsla(0, 0%, 22%, 0.5);
-  color: var(--white-1);
+  background: var(--onyx);
+  color: var(--text-primary);
   font-weight: var(--fw-600);
+}
+
+/* 长表格横向滚动（窄屏防溢出） */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1.2em 0;
+}
+
+.table-wrap table {
+  margin: 0;
+}
+
+/* ---------- 标题锚点 ---------- */
+.reader-body h2,
+.reader-body h3,
+.reader-body h4 {
+  position: relative;
+}
+
+.reader-anchor {
+  margin-left: 6px;
+  font-size: 0.75em;
+  color: var(--text-secondary);
+  opacity: 0.4;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--transition-1), color var(--transition-1);
+}
+
+.reader-body h2:hover .reader-anchor,
+.reader-body h3:hover .reader-anchor,
+.reader-body h4:hover .reader-anchor,
+.reader-anchor:focus {
+  opacity: 1;
+}
+
+.reader-anchor:hover {
+  color: var(--accent);
 }
 
 /* ---------- 页脚 ---------- */
 .reader-foot {
   margin-top: 36px;
   padding-top: 20px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
+  border-top: 1px solid var(--border-color);
   text-align: center;
 }
 
 .reader-foot p {
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
   font-size: var(--fs-6);
   margin-bottom: 16px;
 }
@@ -296,8 +354,8 @@ body {
   display: inline-block;
   padding: 10px 24px;
   border-radius: 8px;
-  background: var(--orange-yellow-crayola);
-  color: hsl(240, 2%, 13%);
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: var(--fw-600);
   font-size: var(--fs-6);
   transition: var(--transition-1);
@@ -312,7 +370,7 @@ body {
 .reader-loading {
   text-align: center;
   padding: 80px 0;
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
 }
 
 .reader-spinner {
@@ -320,8 +378,8 @@ body {
   width: 32px;
   height: 32px;
   margin: 0 auto 16px;
-  border: 3px solid hsla(0, 0%, 25%, 0.5);
-  border-top-color: var(--orange-yellow-crayola);
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: reader-spin 0.8s linear infinite;
 }
@@ -333,7 +391,7 @@ body {
 .reader-error {
   text-align: center;
   padding: 80px 0;
-  color: var(--light-gray-70);
+  color: var(--text-secondary);
 }
 
 .reader-error ion-icon {

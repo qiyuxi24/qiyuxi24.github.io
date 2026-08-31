@@ -19,55 +19,71 @@
 
   /**
    * colors
+   *
+   * 默认 = 深色主题（石墨蓝黑 + 琥珀橙 + 天空蓝）
+   * 浅色主题见文末 [data-theme="light"] 覆盖
    */
 
   /* gradient */
 
   --bg-gradient-onyx: linear-gradient(
     to bottom right, 
-    hsl(240, 1%, 25%) 3%, 
-    hsl(0, 0%, 19%) 97%
+    hsl(222, 14%, 26%) 3%, 
+    hsl(222, 12%, 19%) 97%
   );
   --bg-gradient-jet: linear-gradient(
     to bottom right, 
-    hsla(240, 1%, 18%, 0.251) 0%, 
-    hsla(240, 2%, 11%, 0) 100%
-  ), hsl(240, 2%, 13%);
+    hsla(222, 12%, 20%, 0.25) 0%, 
+    hsla(222, 16%, 13%, 0) 100%
+  ), hsl(222, 16%, 13%);
   --bg-gradient-yellow-1: linear-gradient(
     to bottom right, 
-    hsl(45, 100%, 71%) 0%, 
-    hsla(36, 100%, 69%, 0) 50%
+    hsl(35, 95%, 58%) 0%, 
+    hsla(35, 95%, 58%, 0) 50%
   );
   --bg-gradient-yellow-2: linear-gradient(
     135deg, 
-    hsla(45, 100%, 71%, 0.251) 0%, 
-    hsla(35, 100%, 68%, 0) 59.86%
-  ), hsl(240, 2%, 13%);
+    hsla(35, 92%, 56%, 0.22) 0%, 
+    hsla(35, 92%, 56%, 0) 59.86%
+  ), hsl(222, 16%, 13%);
   --border-gradient-onyx: linear-gradient(
     to bottom right, 
-    hsl(0, 0%, 25%) 0%, 
-    hsla(0, 0%, 25%, 0) 50%
+    hsl(222, 12%, 34%) 0%, 
+    hsla(222, 12%, 34%, 0) 50%
   );
   --text-gradient-yellow: linear-gradient(
     to right, 
-    hsl(45, 100%, 72%), 
-    hsl(35, 100%, 68%)
+    hsl(35, 95%, 60%), 
+    hsl(38, 100%, 58%)
   );
 
   /* solid */
 
-  --jet: hsl(0, 0%, 22%);
-  --onyx: hsl(240, 1%, 17%);
-  --eerie-black-1: hsl(240, 2%, 13%);
-  --eerie-black-2: hsl(240, 2%, 12%);
-  --smoky-black: hsl(0, 0%, 7%);
-  --white-1: hsl(0, 0%, 100%);
-  --white-2: hsl(0, 0%, 98%);
-  --orange-yellow-crayola: hsl(45, 100%, 72%);
-  --vegas-gold: hsl(45, 54%, 58%);
-  --light-gray: hsl(0, 0%, 84%);
-  --light-gray-70: hsla(0, 0%, 84%, 0.7);
+  --jet: hsl(222, 12%, 26%);
+  --onyx: hsl(222, 12%, 20%);
+  --eerie-black-1: hsl(222, 16%, 13%);
+  --eerie-black-2: hsl(222, 15%, 15%);
+  --smoky-black: hsl(222, 18%, 11%);
+  --white-1: hsl(220, 14%, 95%);
+  --white-2: hsl(220, 10%, 90%);
+  --orange-yellow-crayola: hsl(35, 92%, 56%);
+  --vegas-gold: hsl(35, 58%, 60%);
+  --light-gray: hsl(220, 8%, 70%);
+  --light-gray-70: hsla(220, 8%, 70%, 0.7);
   --bittersweet-shimmer: hsl(0, 43%, 51%);
+
+  /**
+   * 语义化别名（供主题覆盖与自定义样式复用）
+   */
+  --on-accent: hsl(222, 22%, 10%);        /* 强调色背景上的文字（恒为深色） */
+  --accent: var(--orange-yellow-crayola); /* 主强调：琥珀橙 */
+  --accent-2: hsl(199, 95%, 62%);         /* 次强调：天空蓝 */
+  --card-bg: var(--eerie-black-2);        /* 卡片 / 侧边栏背景 */
+  --panel-bg: var(--eerie-black-1);       /* 卡片内嵌面板背景 */
+  --page-bg: var(--smoky-black);          /* 页面底层背景 */
+  --border-color: var(--jet);             /* 通用边框 */
+  --text-primary: var(--white-1);         /* 主文字 */
+  --text-secondary: var(--light-gray);    /* 次要文字 */
 
   /**
    * typography
@@ -109,6 +125,102 @@
   --transition-1: 0.25s ease;
   --transition-2: 0.5s ease-in-out;
 
+  /**
+   * 语义化组件背景（底部导航栏等，随主题切换）
+   */
+  --navbar-bg: hsla(240, 1%, 17%, 0.75);
+
+  color-scheme: dark;
+
+}
+
+/*-----------------------------------*\
+  #LIGHT THEME（浅色主题覆盖）
+\*-----------------------------------*/
+
+[data-theme="light"] {
+
+  --bg-gradient-onyx: linear-gradient(
+    to bottom right, 
+    hsl(220, 16%, 98%) 3%, 
+    hsl(220, 14%, 93%) 97%
+  );
+  --bg-gradient-jet: linear-gradient(
+    to bottom right, 
+    hsla(220, 14%, 94%, 0.5) 0%, 
+    hsla(220, 16%, 96%, 0) 100%
+  ), hsl(220, 16%, 95%);
+  --bg-gradient-yellow-1: linear-gradient(
+    to bottom right, 
+    hsl(35, 92%, 88%) 0%, 
+    hsla(35, 92%, 88%, 0) 50%
+  );
+  --bg-gradient-yellow-2: linear-gradient(
+    135deg, 
+    hsla(35, 92%, 56%, 0.16) 0%, 
+    hsla(35, 92%, 56%, 0) 59.86%
+  ), hsl(220, 16%, 95%);
+  --border-gradient-onyx: linear-gradient(
+    to bottom right, 
+    hsl(220, 12%, 86%) 0%, 
+    hsla(220, 12%, 86%, 0) 50%
+  );
+  --text-gradient-yellow: linear-gradient(
+    to right, 
+    hsl(35, 92%, 48%), 
+    hsl(30, 90%, 50%)
+  );
+
+  --jet: hsl(220, 12%, 86%);
+  --onyx: hsl(220, 12%, 90%);
+  --eerie-black-1: hsl(220, 14%, 94%);
+  --eerie-black-2: hsl(0, 0%, 100%);
+  --smoky-black: hsl(220, 16%, 96%);
+  --white-1: hsl(222, 18%, 18%);
+  --white-2: hsl(222, 16%, 24%);
+  --orange-yellow-crayola: hsl(35, 92%, 50%);
+  --vegas-gold: hsl(35, 70%, 44%);
+  --light-gray: hsl(220, 8%, 40%);
+  --light-gray-70: hsla(220, 8%, 40%, 0.7);
+  --bittersweet-shimmer: hsl(0, 62%, 50%);
+
+  /* 语义化别名覆盖 */
+  --on-accent: hsl(222, 22%, 10%);
+  --accent: var(--orange-yellow-crayola);
+  --accent-2: hsl(199, 89%, 42%);
+  --card-bg: var(--eerie-black-2);
+  --panel-bg: var(--eerie-black-1);
+  --page-bg: var(--smoky-black);
+  --border-color: var(--jet);
+  --text-primary: var(--white-1);
+  --text-secondary: var(--light-gray);
+
+  --shadow-1: -4px 8px 24px hsla(222, 20%, 40%, 0.12);
+  --shadow-2: 0 16px 30px hsla(222, 20%, 40%, 0.1);
+  --shadow-3: 0 16px 40px hsla(222, 20%, 40%, 0.12);
+  --shadow-4: 0 25px 50px hsla(222, 20%, 40%, 0.1);
+  --shadow-5: 0 24px 80px hsla(222, 20%, 40%, 0.12);
+
+  /* 底部导航栏背景：浅色主题下跟随页面底色 */
+  --navbar-bg: hsla(220, 16%, 96%, 0.82);
+
+  color-scheme: light;
+
+  /* 科技树全屏层 / 详情弹窗：浅色主题下仍保持深色 Obsidian 观感 */
+  .tree-fullscreen,
+  .tree-modal {
+    --white-1: hsl(0, 0%, 95%);
+    --white-2: hsl(0, 0%, 90%);
+    --light-gray: hsl(0, 0%, 75%);
+    --light-gray-70: hsla(0, 0%, 75%, 0.7);
+    --orange-yellow-crayola: hsl(35, 92%, 56%);
+    --vegas-gold: hsl(35, 58%, 60%);
+    --accent: var(--orange-yellow-crayola);
+    --text-primary: var(--white-1);
+    --text-secondary: var(--light-gray);
+    --on-accent: hsl(222, 22%, 10%);
+  }
+
 }
 
 
@@ -148,14 +260,17 @@ input, textarea {
 
 ::selection {
   background: var(--orange-yellow-crayola);
-  color: var(--smoky-black);
+  color: var(--on-accent);
 }
 
 :focus { outline-color: var(--orange-yellow-crayola); }
 
 html { font-family: var(--ff-poppins); }
 
-body { background: var(--smoky-black); }
+body {
+  background: var(--smoky-black);
+  transition: background var(--transition-2);
+}
 
 
 
@@ -475,9 +590,10 @@ main {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: hsla(240, 1%, 17%, 0.75);
+  background: var(--navbar-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--jet);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
   border-radius: 12px 12px 0 0;
   box-shadow: var(--shadow-2);
   z-index: 5;
@@ -946,7 +1062,7 @@ main {
   border-radius: 8px;
 }
 
-.select-item button:hover { --eerie-black-2: hsl(240, 2%, 20%); }
+.select-item button:hover { --eerie-black-2: var(--onyx); }
 
 .project-list {
   display: grid;
@@ -1505,6 +1621,11 @@ textarea.form-input::-webkit-resizer { display: none; }
     width: calc(100% - 64px);
   }
 
+  .contact-info :is(.contact-link) {
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
 
 
   /**
@@ -1910,17 +2031,17 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   body::-webkit-scrollbar { width: 20px; }
 
-  body::-webkit-scrollbar-track { background: var(--smoky-black); }
+  body::-webkit-scrollbar-track { background: var(--page-bg); }
 
   body::-webkit-scrollbar-thumb {
-    border: 5px solid var(--smoky-black);
-    background: hsla(0, 0%, 100%, 0.1);
+    border: 5px solid var(--page-bg);
+    background: var(--onyx);
     border-radius: 20px;
     box-shadow: inset 1px 1px 0 hsla(0, 0%, 100%, 0.11),
                 inset -1px -1px 0 hsla(0, 0%, 100%, 0.11);
   }
 
-  body::-webkit-scrollbar-thumb:hover { background: hsla(0, 0%, 100%, 0.15); }
+  body::-webkit-scrollbar-thumb:hover { background: var(--light-gray-70); }
 
   body::-webkit-scrollbar-button { height: 60px; }
 
@@ -1992,9 +2113,8 @@ textarea.form-input::-webkit-resizer { display: none; }
   .contacts-list { grid-template-columns: 1fr; }
 
   .contact-info :is(.contact-link) {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   .contact-info :is(.contact-link, time, address) {
@@ -2152,8 +2272,15 @@ button:focus-visible {
   opacity: 1;
 }
 
-/* 节点：默认无填充，仅极淡描边，hover 才上色 */
-.tree-node { cursor: pointer; }
+/* 节点：默认无填充，仅极淡描边，hover 才上色；可拖拽（Obsidian 风格） */
+.tree-node { cursor: grab; }
+
+/* 拖拽中的节点：抓手 + 金色描边反馈 */
+.tree-node.is-dragging { cursor: grabbing; }
+.tree-node.is-dragging .tree-node-circle {
+  stroke: hsl(45, 100%, 72%);
+  stroke-width: 2;
+}
 
 .tree-node-circle {
   fill: hsl(0, 0%, 8%);             /* 与背景几乎一致 */
@@ -2334,13 +2461,13 @@ button:focus-visible {
 .tree-fullscreen {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 90;              /* 独立全屏覆盖层：盖在 sidebar/main-content 之上 */
   display: flex;
   align-items: stretch;
-  background: transparent;
+  background: hsl(240, 2%, 8%);  /* 深色底，Obsidian Graph View 观感 */
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
 .tree-fullscreen.show {
@@ -2355,25 +2482,6 @@ button:focus-visible {
   border-radius: 0;
   border: none;
   box-shadow: none;
-}
-
-body.tree-mode .sidebar,
-body.tree-mode .main-content {
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.985);
-  transition: opacity 0.55s ease, transform 0.55s ease, visibility 0.55s ease;
-  pointer-events: none;
-}
-
-body:not(.tree-mode) .sidebar,
-body:not(.tree-mode) .main-content {
-  transition: opacity 0.55s ease, transform 0.55s ease, visibility 0.55s ease;
-}
-
-/* tree-mode：压暗粒子背景，让图关系更突出（Obsidian 极简黑底感） */
-body.tree-mode #particles-canvas {
-  opacity: 0.18;
 }
 
 /* 退出按钮 + 标题：左上角横排，flat 风格 */
@@ -2792,19 +2900,20 @@ body.tree-mode #particles-canvas {
   gap: 3px;
   padding: 3px 9px;
   border-radius: 999px;
-  background: hsla(0, 0%, 100%, 0.05);
-  border: 1px solid hsla(0, 0%, 100%, 0.08);
-  color: var(--light-gray-70);
+  background: var(--onyx);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   line-height: 1.4;
 }
 
 .gh-stat.gh-lang {
-  color: var(--orange-yellow-crayola);
-  border-color: hsla(45, 100%, 72%, 0.25);
+  color: var(--accent);
+  border-color: hsla(35, 92%, 56%, 0.25);
 }
 
 .gh-stat.gh-loading {
-  color: hsla(0, 0%, 84%, 0.4);
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
 
 .gh-stat.gh-failed {
@@ -2829,7 +2938,7 @@ body.tree-mode #particles-canvas {
   font-size: var(--fs-6);
   text-align: center;
   padding: 20px;
-  border: 1px dashed hsla(0, 0%, 25%, 0.5);
+  border: 1px dashed var(--border-color);
   border-radius: 10px;
 }
 
@@ -2840,7 +2949,7 @@ body.tree-mode #particles-canvas {
   gap: 6px;
   padding: 18px 12px;
   background: var(--bg-gradient-jet);
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   text-align: center;
 }
@@ -2867,7 +2976,7 @@ body.tree-mode #particles-canvas {
   height: 8px;
   border-radius: 999px;
   overflow: hidden;
-  background: hsla(0, 0%, 22%, 0.6);
+  background: var(--onyx);
 }
 
 .gh-lang-bar {
@@ -2890,7 +2999,7 @@ body.tree-mode #particles-canvas {
   gap: 12px;
   margin-bottom: 28px;
   padding: 14px 18px;
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   background: var(--bg-gradient-jet);
 }
@@ -2907,7 +3016,7 @@ body.tree-mode #particles-canvas {
   padding: 8px 16px;
   border-radius: 8px;
   background: var(--orange-yellow-crayola);
-  color: hsl(240, 2%, 13%);
+  color: var(--on-accent);
   font-size: var(--fs-6);
   font-weight: var(--fw-600);
   transition: var(--transition-1);
@@ -2931,9 +3040,9 @@ body.tree-mode #particles-canvas {
   width: 140px;
   height: 36px;
   margin: 18px auto 0;
-  border: 1px solid hsla(0, 0%, 25%, 0.5);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
-  background: hsl(240, 2%, 15%);
+  background: var(--panel-bg);
   cursor: pointer;
   user-select: none;
   outline: none;
@@ -2942,7 +3051,49 @@ body.tree-mode #particles-canvas {
 
 .site-lang-toggle:focus-visible {
   border-color: var(--orange-yellow-crayola);
-  box-shadow: 0 0 0 3px hsla(45, 100%, 72%, 0.12);
+  box-shadow: 0 0 0 3px hsla(35, 92%, 56%, 0.15);
+}
+
+/* 主题切换按钮（深 / 浅） */
+.site-theme-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 14px auto 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--panel-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-1);
+}
+
+.site-theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.site-theme-toggle:active { transform: translateY(0) scale(0.96); }
+
+.theme-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 17px;
+  height: 17px;
+  transform: translate(-50%, -50%);
+  transition: opacity var(--transition-2), transform var(--transition-2);
+}
+
+/* 深色主题 → 显示太阳；浅色主题 → 显示月亮（交叉淡入淡出） */
+.site-theme-toggle.is-dark .theme-icon--moon,
+.site-theme-toggle.is-light .theme-icon--sun {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(120deg) scale(0.4);
 }
 
 .site-lang-toggle .lang-thumb {
@@ -2974,14 +3125,14 @@ body.tree-mode #particles-canvas {
 
 .site-lang-toggle[data-lang="zh"] .lang-option--zh,
 .site-lang-toggle[data-lang="en"] .lang-option--en {
-  color: var(--eerie-black-1);
+  color: var(--on-accent);
   font-weight: var(--fw-600);
 }
 
 .site-visits {
   margin-top: 18px;
   padding-top: 14px;
-  border-top: 1px solid hsla(0, 0%, 25%, 0.3);
+  border-top: 1px solid var(--border-color);
   font-size: var(--fs-8);
   color: var(--light-gray-70);
   text-align: center;
@@ -3029,7 +3180,7 @@ body.tree-mode #particles-canvas {
   align-items: center;
   gap: 6px;
   padding: 22px 16px;
-  border: 1px solid hsla(0, 0%, 25%, 0.35);
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   background: var(--bg-gradient-jet);
   text-align: center;

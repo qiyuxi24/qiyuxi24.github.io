@@ -82,7 +82,9 @@
         };
         setCache(cacheKey, data);
       } catch (e) {
-        // 失败：保留静态占位
+        // 失败（如 API 限流）：显示友好提示，避免停留在“正在同步…”
+        wrap.innerHTML =
+          '<div class="gh-overview-placeholder">GitHub 数据暂时无法同步（API 限流），稍后刷新页面即可重试。</div>';
         wrap.classList.add('gh-failed');
         return;
       }

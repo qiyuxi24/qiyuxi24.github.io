@@ -28,11 +28,24 @@ _legacy_jekyll/
 # Ignore playwright-cli local test artifacts
 .playwright-cli/
 
+# Ignore playwright DOM-dump leftovers accidentally committed at repo root (e.g. after-reload.yaml, index.txt, shell-redirect garbage like `{`)
+/*.yaml
+/index.txt
+/{
+
 # Ignore ad-hoc debug scripts / screenshots at repo root (e.g. _check_*.js, _shot.js, view-*.png)
-/_*.js
+/_*.*
 /.tmp-server.js
 /view-*.png
 /hobbies-*.png
+/main-*.png
+/mobile-*.png
+/new-*.png
+/tab-*.png
+/reader-*.png
+/theme-*.png
+/tree-*.png
+/email-fix.png
 
 # Ignore personal source-material .md at root (not for public web)
 /佀佳超的思考与阅读（对话摘录）.md
