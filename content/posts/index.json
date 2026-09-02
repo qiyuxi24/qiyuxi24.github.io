@@ -1,5 +1,44 @@
 [
   {
+    "title": "计算机学习路线 · 我的资源地图（持续更新）",
+    "slug": "learning-path",
+    "date": "2026-09-02",
+    "category": "学习",
+    "tags": [
+      "学习路线",
+      "资源清单",
+      "CS",
+      "AI"
+    ],
+    "summary": "我在 CS / AI 方向学过与想学的资源地图：课程、书、仓库、视频链接。常青文章，按需追加。",
+    "cover": "./assets/images/blog-6.jpg",
+    "published": true,
+    "file": "learning-path.md"
+  },
+  {
+    "title": "当大脑把写作外包给 ChatGPT——MIT「认知债务」论文精读与证据审视",
+    "slug": "chatgptmit",
+    "date": "2026-09-01",
+    "category": "随笔",
+    "tags": [
+      "AI使用",
+      "学习"
+    ],
+    "published": true,
+    "file": "chatgptmit.md"
+  },
+  {
+    "title": "天才的陨落",
+    "slug": "loss-of-gifted",
+    "date": "2026-09-01",
+    "category": "随笔",
+    "tags": [
+      "社会"
+    ],
+    "published": true,
+    "file": "loss-of-gifted.md"
+  },
+  {
     "title": "不一样的普通人：从标签到锚点",
     "slug": "ordinary-people",
     "date": "2026-06-25",

@@ -2,7 +2,8 @@
 title: 在这里写下文章标题
 slug: my-post-slug
 date: 2026-08-20
-category: 技术 / 随笔 / 项目 / 学习
+category: 随笔
+# 可选：技术 / 随笔 / 项目 / 学习，或自定义新分类（此行为注释，会被解析器忽略）
 tags: [标签一, 标签二]
 summary: 一句话摘要，会显示在博客卡片和列表里
 cover: ./assets/images/blog-4.jpg

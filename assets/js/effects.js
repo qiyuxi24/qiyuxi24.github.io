@@ -9,109 +9,158 @@
   #1. 粒子连线背景 (Canvas)
 \*------------------------------------*/
 (function () {
+  /**
+   * createParticlesEngine(canvas, opts) —— 可复用粒子连线引擎
+   * opts:
+   *   size: 'window'（默认，铺满视口）| 'container'（跟随容器尺寸）
+   *   返回 { start, stop, resize, destroy }；配色随 data-theme 自动切换
+   *   （深色主题亮金 / 浅色主题深金，保证两套背景下都可见）
+   */
+  function createParticlesEngine(canvas, opts) {
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    opts = opts || {};
+    const mouse = { x: null, y: null, radius: 120 };
+    let particles = [];
+    let w = 0, h = 0;
+    let running = false;
+    let rafId = 0;
+
+    function isLight() {
+      const d = document.documentElement;
+      return !!(d && d.getAttribute('data-theme') === 'light');
+    }
+
+    // 金色系配色：深色主题亮金、浅色主题深金
+    function colors() {
+      return isLight()
+        ? ['40, 88%, 44%', '45, 78%, 46%', '35, 92%, 40%']   // 深金
+        : ['45, 100%, 72%', '45, 54%, 58%', '45, 100%, 65%']; // 亮金
+    }
+    function linkHue() {
+      return isLight() ? '40, 88%, 44%' : '45, 100%, 72%';
+    }
+
+    function resize() {
+      if (opts.size === 'container') {
+        w = canvas.width = canvas.clientWidth || canvas.parentElement.clientWidth || 0;
+        h = canvas.height = canvas.clientHeight || canvas.parentElement.clientHeight || 0;
+      } else {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      initParticles();
+    }
+
+    function initParticles() {
+      const pal = colors();
+      const count = Math.min(90, Math.floor(w * h / 16000));
+      particles = [];
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: (Math.random() - 0.5) * 0.6,
+          radius: Math.random() * 2 + 1,
+          color: pal[Math.floor(Math.random() * pal.length)]
+        });
+      }
+    }
+
+    function draw() {
+      if (!running) return;
+      ctx.clearRect(0, 0, w, h);
+      const linkColor = linkHue();
+
+      // 画点
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        // 移动
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // 边界回弹
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+
+        // 鼠标交互：靠近鼠标的粒子被轻微推开
+        if (mouse.x !== null) {
+          const dx = p.x - mouse.x;
+          const dy = p.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius && dist > 0.01) {
+            p.x += dx / dist * 1.2;
+            p.y += dy / dist * 1.2;
+          }
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'hsla(' + p.color + ', 0.7)';
+        ctx.fill();
+      }
+
+      // 画连线
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i], b = particles[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const dist = dx * dx + dy * dy;
+          const maxDist = 130 * 130;
+
+          if (dist < maxDist) {
+            const opacity = 1 - Math.sqrt(dist) / 130;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = 'hsla(' + linkColor + ', ' + (opacity * 0.35) + ')';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      rafId = requestAnimationFrame(draw);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      resize();
+      draw();
+    }
+
+    function stop() {
+      running = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+
+    // 鼠标追踪（监听 window，canvas 设置 pointer-events:none 不遮挡卡片）
+    function onMove(e) { mouse.x = e.clientX; mouse.y = e.clientY; }
+    function onLeave() { mouse.x = null; mouse.y = null; }
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseleave', onLeave);
+    window.addEventListener('resize', resize);
+
+    function destroy() {
+      stop();
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener('resize', resize);
+    }
+
+    return { start: start, stop: stop, resize: resize, destroy: destroy };
+  }
+
+  window.createParticlesEngine = createParticlesEngine;
+
+  // 全局背景：立即启动，行为与原实现一致
   const canvas = document.getElementById('particles-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  let particles = [];
-  let w = 0, h = 0;
-  const mouse = { x: null, y: null, radius: 120 };
-
-  // 金色主题配色
-  const colors = [
-    '45, 100%, 72%',   // orange-yellow-crayola
-    '45, 54%, 58%',    // vegas-gold
-    '45, 100%, 65%'    // 更亮的金色
-  ];
-
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-    initParticles();
-  }
-
-  function initParticles() {
-    const count = Math.min(90, Math.floor(w * h / 16000));
-    particles = [];
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        radius: Math.random() * 2 + 1,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
-    }
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-
-    // 画点
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      // 移动
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // 边界回弹
-      if (p.x < 0 || p.x > w) p.vx *= -1;
-      if (p.y < 0 || p.y > h) p.vy *= -1;
-
-      // 鼠标交互：靠近鼠标的粒子被轻微推开
-      if (mouse.x !== null) {
-        const dx = p.x - mouse.x;
-        const dy = p.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < mouse.radius) {
-          p.x += dx / dist * 1.2;
-          p.y += dy / dist * 1.2;
-        }
-      }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${p.color}, 0.7)`;
-      ctx.fill();
-    }
-
-    // 画连线
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const a = particles[i], b = particles[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const dist = dx * dx + dy * dy;
-        const maxDist = 130 * 130;
-
-        if (dist < maxDist) {
-          const opacity = 1 - Math.sqrt(dist) / 130;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `hsla(45, 100%, 72%, ${opacity * 0.35})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      }
-    }
-
-    requestAnimationFrame(draw);
-  }
-
-  // 鼠标追踪（监听 window，canvas 设置 pointer-events:none 不遮挡卡片）
-  window.addEventListener('mousemove', function (e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-  window.addEventListener('mouseleave', function () {
-    mouse.x = null;
-    mouse.y = null;
-  });
-
-  window.addEventListener('resize', resize);
-  resize();
-  draw();
+  if (canvas) createParticlesEngine(canvas).start();
 })();
 
 

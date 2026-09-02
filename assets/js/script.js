@@ -83,6 +83,9 @@ for (let i = 0; i < filterBtn.length; i++) {
 // 通过 form.checkValidity() 切换 [data-form-btn] 的 disabled 状态。
 
 // blog posts：根据 content/posts/index.json 自动生成首页文章列表
+// 兜底文案与日期格式跟随语言（词典来自 i18n.js / i18n-app.js）
+const T = (key) => (window.__I18N ? window.__I18N(key) : '');
+
 async function loadBlogPosts() {
   const blogList = document.querySelector(".blog-posts-list");
   if (!blogList) return;
@@ -97,26 +100,35 @@ async function loadBlogPosts() {
     const published = (Array.isArray(posts) ? posts : []).filter((post) => post.published !== false);
 
     if (!published.length) {
-      blogList.innerHTML = '<li class="blog-post-item"><p class="blog-text">暂无文章。</p></li>';
+      blogList.innerHTML = `<li class="blog-post-item"><p class="blog-text">${T('blog_empty') || '暂无文章。'}</p></li>`;
       return;
     }
 
-    blogList.innerHTML = published.map((post) => {
-      const title = post.title || "未命名文章";
-      const category = post.category || "随笔";
+    // 置顶文章（front-matter pinned: true）永远排最前，其余保持原顺序（Array.sort 稳定）
+    const list = [...published].sort((a, b) => (b.pinned === true) - (a.pinned === true));
+
+    blogList.innerHTML = list.map((post) => {
+      const title = post.title || T('blog_untitled') || "未命名文章";
+      const category = post.category || T('blog_cat_default') || "随笔";
       const summary = post.summary || "";
       const cover = post.cover || "./assets/images/blog-4.jpg";
       const slug = post.slug || (post.file || "").replace(/\.md$/i, "");
       const dateValue = post.date || "";
-      const dateText = dateValue ? new Date(`${dateValue}T00:00:00`).toLocaleDateString("zh-CN", {
+      const dateLocale = window.__siteLang === "en" ? "en-US" : "zh-CN";
+      const dateText = dateValue ? new Date(`${dateValue}T00:00:00`).toLocaleDateString(dateLocale, {
         year: "numeric",
         month: "short",
         day: "numeric"
-      }) : "未设置日期";
+      }) : (T('blog_no_date') || "未设置日期");
+
+      const pinBadge = post.pinned === true
+        ? `<span class="pin-badge">${T('blog_pinned') || '置顶 · 长期更新'}</span>`
+        : "";
 
       return `
-        <li class="blog-post-item">
+        <li class="blog-post-item${post.pinned === true ? ' is-pinned' : ''}">
           <a href="./reader.html?slug=${encodeURIComponent(slug)}">
+            ${pinBadge}
             <figure class="blog-banner-box">
               <img src="${cover}" alt="${title}" loading="lazy">
             </figure>
@@ -138,13 +150,18 @@ async function loadBlogPosts() {
     // file:// 直开（双击 HTML）时浏览器拦截 fetch，提示用户用服务器方式访问
     const fileHint =
       window.location.protocol === "file:"
-        ? "本地直接打开 HTML 无法加载文章列表（浏览器安全限制）。请部署到 GitHub Pages，或双击 start-local.bat 启动本地服务器。"
-        : "文章列表加载失败，请检查 content/posts/index.json。";
+        ? (T('blog_file_hint') || "本地直接打开 HTML 无法加载文章列表（浏览器安全限制）。请部署到 GitHub Pages，或双击 start-local.bat 启动本地服务器。")
+        : (T('blog_load_fail') || "文章列表加载失败，请检查 content/posts/index.json。");
     blogList.innerHTML = `<li class="blog-post-item"><p class="blog-text">${fileHint}</p></li>`;
   }
 }
 
 loadBlogPosts();
+
+// 语言切换后重渲染文章列表（兜底文案与日期格式跟随语言）
+window.addEventListener("langchange", function () {
+  loadBlogPosts();
+});
 
 // 页面切换已由 page-manager.js 中间件统一管理
 // （导航高亮 + article.active + 覆盖层钩子单一状态源），

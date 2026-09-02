@@ -11,7 +11,8 @@
      新版为独立覆盖层(z-index:90)，状态自洽。
   2. 力导向永动：旧版 pulseTimer 每 2.5s 无条件加热 + hover 加热
      + focus 力把节点拉向中心 → 图一直蠕动、CPU 持续消耗。
-     新版静止化：只有拖拽/重置/首次打开才喂能量，自然衰减停摆。
+     新版静止化：默认零 CPU，只有拖拽/重置/首次打开才喂能量；
+     打开期间仅维持极低 alpha 的向心重力（反平方），星云缓慢归位。
   3. 布局不持久：旧版每次刷新随机散布、拖过/缩过全丢。
      新版 localStorage 持久化节点位置 + 视角。
   4. 点击聚焦跳变：旧版点击时加热 simulation 又立即改 view。
@@ -27,7 +28,8 @@
 
   const treeApi = window.TreeAPI || {};
   const treeData = window.TreeData || { branches: [] };
-  const hexFromHsl = window.TreeUtils && window.TreeUtils.hexFromHsl ? window.TreeUtils.hexFromHsl : function (h, s, l) {
+  /* 从数据文件(assets/data/tree-data.js)迁入的配色工具：hsl → hex */
+  const hexFromHsl = function (h, s, l) {
     s = s / 100; l = l / 100;
     const k = function (n) { return (n + h / 30) % 12; };
     const a = s * Math.min(l, 1 - l);
@@ -37,6 +39,18 @@
     };
     return '#' + f(0) + f(8) + f(4);
   };
+
+  /*---- 主题感知配色 ----
+     深色主题：原色（亮金）；浅色主题：亮度取反（亮金→深金、暗金→浅金），
+     保证金色系在深/浅背景下都有足够对比度。
+  */
+  function isLightTheme() {
+    const d = document.documentElement;
+    return !!(d && d.getAttribute('data-theme') === 'light');
+  }
+  function themeHue(h, s, l) {
+    return hexFromHsl(h, s, isLightTheme() ? Math.max(24, 100 - l) : l);
+  }
 
   /*---- 布局持久化（节点位置 + 视角） ----*/
   const STORE_KEY = 'qiyuxi24-tree-layout-v1';
@@ -122,6 +136,10 @@
     const nodeMap = {};
     nodes.forEach(function (n) { nodeMap[n.id] = n; });
 
+    // 节点质量：与视觉半径平方成正比（root 最重、branch 次之、child 最轻），
+    // 供弱重力系统 F = G·M·m/(d²+SOFTEN²) 计算牵引力。
+    nodes.forEach(function (n) { n.mass = Math.max(1, nodeRadius(n) * nodeRadius(n) / 40); });
+
     // 恢复持久化布局：有存储位置则用之，否则随机散布
     const stored = loadLayout();
     const hasStoredLayout = !!(stored && stored.positions);
@@ -170,9 +188,7 @@
       const circle = document.createElementNS(NS, 'circle');
       circle.setAttribute('class', 'tree-node-circle');
       circle.setAttribute('r', size);
-      circle.setAttribute('fill', n.isRoot ? 'hsl(0,0%,10%)' : 'hsl(0,0%,7%)');
-      circle.setAttribute('stroke', 'hsl(0,0%,40%)');
-      circle.setAttribute('stroke-width', n.isRoot ? 1.5 : 1);
+      // fill / stroke / stroke-width 由 CSS 变量（--tree-node-*）控制，随主题切换自动更新
       g.appendChild(circle);
 
       if (n.icon) {
@@ -184,8 +200,7 @@
       } else {
         const dot = document.createElementNS(NS, 'circle');
         dot.setAttribute('class', 'tree-node-dot');
-        dot.setAttribute('r', 3);
-        dot.setAttribute('fill', 'hsl(0,0%,55%)');
+        dot.setAttribute('r', 3);   // fill 由 CSS 变量 --tree-dot 控制
         g.appendChild(dot);
       }
 
@@ -226,8 +241,7 @@
     });
 
     function ticked() {
-      const root = nodeMap['root'];
-      if (root && root.fx == null) { root.x = 0; root.y = 0; }   // 根节点默认锚定中心，拖拽时可临时解锁
+      // 根节点不再强制锚定中心：由中心重力源自然约束（拖走后会平滑飘回）
       nodes.forEach(function (n) {
         const g = nodeGroups[n.id];
         if (g) g.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')');
@@ -260,16 +274,49 @@
     }
 
     let simulation = null;
+    // ---- 中心重力源（牛顿万有引力 + 节点质量）----
+    // 屏幕中心（世界坐标 0,0）是一个恒定质量的重力源 M，
+    // 所有节点（含根节点）都受它的万有引力，被慢慢拉回中心：
+    //   F = G · M · m / (d² + SOFTEN²)
+    // - m 为节点质量（与半径平方成正比，见上方 mass 初始化）：
+    //   质量大的节点受引力强 → 分支层沉稳、叶子层轻飘；
+    // - SOFTEN 软化距离：近中心时力收敛到有限值，不会突变；
+    // - G 调得较小：弱重力，拖走后是"慢慢飘回中心"而非猛拉；
+    // - 仅科技树模式（gravityActive）生效；树关闭时 simulation 已 stop，零消耗。
+    const GRAVITY_G = 30;          // 引力常数（弱，越大回拉越猛）
+    const GRAVITY_M = 100;         // 中心重力源质量（固定）
+    const GRAVITY_SOFTEN = 60;     // 软化距离：d<60 时力不再增大
+    const gravityForce = function (alpha) {
+      if (!gravityActive) return;
+      const soft2 = GRAVITY_SOFTEN * GRAVITY_SOFTEN;
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        if (n.fx !== undefined || n.fy !== undefined) continue;   // 拖拽锁定中不干扰
+        const dx = -n.x, dy = -n.y;
+        const d2 = dx * dx + dy * dy;
+        const d = Math.sqrt(d2) || 1;
+        const f = GRAVITY_G * GRAVITY_M * (n.mass || 1) / (d2 + soft2);
+        n.vx += (dx / d) * f * alpha;
+        n.vy += (dy / d) * f * alpha;
+      }
+    };
+
     if (window.d3 && d3.forceSimulation) {
+      // ---- 后端力学系统 ----
+      //   link    —— 层级弹簧：保持父子结构（root→branch→child）
+      //   charge  —— 负电荷互斥：星云散开、节点间留白
+      //   collide —— 碰撞：防止节点重叠
+      //   gravity —— 弱重力（万有引力+质量）：打开科技树后持续把节点牵回中心
+      //   x / y   —— 基线向心：仅供初始布局收敛用（强度很低）
       // alphaDecay 0.02：初始布局约 2~3s 自然衰减停摆（树不可见时已完成），
       // 此后保持静止，仅拖拽 / 重置 / 首次打开时短暂加热。
       simulation = d3.forceSimulation(nodes)
         .force('link', d3.forceLink(links).id(function (d) { return d.id; }).distance(150).strength(0.6))
         .force('charge', d3.forceManyBody().strength(-320))
         .force('collide', d3.forceCollide().radius(function (d) { return nodeRadius(d) + 8; }).iterations(2))
-        .force('center', d3.forceCenter(0, 0))
-        .force('x', d3.forceX(0).strength(0.05))
-        .force('y', d3.forceY(0).strength(0.05))
+        .force('gravity', gravityForce)
+        .force('x', d3.forceX(0).strength(0.03))
+        .force('y', d3.forceY(0).strength(0.03))
         .alphaMin(0.01)
         .alphaDecay(0.02)
         .velocityDecay(0.5)
@@ -301,23 +348,30 @@
       if (!simulation) return;
       gravityActive = !!active;
       if (active) {
+        // 打开：喂能量 + 持续弱重力（alphaTarget 使 alpha 停在 GRAVITY_ALPHA_TARGET）
         simulation.alphaTarget(GRAVITY_ALPHA_TARGET);
         simulation.alpha(Math.max(GRAVITY_ALPHA_BOOST, simulation.alpha()));
         simulation.restart();
       } else {
+        // 关闭：释放拖拽锁定（防止拖动中途退出导致节点永久钉死），彻底停摆零 CPU
+        nodes.forEach(function (n) {
+          if (n.fx !== undefined) delete n.fx;
+          if (n.fy !== undefined) delete n.fy;
+        });
         simulation.alphaTarget(0).alpha(0).stop();
       }
     }
 
-    // Obsidian 风格节点拖拽：d3.drag 挂到每个节点上。
+    // 节点拖拽：d3.drag 挂到每个节点上。
     // 拖拽中节点 fx/fy 锁定跟随鼠标（世界坐标），simulation.alphaTarget 加热，
-    // 邻居被 forceLink 弹簧拉着一起走；松手后节点保持新位置并持久化。
+    // 邻居被 forceLink 弹簧拉着一起走；松手后释放锁定并保留抛掷惯性，
+    // 节点带着余速滑出，再由中心重力源 + 弹簧慢慢拉回 —— 顺滑不生硬。
     if (window.d3 && d3.drag) {
       nodes.forEach(function (n) {
         const g = nodeGroups[n.id];
         if (!g) return;
         let dragMoved = false;
-        let startX = 0, startY = 0;
+        let startX = 0, startY = 0, prevX = 0, prevY = 0, throwVX = 0, throwVY = 0;
         d3.drag()
           .on('start', function (event) {
             if (!simulation) return;
@@ -326,6 +380,8 @@
             isNodeDragging = true;
             dragMoved = false;
             startX = event.x; startY = event.y;
+            prevX = event.x; prevY = event.y;
+            throwVX = 0; throwVY = 0;
             n.fx = n.x; n.fy = n.y;                 // 锁定起始位置，防止跳动
             simulation.alphaTarget(0.3).restart();  // 加热模拟，让邻居被弹簧带动
             g.classList.add('is-dragging');
@@ -337,23 +393,31 @@
             if (!dragMoved && Math.hypot(event.x - startX, event.y - startY) > 4) dragMoved = true;
             n.fx = event.x;                          // d3.pointer 已计入 gMain 的 transform，即世界坐标
             n.fy = event.y;
+            throwVX = (event.x - prevX) * 1.5;       // 跟踪拖拽速度，松手时作为抛掷惯性
+            throwVY = (event.y - prevY) * 1.5;
+            prevX = event.x; prevY = event.y;
             simulation.alphaTarget(0.3);
           })
           .on('end', function () {
             if (!simulation) return;
-            // 拖拽结束：树模式下回到弱重力 target，否则归零停摆
+            // 松手：无论是否真拖，都释放 fx/fy 锁定 ——
+            // 节点回到力学系统支配之下，而不是钉死原地。
+            if (n.fx !== undefined) delete n.fx;
+            if (n.fy !== undefined) delete n.fy;
+            // 抛掷惯性：继承最后拖拽速度，节点带余速滑出一段，
+            // 再由中心重力源 + 弹簧慢慢拉回 —— 松手动作平滑不生硬
+            n.vx = throwVX;
+            n.vy = throwVY;
+            // 不做额外猛加热：alpha 自然从拖拽时的 0.3 衰减回弱重力 target，
+            // 重力源持续工作，节点缓慢飘回中心
             simulation.alphaTarget(gravityActive ? GRAVITY_ALPHA_TARGET : 0);
+            simulation.restart();
             isNodeDragging = false;
             g.classList.remove('is-dragging');
             svg.style.cursor = '';
             schedulePersist();                       // 保存新布局（邻居稳定后 600ms 再写）
             if (dragMoved) {
-              // 真拖拽：节点保持固定位置，抑制随后可能派发的 click
-              suppressClickUntil = Date.now() + 350;
-            } else {
-              // 轻点：释放锁定，交给原生 click 打开详情
-              if (n.fx !== undefined) delete n.fx;
-              if (n.fy !== undefined) delete n.fy;
+              suppressClickUntil = Date.now() + 350; // 抑制拖拽后误触发的 click
             }
           })(d3.select(g));  // d3 v7 的 drag 必须接收 selection，传原生 DOM 会抛 t.on is not a function
       });
@@ -479,14 +543,14 @@
       const circle = nodeEl.querySelector('.tree-node-circle');
       if (!circle) return;
       if (mode === 'hover' || mode === 'active') {
-        circle.setAttribute('stroke', hexFromHsl(n.hue, 70, 65));
-        circle.setAttribute('stroke-width', n.isRoot ? 2 : 1.6);
-        circle.setAttribute('fill', hexFromHsl(n.hue, 35, 14));
+        // hover 高亮：金色彩环 + 同色系填充（亮度随主题取反）
+        circle.setAttribute('stroke', themeHue(n.hue, 70, 65));
+        circle.setAttribute('fill', themeHue(n.hue, 35, 14));
         nodeEl.classList.add(mode === 'hover' ? 'is-hover' : 'is-active');
       } else {
-        circle.setAttribute('stroke', 'hsl(0,0%,40%)');
-        circle.setAttribute('stroke-width', n.isRoot ? 1.5 : 1);
-        circle.setAttribute('fill', n.isRoot ? 'hsl(0,0%,10%)' : 'hsl(0,0%,7%)');
+        // 恢复默认：移除内联颜色，交给 CSS 变量控制
+        circle.removeAttribute('stroke');
+        circle.removeAttribute('fill');
         nodeEl.classList.remove('is-hover', 'is-active');
       }
     }
@@ -503,7 +567,9 @@
           const sId = linkNode(l, 'source');
           const tId = linkNode(l, 'target');
           const s = nodeMap[sId], t = nodeMap[tId];
-          const stroke = s && t ? hexFromHsl((s.hue + t.hue) / 2, 55, 60) : 'hsl(0,0%,70%)';
+          const stroke = s && t
+            ? themeHue((s.hue + t.hue) / 2, 55, 60)
+            : (isLightTheme() ? 'hsl(0,0%,45%)' : 'hsl(0,0%,70%)');
           l.el.setAttribute('stroke', stroke);
         }
       });
@@ -569,9 +635,11 @@
     }
 
     const modal = document.getElementById('tree-modal');
+    let currentModalId = null;   // 当前打开的节点 id（主题切换时刷新分支色）
     function openModal(id) {
       const n = nodeMap[id];
       if (!n || !modal) return;
+      currentModalId = id;
       const body = document.getElementById('tree-modal-body');
       const title = document.getElementById('tree-modal-title');
       const icon = document.getElementById('tree-modal-icon');
@@ -581,8 +649,8 @@
       title.textContent = n.name;
       if (n.subtitle) title.textContent = n.name;
       branch.textContent = n.isRoot ? '星云中心' : (n.branchName || '');
-      branch.style.color = hexFromHsl(n.hue, 90, 72);
-      branch.style.borderColor = hexFromHsl(n.hue, 90, 72);
+      branch.style.color = themeHue(n.hue, 90, 72);
+      branch.style.borderColor = themeHue(n.hue, 90, 72);
 
       let mdHtml = '';
       if (window.marked && window.marked.parse) {
@@ -620,6 +688,7 @@
         modal.classList.remove('show');
         modal.setAttribute('aria-hidden', 'true');
       }
+      currentModalId = null;
     }
 
     function getRelatedNodes(id) {
@@ -685,7 +754,8 @@
     }
 
     const legend = document.getElementById('tree-legend');
-    if (legend) {
+    function buildLegend() {
+      if (!legend) return;
       const byBranch = {};
       nodes.forEach(function (n) {
         if (n.isRoot) return;
@@ -698,12 +768,24 @@
       legend.innerHTML = Object.keys(byBranch).map(function (k) {
         const b = byBranch[k];
         return '<div class="tree-legend-item">' +
-          '<span class="tree-legend-dot" style="background:' + hexFromHsl(b.hue, 50, 60) + ';"></span>' +
+          '<span class="tree-legend-dot" style="background:' + themeHue(b.hue, 50, 60) + ';"></span>' +
           '<span class="tree-legend-name">' + (b.icon ? b.icon + ' ' : '') + b.name + '</span>' +
           '<span class="tree-legend-count">' + b.count + '</span>' +
           '</div>';
       }).join('');
     }
+    buildLegend();
+
+    // 主题切换：重建图例（内联背景色）+ 刷新弹窗分支色 + 重置 hover 状态
+    let lastTheme = isLightTheme();
+    const themeObserver = new MutationObserver(function () {
+      if (isLightTheme() === lastTheme) return;
+      lastTheme = isLightTheme();
+      buildLegend();
+      unhoverNode();
+      if (currentModalId && modal && modal.classList.contains('show')) openModal(currentModalId);
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     resize();
     return {

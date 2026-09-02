@@ -126,7 +126,7 @@ function yamlValue(v) {
 
 /** 生成 front-matter 文本 */
 function serializeFrontmatter(meta) {
-  const order = ['title', 'slug', 'date', 'category', 'tags', 'summary', 'cover', 'published'];
+  const order = ['title', 'slug', 'date', 'category', 'tags', 'summary', 'cover', 'published', 'pinned'];
   const lines = ['---'];
   for (const k of order) {
     const v = meta[k];
@@ -163,6 +163,7 @@ function listPosts() {
       summary: (meta && meta.summary) || '',
       cover: (meta && meta.cover) || '',
       published: meta && meta.published !== false,
+      pinned: !!(meta && meta.pinned),
       body,
     });
   }
@@ -171,11 +172,12 @@ function listPosts() {
 }
 
 function rebuildIndex() {
-  execFileSync(process.execPath, ['scripts/build-index.mjs', 'posts'], {
+  // 用绝对路径引用构建脚本，避免依赖 cwd（root）
+  execFileSync(process.execPath, [path.join(root, 'scripts', 'build-index.mjs'), 'posts'], {
     cwd: root,
     stdio: 'pipe',
   });
-  execFileSync(process.execPath, ['scripts/build-feed.mjs'], {
+  execFileSync(process.execPath, [path.join(root, 'scripts', 'build-feed.mjs')], {
     cwd: root,
     stdio: 'pipe',
   });
@@ -201,11 +203,12 @@ function savePost(payload) {
     title,
     slug,
     date,
-    category: String(meta.category || '').trim() || '技术',
+    category: String(meta.category || '').trim() || '随笔', // 与前端 publish.js DEFAULT_CATEGORY 保持一致（站点级兜底）
     tags: Array.isArray(meta.tags) ? meta.tags.map((t) => String(t).trim()).filter(Boolean) : [],
     summary: String(meta.summary || '').trim(),
     cover: String(meta.cover || '').trim(),
     published: meta.published !== false,
+    pinned: meta.pinned === true || undefined, // 仅 true 时写 front-matter，避免冗余 pinned: false
   };
 
   const front = serializeFrontmatter(clean);
@@ -227,7 +230,8 @@ function deletePost(slug) {
 
 function saveImage(payload) {
   const data = String(payload.data || '');
-  const m = data.match(/^data:([\w/.-]+);base64,(.+)$/);
+  // MIME 字符类必须含 '+'：image/svg+xml 等带 subtype 参数的类型此前匹配失败 → 500
+  const m = data.match(/^data:([\w+./-]+);base64,(.+)$/);
   if (!m) throw new Error('图片数据格式错误（应为 base64 data URL）');
   const mime = m[1].toLowerCase();
   if (!mime.startsWith('image/')) throw new Error('只允许上传图片文件');

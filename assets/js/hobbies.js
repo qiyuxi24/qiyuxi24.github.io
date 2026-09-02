@@ -64,11 +64,20 @@
     return e;
   };
 
+  // 从词典取值（i18n-app.js 提供 window.__I18N）
+  const T = (key) => (window.__I18N ? window.__I18N(key) : '');
+
   if (D && D.reading) renderReadingTree(D.reading);
+
+  // 语言切换后重渲染（重新按当前语言填充文件夹名 / 搜索框文案）
+  window.addEventListener('langchange', () => {
+    if (D && D.reading) renderReadingTree(D.reading);
+  });
 
   function renderReadingTree(data) {
     const mount = document.getElementById('reading-tree');
     if (!mount) return;
+    mount.innerHTML = ''; // 重渲染前清空，避免重复追加
 
     const tree = el('div', 'tree');
     tree.dataset.treeRoot = '';
@@ -77,13 +86,13 @@
     const searchWrap = el('div', 'tree-search-wrap');
     const searchInput = el('input', 'tree-search-input');
     searchInput.type = 'search';
-    searchInput.placeholder = '搜索书名…';
-    searchInput.setAttribute('aria-label', '搜索书名');
+    searchInput.placeholder = T('tree_search_books') || '搜索书名…';
+    searchInput.setAttribute('aria-label', T('tree_search_books_aria') || '搜索书名');
     searchWrap.appendChild(searchInput);
     mount.appendChild(searchWrap);
 
     // 2) 书单文件夹（含多个子文件夹）
-    const shelvesFolder = makeFolder('已读书单 · 按主题分类');
+    const shelvesFolder = makeFolder(T('tree_shelves') || '已读书单 · 按主题分类');
     data.shelves.forEach((s) => {
       const sub = makeFolder(s.group);
       s.books.forEach((b) => sub.content.appendChild(makeBookItem(b)));
@@ -93,7 +102,7 @@
     tree.appendChild(shelvesFolder.folder);
 
     // 3) 精神导师文件夹
-    const mentorFolder = makeFolder('精神导师');
+    const mentorFolder = makeFolder(T('tree_mentors') || '精神导师');
     data.mentors.forEach((m) => {
       const item = el('div', 'tree-mentor');
       item.appendChild(el('span', 'tree-mentor-title', m.name));
@@ -104,7 +113,7 @@
     tree.appendChild(mentorFolder.folder);
 
     // 4) 精选书目文件夹（可展开感想）
-    const featFolder = makeFolder('精选书目');
+    const featFolder = makeFolder(T('tree_featured') || '精选书目');
     data.featured.forEach((f) => {
       const item = el('div', 'tree-featured');
       item.setAttribute('role', 'button');

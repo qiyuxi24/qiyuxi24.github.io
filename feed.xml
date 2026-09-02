@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="./feed.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>佀佳超 | 同州禹斋</title>
@@ -6,8 +7,32 @@
     <description>AI 应用开发者 · 西工大在读 · 把想法变成能跑的东西</description>
     <language>zh-CN</language>
     <atom:link href="https://qiyuxi24.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Mon, 31 Aug 2026 14:28:33 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2026 14:38:45 GMT</lastBuildDate>
     <generator>build-feed.mjs</generator>
+  <item>
+    <title>计算机学习路线 · 我的资源地图（持续更新）</title>
+    <link>https://qiyuxi24.github.io/reader.html?slug=learning-path</link>
+    <guid isPermaLink="false">learning-path</guid>
+    <pubDate>Wed, 02 Sep 2026 00:00:00 GMT</pubDate>
+    <description>我在 CS / AI 方向学过与想学的资源地图：课程、书、仓库、视频链接。常青文章，按需追加。</description>
+    <category>学习</category>
+  </item>
+  <item>
+    <title>当大脑把写作外包给 ChatGPT——MIT「认知债务」论文精读与证据审视</title>
+    <link>https://qiyuxi24.github.io/reader.html?slug=chatgptmit</link>
+    <guid isPermaLink="false">chatgptmit</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description></description>
+    <category>随笔</category>
+  </item>
+  <item>
+    <title>天才的陨落</title>
+    <link>https://qiyuxi24.github.io/reader.html?slug=loss-of-gifted</link>
+    <guid isPermaLink="false">loss-of-gifted</guid>
+    <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+    <description></description>
+    <category>随笔</category>
+  </item>
   <item>
     <title>不一样的普通人：从标签到锚点</title>
     <link>https://qiyuxi24.github.io/reader.html?slug=ordinary-people</link>

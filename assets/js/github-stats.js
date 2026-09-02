@@ -18,6 +18,9 @@
   const CACHE_PREFIX = 'gh_stats_';
   const CACHE_TTL = 60 * 60 * 1000; // 1 小时
 
+  // 从词典取值（i18n-app.js 提供 window.__I18N）
+  const T = (key) => (window.__I18N ? window.__I18N(key) : '');
+
   // ---------- 工具：缓存读写 ----------
   const getCache = (key) => {
     try {
@@ -84,7 +87,7 @@
       } catch (e) {
         // 失败（如 API 限流）：显示友好提示，避免停留在“正在同步…”
         wrap.innerHTML =
-          '<div class="gh-overview-placeholder">GitHub 数据暂时无法同步（API 限流），稍后刷新页面即可重试。</div>';
+          '<div class="gh-overview-placeholder">' + (T('gh_overview_fail') || 'GitHub 数据暂时无法同步（API 限流），稍后刷新页面即可重试。') + '</div>';
         wrap.classList.add('gh-failed');
         return;
       }
@@ -94,16 +97,16 @@
     const statItem = (label, value) =>
       `<div class="gh-overview-item"><span class="gh-overview-value">${value}</span><span class="gh-overview-label">${label}</span></div>`;
 
-    let html = statItem('公开仓库', data.public_repos)
-             + statItem('关注者', data.followers)
-             + statItem('累计 Star', data.total_stars);
+    let html = statItem(T('gh_stat_repos') || '公开仓库', data.public_repos)
+             + statItem(T('gh_stat_followers') || '关注者', data.followers)
+             + statItem(T('gh_stat_stars') || '累计 Star', data.total_stars);
 
     if (data.top_langs && data.top_langs.length) {
       const langBar = data.top_langs
         .slice(0, 5)
         .map((l) => `<span class="gh-lang-bar" style="width:${l.pct}%;background:${l.color}"></span>`)
         .join('');
-      html += `<div class="gh-overview-langs" title="常用语言">
+      html += `<div class="gh-overview-langs" title="${T('gh_langs_title') || '常用语言'}">
                 <div class="gh-lang-track">${langBar}</div>
               </div>`;
     }
@@ -151,6 +154,11 @@
     // 用户总览
     loadUserOverview().catch(() => {});
   }
+
+  // 语言切换后重新渲染总览（项目卡片只有数字/语言名，无需刷新）
+  window.addEventListener('langchange', () => {
+    if (document.getElementById('github-overview')) loadUserOverview().catch(() => {});
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

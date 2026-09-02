@@ -58,7 +58,7 @@ function parseFrontmatter(raw) {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return null;
   const out = {};
-  for (const line of m[1].split('\n')) {
+  for (const line of m[1].split(/\r?\n/)) {
     const kv = line.match(/^([A-Za-z]+):\s*(.*)$/);
     if (!kv) continue;
     const key = kv[1];

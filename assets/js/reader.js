@@ -181,8 +181,23 @@
       '<p>—— 完 ——</p>' +
       '<a href="./index.html" class="reader-btn">返回主页</a>';
 
+    // 封面（hero banner）：有 cover 时在文章顶部全宽展示
+    let coverEl = null;
+    if (meta.cover) {
+      coverEl = document.createElement('div');
+      coverEl.className = 'reader-cover';
+      const coverImg = document.createElement('img');
+      coverImg.src = meta.cover;
+      coverImg.alt = meta.title || '';
+      coverEl.appendChild(coverImg);
+    }
+
     articleEl.innerHTML = '';
-    articleEl.append(head, bodyEl, foot);
+    if (coverEl) {
+      articleEl.append(coverEl, head, bodyEl, foot);
+    } else {
+      articleEl.append(head, bodyEl, foot);
+    }
     bindBackButtons(foot); // 页脚"返回主页"按钮同样优先回退到来源界面
 
     // 隐藏 loading，显示文章

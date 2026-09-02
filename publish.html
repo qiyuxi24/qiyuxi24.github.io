@@ -8,105 +8,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
 <!-- Vditor 编辑器（开源 MIT，B3log 出品）：本地化自 assets/vendor/vditor -->
 <link rel="stylesheet" href="./assets/vendor/vditor/dist/index.css">
-<style>
-:root{
-  --bg:#141416; --panel:#1c1c1e; --panel2:#232326; --border:#33333a;
-  --text:#e6e6e6; --muted:#8b8b93; --gold:#f5c06a; --gold-dim:#e0a95c;
-  --danger:#e05b5b;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; font-family:'Poppins','Microsoft YaHei',system-ui,sans-serif;
-  background:var(--bg); color:var(--text); font-size:14px; overflow:hidden;
-}
-button{font-family:inherit}
-.topbar{
-  height:52px; display:flex; align-items:center; justify-content:space-between;
-  padding:0 16px; background:var(--panel); border-bottom:1px solid var(--border);
-}
-.brand{font-weight:600; letter-spacing:.5px; color:var(--gold); white-space:nowrap}
-.brand .sub{font-weight:400; color:var(--muted); font-size:12px; margin-left:10px; letter-spacing:normal}
-.top-actions{display:flex; align-items:center; gap:12px}
-.count{color:var(--muted); font-size:12px}
-.layout{
-  display:grid; grid-template-columns:260px minmax(420px,1fr);
-  height:calc(100vh - 52px); gap:1px; background:var(--border);
-}
-.panel{background:var(--panel); display:flex; flex-direction:column; min-width:0; overflow:hidden}
-
-/* ---------- 通用按钮 ---------- */
-.btn{
-  border:1px solid var(--border); background:var(--panel2); color:var(--text);
-  padding:6px 12px; border-radius:8px; cursor:pointer; font-size:13px; transition:.15s;
-}
-.btn:hover{border-color:var(--gold); color:var(--gold)}
-.btn-primary{background:var(--gold); border-color:var(--gold); color:#1c1c1e; font-weight:600}
-.btn-primary:hover{background:var(--gold-dim); color:#1c1c1e}
-.btn:disabled{opacity:.5; cursor:not-allowed}
-
-/* ---------- 左栏：文章列表 ---------- */
-.list-panel{padding:12px}
-.list-panel .panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
-.search{
-  width:100%; padding:8px 10px; background:var(--panel2); border:1px solid var(--border);
-  border-radius:8px; color:var(--text); outline:none; margin-bottom:10px;
-}
-.search:focus{border-color:var(--gold)}
-.post-list{flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px}
-.post-item{
-  position:relative; padding:9px 26px 9px 10px; border:1px solid var(--border);
-  border-radius:8px; cursor:pointer; background:var(--panel2); transition:.15s;
-}
-.post-item:hover{border-color:var(--gold)}
-.post-item.active{border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold)}
-.pi-top{display:flex; align-items:center; gap:6px}
-.dot{width:7px; height:7px; border-radius:50%; background:var(--gold); flex:none}
-.dot.off{background:#555}
-.pi-title{font-weight:500; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.pi-meta{color:var(--muted); font-size:11px; margin-top:3px}
-.pi-del{
-  position:absolute; right:6px; top:8px; background:none; border:none; color:var(--muted);
-  cursor:pointer; font-size:12px; opacity:0; transition:.15s;
-}
-.post-item:hover .pi-del{opacity:1}
-.pi-del:hover{color:var(--danger)}
-.empty{color:var(--muted); text-align:center; padding:30px 0}
-
-/* ---------- 中栏：元数据 + Vditor ---------- */
-.meta-form{padding:12px 14px; border-bottom:1px solid var(--border); background:var(--panel2); display:flex; flex-direction:column; gap:8px}
-.field-row{display:flex; gap:10px; flex-wrap:wrap}
-.field{display:flex; flex-direction:column; gap:4px; min-width:0}
-.field.grow{flex:1 1 120px}
-.field label{font-size:11px; color:var(--muted)}
-.field input,.field select{
-  background:var(--panel); border:1px solid var(--border); border-radius:6px;
-  padding:6px 8px; color:var(--text); outline:none; font-size:13px;
-}
-.field input:focus,.field select:focus{border-color:var(--gold)}
-.check{justify-content:flex-end}
-.check label{display:flex; align-items:center; gap:6px; color:var(--text); font-size:13px; cursor:pointer; padding-bottom:8px; white-space:nowrap}
-.check input{accent-color:var(--gold); width:15px; height:15px; cursor:pointer}
-.cover-row{display:flex; gap:6px; width:100%}
-.cover-row input{flex:1}
-#vditor{flex:1; min-height:0}
-.editor-foot{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-top:1px solid var(--border)}
-#foot-info{color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.editor-foot .actions{display:flex; gap:8px; flex:none}
-
-/* ---------- toast ---------- */
-.toast{
-  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-  background:var(--panel2); border:1px solid var(--gold); color:var(--text);
-  padding:10px 18px; border-radius:8px; font-size:13px; z-index:99;
-  box-shadow:0 8px 30px rgba(0,0,0,.5); max-width:80vw;
-}
-@media (max-width: 760px){
-  .layout{grid-template-columns:1fr; grid-template-rows:32% 1fr; grid-template-areas:"list" "edit"}
-  .list-panel{grid-area:list}
-  .editor-panel{grid-area:edit}
-}
-</style>
+<!-- 发布工作台专用样式（含折叠布局），逻辑见 assets/js/publish.js -->
+<link rel="stylesheet" href="./assets/css/publish.css">
 </head>
 <body>
 
@@ -118,60 +21,79 @@ button{font-family:inherit}
   </div>
 </header>
 
-<div class="layout">
-  <!-- 左栏：文章列表 -->
+<div class="layout" id="layout">
+  <!-- 左栏：文章列表（可折叠成 36px 竖条，按钮在标题行右侧） -->
   <aside class="panel list-panel">
-    <div class="panel-head">
-      <button class="btn btn-primary" id="btn-new">+ 新建文章</button>
+    <div class="side-body">
+      <div class="panel-head">
+        <span class="panel-title">文章列表</span>
+        <div class="panel-head-actions">
+          <button class="btn btn-primary" id="btn-new">+ 新建文章</button>
+          <button class="icon-btn" id="btn-side-toggle" title="收起文章列表，专注写作">«</button>
+        </div>
+      </div>
+      <input class="search" id="search" placeholder="搜索标题 / slug…">
+      <div class="post-list" id="post-list"></div>
     </div>
-    <input class="search" id="search" placeholder="搜索标题 / slug…">
-    <div class="post-list" id="post-list"></div>
+    <button class="side-rail" id="side-rail" title="展开文章列表">»</button>
   </aside>
 
-  <!-- 中栏：元数据 + Vditor 编辑器（即时渲染，所见即所得） -->
+  <!-- 中栏：元数据（可折叠成顶部「写作设置」条）+ Vditor 编辑器（即时渲染，所见即所得） -->
   <main class="panel editor-panel">
-    <form class="meta-form" id="meta-form" autocomplete="off">
-      <div class="field-row">
-        <div class="field grow">
-          <label>标题 *</label>
-          <input id="f-title" placeholder="文章标题">
+    <div class="meta-wrap" id="meta-wrap">
+      <div class="meta-bar" id="meta-bar" title="点击折叠 / 展开元数据表单">
+        <span class="meta-bar-label">写作设置</span>
+        <span class="meta-bar-title" id="meta-title">未命名文章</span>
+        <button class="btn meta-toggle" id="btn-meta-toggle" type="button" title="折叠 / 展开元数据表单">收起</button>
+      </div>
+
+      <form class="meta-form" id="meta-form" autocomplete="off">
+        <div class="field-row">
+          <div class="field grow">
+            <label>标题 *</label>
+            <input id="f-title" placeholder="文章标题">
+          </div>
+          <div class="field">
+            <label>slug（英文小写）</label>
+            <input id="f-slug" placeholder="自动生成">
+          </div>
+          <div class="field">
+            <label>日期</label>
+            <input id="f-date" type="date">
+          </div>
+          <div class="field cat">
+            <label>分类</label>
+            <input id="f-category" list="category-list" placeholder="随笔">
+          </div>
+        </div>
+        <!-- 分类建议（基础四项 + 已有文章用过的分类，由 publish.js 动态填充），可自由输入新分类 -->
+        <datalist id="category-list"></datalist>
+        <div class="field-row">
+          <div class="field grow">
+            <label>标签（逗号分隔）</label>
+            <input id="f-tags" placeholder="AI, 笔记">
+          </div>
+          <div class="field check">
+            <label title="置顶文章会排在博客列表最前"><input type="checkbox" id="f-pinned"> 置顶</label>
+          </div>
+          <div class="field check">
+            <label><input type="checkbox" id="f-published" checked> 发布</label>
+          </div>
         </div>
         <div class="field">
-          <label>slug（英文小写）</label>
-          <input id="f-slug" placeholder="自动生成">
+          <label>摘要（列表页简介，可留空）</label>
+          <input id="f-summary" placeholder="一句话摘要">
         </div>
         <div class="field">
-          <label>日期</label>
-          <input id="f-date" type="date">
+          <label>封面图路径</label>
+          <div class="cover-row">
+            <input id="f-cover" placeholder="./assets/images/blog-4.jpg">
+            <button class="btn" type="button" id="btn-cover-random" title="用 Delaunator 三角网随机生成封面（可反复点击换一张）">随机生成</button>
+            <button class="btn" type="button" id="btn-cover" title="上传封面图到 assets/images/posts/">上传</button>
+          </div>
         </div>
-        <div class="field">
-          <label>分类</label>
-          <select id="f-category">
-            <option>技术</option><option>随笔</option><option>项目</option><option>学习</option>
-          </select>
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field grow">
-          <label>标签（逗号分隔）</label>
-          <input id="f-tags" placeholder="AI, 笔记">
-        </div>
-        <div class="field check">
-          <label><input type="checkbox" id="f-published" checked> 发布</label>
-        </div>
-      </div>
-      <div class="field">
-        <label>摘要（列表页简介，可留空）</label>
-        <input id="f-summary" placeholder="一句话摘要">
-      </div>
-      <div class="field">
-        <label>封面图路径</label>
-        <div class="cover-row">
-          <input id="f-cover" placeholder="./assets/images/blog-4.jpg">
-          <button class="btn" type="button" id="btn-cover" title="上传封面图到 assets/images/posts/">上传</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
     <div id="vditor"></div>
 
@@ -188,360 +110,11 @@ button{font-family:inherit}
 <div class="toast" id="toast" hidden></div>
 <input type="file" id="file-input" accept="image/*" hidden>
 
+<!-- delaunator（Mapbox，ISC 协议）：随机封面三角网底层算法，本地化自 assets/vendor/delaunator -->
+<script src="./assets/vendor/delaunator/delaunator.min.js"></script>
 <!-- Vditor 主库（本地化；公式/代码高亮/中文语言包均从本地 vendor 目录加载） -->
 <script src="./assets/vendor/vditor/dist/index.js"></script>
-<script>
-'use strict';
-const $ = (id) => document.getElementById(id);
-let posts = [];
-let currentSlug = null;
-let slugEdited = false;
-let saving = false;
-let toastTimer = null;
-let vd = null;            // Vditor 实例
-let vdReady = false;      // 编辑器是否初始化完成
-let pendingBody = '';     // 初始化完成前暂存的正文
-
-// ---------------------------------------------------------------- 工具
-
-function toast(msg, ms = 2800) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), ms);
-}
-
-function today() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function slugify(title) {
-  return String(title || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-');
-}
-
-function readAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result);
-    r.onerror = () => reject(new Error('读取文件失败'));
-    r.readAsDataURL(file);
-  });
-}
-
-// ---------------------------------------------------------------- 文章列表
-
-async function loadPosts() {
-  const res = await fetch('/api/posts');
-  if (!res.ok) throw new Error(`API 返回 ${res.status}`);
-  posts = await res.json();
-  renderList();
-}
-
-function renderList() {
-  const kw = $('search').value.trim().toLowerCase();
-  const list = posts.filter(
-    (p) => !kw || p.title.toLowerCase().includes(kw) || p.slug.toLowerCase().includes(kw)
-  );
-  const box = $('post-list');
-  box.innerHTML = '';
-  $('post-count').textContent = `${posts.length} 篇文章 · ${posts.filter((p) => p.published).length} 已发布`;
-  if (!list.length) {
-    box.innerHTML = '<div class="empty">暂无文章，点「+ 新建文章」开始写作</div>';
-    return;
-  }
-  for (const p of list) {
-    const item = document.createElement('div');
-    item.className = 'post-item' + (p.slug === currentSlug ? ' active' : '');
-    const dot = document.createElement('span');
-    dot.className = 'dot' + (p.published ? '' : ' off');
-    const title = document.createElement('span');
-    title.className = 'pi-title';
-    title.textContent = p.title;
-    const top = document.createElement('div');
-    top.className = 'pi-top';
-    top.append(dot, title);
-    const meta = document.createElement('div');
-    meta.className = 'pi-meta';
-    meta.textContent = `${p.slug} · ${p.date}${p.category ? ' · ' + p.category : ''}`;
-    const del = document.createElement('button');
-    del.className = 'pi-del';
-    del.textContent = '✕';
-    del.title = '删除文章';
-    del.addEventListener('click', (e) => {
-      e.stopPropagation();
-      delPost(p);
-    });
-    item.append(top, meta, del);
-    item.addEventListener('click', () => selectPost(p.slug));
-    box.appendChild(item);
-  }
-}
-
-function selectPost(slug) {
-  const p = posts.find((x) => x.slug === slug);
-  if (!p) return;
-  currentSlug = p.slug;
-  slugEdited = true;
-  $('f-title').value = p.title || '';
-  $('f-slug').value = p.slug;
-  $('f-date').value = p.date || today();
-  $('f-category').value = p.category || '技术';
-  $('f-tags').value = Array.isArray(p.tags) ? p.tags.join(', ') : '';
-  $('f-summary').value = p.summary || '';
-  $('f-cover').value = p.cover || '';
-  $('f-published').checked = p.published !== false;
-  pendingBody = p.body || '';
-  if (vdReady) vd.setValue(pendingBody);
-  $('foot-info').textContent = `正在编辑：${p.slug}.md · 保存后自动更新索引与 RSS`;
-  renderList();
-}
-
-function newPost() {
-  currentSlug = null;
-  slugEdited = false;
-  $('f-title').value = '';
-  $('f-slug').value = '';
-  $('f-date').value = today();
-  $('f-category').value = '技术';
-  $('f-tags').value = '';
-  $('f-summary').value = '';
-  $('f-cover').value = '';
-  $('f-published').checked = true;
-  pendingBody = '';
-  if (vdReady) vd.setValue('');
-  $('foot-info').textContent = '新文章（尚未保存）';
-  renderList();
-  $('f-title').focus();
-}
-
-// ---------------------------------------------------------------- 保存 / 删除
-
-async function collectAndSave(openPreview) {
-  const title = $('f-title').value.trim();
-  const slug = ($('f-slug').value.trim() || slugify(title)).toLowerCase();
-  if (!title) return toast('请先填写标题');
-  if (!slug) return toast('slug 无法自动生成，请手动填写（英文小写连字符）');
-  if (saving) return;
-  saving = true;
-  $('btn-save').disabled = true;
-  try {
-    const payload = {
-      meta: {
-        title,
-        slug,
-        date: $('f-date').value || today(),
-        category: $('f-category').value || '技术',
-        tags: $('f-tags').value.split(/[,，]/).map((s) => s.trim()).filter(Boolean),
-        summary: $('f-summary').value.trim(),
-        cover: $('f-cover').value.trim(),
-        published: $('f-published').checked,
-      },
-      body: vd ? vd.getValue() : pendingBody,
-    };
-    const res = await fetch('/api/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!data.ok) return toast('保存失败：' + (data.error || '未知错误'), 4200);
-    currentSlug = data.slug;
-    slugEdited = true;
-    toast('已保存 ' + data.file + '（索引 + RSS 已更新）');
-    await loadPosts();
-    if (openPreview) {
-      window.open('./reader.html?slug=' + encodeURIComponent(data.slug), '_blank');
-    }
-  } catch (e) {
-    toast('保存失败：' + e.message, 4200);
-  } finally {
-    saving = false;
-    $('btn-save').disabled = false;
-  }
-}
-
-async function delPost(p) {
-  if (!window.confirm(`确定删除「${p.title}」（${p.slug}.md）？此操作不可恢复。`)) return;
-  const res = await fetch('/api/delete', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ slug: p.slug }),
-  });
-  const data = await res.json();
-  if (!data.ok) return toast('删除失败：' + (data.error || ''), 4200);
-  if (currentSlug === p.slug) newPost();
-  toast('已删除 ' + data.file + '（索引 + RSS 已更新）');
-  await loadPosts();
-}
-
-// ---------------------------------------------------------------- 封面上传
-
-async function uploadCover(file) {
-  if (!file) return;
-  if (!file.type.startsWith('image/')) return toast('请选择图片文件');
-  if (file.size > 8 * 1024 * 1024) return toast('图片超过 8MB，请压缩后再上传');
-  toast('正在上传封面…');
-  const dataUrl = await readAsDataURL(file);
-  const res = await fetch('/api/upload', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data: dataUrl, name: file.name }),
-  });
-  const data = await res.json();
-  if (!data.ok) return toast('上传失败：' + (data.error || ''), 4200);
-  $('f-cover').value = data.path;
-  toast('封面已上传：' + data.name);
-}
-
-$('btn-cover').addEventListener('click', () => {
-  $('file-input').dataset.cover = '1';
-  $('file-input').click();
-});
-
-$('file-input').addEventListener('change', () => {
-  const file = $('file-input').files[0];
-  $('file-input').value = '';
-  if (!file) return;
-  if ($('file-input').dataset.cover === '1') {
-    $('file-input').dataset.cover = '';
-    uploadCover(file);
-  }
-});
-
-// ---------------------------------------------------------------- Vditor 初始化
-// 复用开源编辑器（Vditor，MIT）：即时渲染模式，自带工具栏 / 公式(KaTeX) / 代码高亮 /
-// 图片上传 / 粘贴 / 拖拽，全部资源本地化，不依赖外网 CDN。
-
-vd = new Vditor('vditor', {
-  height: '100%',
-  mode: 'ir',
-  lang: 'zh_CN',
-  theme: 'dark',
-  icon: 'ant',
-  cdn: './assets/vendor/vditor',
-  placeholder:
-    '在这里写正文… 支持 Markdown；行内公式 $E=mc^2$，块级公式 $$...$$；图片可拖拽、粘贴或点工具栏上传。',
-  value: pendingBody,
-  cache: { enable: false }, // 关闭本地缓存，避免切换文章时串内容
-  counter: { enable: true, type: 'text' },
-  outline: false,
-  toolbarConfig: { pin: true },
-  toolbar: [
-    'undo',
-    'redo',
-    '|',
-    'headings',
-    'bold',
-    'italic',
-    'strike',
-    '|',
-    'list',
-    'ordered-list',
-    'quote',
-    '|',
-    'code',
-    'inline-code',
-    'table',
-    'link',
-    'upload',
-    '|',
-    {
-      name: 'math-inline',
-      icon: '<svg viewBox="0 0 24 24" width="16" height="16"><text x="12" y="16" text-anchor="middle" font-size="14" font-family="serif" fill="currentColor">Σ</text></svg>',
-      tip: '行内公式 $…$',
-      click: () => {
-        const sel = vd.getSelection();
-        vd.insertValue('$' + (sel || 'x^2 + y^2 = z^2') + '$');
-      },
-    },
-    {
-      name: 'math-block',
-      icon: '<svg viewBox="0 0 24 24" width="16" height="16"><text x="12" y="16" text-anchor="middle" font-size="11" font-family="serif" fill="currentColor">ΣΣ</text></svg>',
-      tip: '块级公式 $$…$$',
-      click: () => {
-        const sel = vd.getSelection();
-        const body = sel || 'x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}';
-        vd.insertValue('\n$$\n' + body + '\n$$\n');
-      },
-    },
-    '|',
-    'edit-mode',
-    'both',
-    'preview',
-    'fullscreen',
-  ],
-  preview: {
-    math: { engine: 'KaTeX', katexOptions: { throwOnError: false } },
-    hljs: { enable: true, lineNumber: false, style: 'ant-design' },
-    theme: { current: 'dark', path: './assets/vendor/vditor/dist/css/content-theme' },
-  },
-  upload: {
-    max: 8 * 1024 * 1024,
-    accept: 'image/*',
-    handler: async (files) => {
-      const res = { errFiles: [], succMap: {} };
-      for (const file of files) {
-        try {
-          const dataUrl = await readAsDataURL(file);
-          const r = await fetch('/api/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ data: dataUrl, name: file.name }),
-          });
-          const d = await r.json();
-          if (d.ok) {
-            res.succMap[file.name] = d.path;
-          } else {
-            res.errFiles.push(file.name);
-          }
-        } catch (e) {
-          res.errFiles.push(file.name);
-        }
-      }
-      if (res.errFiles.length) toast('有 ' + res.errFiles.length + ' 张图片上传失败', 4200);
-      if (Object.keys(res.succMap).length) toast('图片已上传并插入');
-      return res;
-    },
-  },
-  after: () => {
-    vdReady = true;
-    vd.setValue(pendingBody);
-  },
-});
-
-// ---------------------------------------------------------------- 事件绑定
-
-$('f-title').addEventListener('input', () => {
-  if (!slugEdited && !$('f-slug').value.trim()) {
-    $('f-slug').value = slugify($('f-title').value);
-  }
-});
-$('f-slug').addEventListener('input', () => { slugEdited = true; });
-$('search').addEventListener('input', renderList);
-$('btn-new').addEventListener('click', newPost);
-$('btn-save').addEventListener('click', () => collectAndSave(false));
-$('btn-preview').addEventListener('click', () => collectAndSave(true));
-$('btn-open-site').addEventListener('click', () => window.open('./index.html', '_blank'));
-$('meta-form').addEventListener('submit', (e) => { e.preventDefault(); collectAndSave(false); });
-
-// ---------------------------------------------------------------- 启动
-
-(async function init() {
-  try {
-    await loadPosts();
-  } catch (e) {
-    toast('无法连接本地服务（' + e.message + '）。请通过 start-publish.bat 启动后访问本页。', 6000);
-    $('post-list').innerHTML = '<div class="empty">无法加载文章列表</div>';
-  }
-  if (!posts.length) newPost();
-  else selectPost(posts[0].slug);
-})();
-</script>
+<!-- 发布工作台逻辑（独立维护，见文件头注释） -->
+<script src="./assets/js/publish.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ body {
   position: relative;
   z-index: 2;
   display: block; /* 覆盖 style.css 里 `main { display: flex }` 的污染 */
-  max-width: 760px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 24px 20px 80px;
 }
@@ -64,6 +64,35 @@ body {
   margin: 0;
 }
 
+/* ---------- 封面 hero banner ---------- */
+.reader-cover {
+  margin: -32px -28px 24px;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  position: relative;
+  line-height: 0;
+}
+
+.reader-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+  object-fit: cover;
+}
+
+/* 封面底部渐变：与卡片背景自然衔接 */
+.reader-cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: linear-gradient(to bottom, transparent, var(--panel-bg));
+  pointer-events: none;
+}
+
 /* ---------- 文章头部 ---------- */
 .reader-content {
   /* 覆盖 style.css 里 `article { display: none }` 的污染
@@ -72,7 +101,7 @@ body {
   background: var(--bg-gradient-jet);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 32px 28px;
+  padding: 36px 36px;
   box-shadow: var(--shadow-3);
   transition: background var(--transition-2), border-color var(--transition-2);
 }
@@ -408,6 +437,14 @@ body {
 @media (max-width: 480px) {
   .reader-content {
     padding: 24px 18px;
+  }
+
+  .reader-cover {
+    margin: -24px -18px 20px;
+  }
+
+  .reader-cover img {
+    max-height: 240px;
   }
 
   .reader-title {

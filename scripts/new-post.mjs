@@ -6,7 +6,7 @@
  *   node scripts/new-post.mjs "文章标题"
  *
  * 可选参数：
- *   --category 技术    分类（技术/随笔/项目/学习，默认"技术"）
+ *   --category 随笔    分类（技术/随笔/项目/学习，默认"随笔"，可自定义）
  *   --slug xxx        自定义 slug（默认由标题自动生成英文连字符）
  *
  * 效果：
@@ -37,7 +37,7 @@ const flag = (name, def) => {
   return i >= 0 && args[i + 1] ? args[i + 1] : def;
 };
 
-const category = flag('category', '技术');
+const category = flag('category', '随笔');
 const customSlug = flag('slug', null);
 
 // slug：中文标题用拼音不现实，这里转成小写英文+连字符；若标题是中文，提示手动设置 --slug

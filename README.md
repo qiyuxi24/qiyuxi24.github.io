@@ -52,7 +52,7 @@ node scripts/serve-local.mjs   # 默认 8899 端口
 
 ### 改名字 / 身份 / 简介（注意 i18n！）
 
-页面大部分文字是**双语（中/英）**，由 `assets/js/i18n.js` 统一管理（`data-i18n="key"` 从字典取词）。
+页面大部分文字是**双语（中/英）**，由 `assets/data/i18n.js` 统一管理（`data-i18n="key"` 从字典取词）。
 
 | 想改什么 | 改哪里 |
 |----------|--------|
@@ -91,12 +91,12 @@ node scripts/serve-local.mjs   # 默认 8899 端口
 
 ### 改爱好 tab（我的页面独有）
 
-- 数据结构：`assets/js/hobbies-data.js`（阅读/游戏/音乐/创作/运动/知识记录六块内容都在这）
+- 数据结构：`assets/data/hobbies-data.js`（阅读/游戏/音乐/创作/运动/知识记录六块内容都在这）
 - 展示逻辑：`assets/js/hobbies.js`；样式：`assets/css/hobbies.css`
 
 ### 改科技树（独立全屏覆盖层）
 
-- 数据：`assets/js/tree-data.js`（节点/连线）
+- 数据：`assets/data/tree-data.js`（节点/连线）
 - 渲染：`assets/js/tree-render.js`；入口：`assets/js/tree.js`
 - 打开/关闭由 `assets/js/page-manager.js` 统一管理（注册为覆盖层页，退出后返回原页面）
 
@@ -134,21 +134,24 @@ node scripts/serve-local.mjs   # 默认 8899 端口
 │   ├── build-index.mjs # 重建文章/项目清单
 │   └── build-feed.mjs  # 从清单生成 RSS feed.xml
 ├── assets/
+│   ├── data/           # 纯数据 JS（与逻辑组件分离，页面 script 按需引入）
+│   │   ├── i18n.js     # 中英双语字典（I18N_DICT）
+│   │   ├── hobbies-data.js # 爱好数据（阅读/游戏/音乐/创作/运动/知识记录）
+│   │   └── tree-data.js    # 科技树数据（节点/连线）
 │   ├── css/style.css   # 主样式（vCard 默认 + 特效 + 科技树 + GitHub stats）
 │   ├── css/reader.css  # 文章阅读页样式
 │   ├── css/hobbies.css # 爱好 tab 样式
 │   ├── js/script.js    # 导航 / 筛选交互
 │   ├── js/reader.js    # 文章阅读页逻辑
 │   ├── js/theme.js     # 深/浅色主题切换
-│   ├── js/i18n.js      # 中英双语字典（I18N_DICT）
 │   ├── js/i18n-app.js  # 语言切换逻辑（侧边栏滑块，localStorage 持久化）
 │   ├── js/page-manager.js # 页面切换中间件（导航高亮/覆盖层状态统一管理）
 │   ├── js/marked.min.js   # marked 本地库（Markdown 渲染）
 │   ├── js/marked-math.js  # Markdown 公式预处理（$...$ / $$...$$）
 │   ├── js/katex-loader.js # KaTeX 加载器（本地优先 + CDN 兜底）
 │   ├── js/github-stats.js # GitHub 动态数据（star/语言/总览）
-│   ├── js/tree-data.js / tree-render.js / tree.js # 科技树（数据/渲染器/入口）
-│   ├── js/hobbies-data.js / hobbies.js # 爱好 tab（数据/交互）
+│   ├── js/tree-render.js / tree.js # 科技树（渲染器 / 入口）
+│   ├── js/hobbies.js   # 爱好 tab 渲染逻辑（数据见 data/hobbies-data.js）
 │   ├── vendor/katex/   # KaTeX 本地库（公式渲染，含字体）
 │   ├── vendor/vditor/  # Vditor 开源编辑器（MIT，本地化，含中文包/代码高亮/公式）
 │   └── images/         # 图片素材（头像、项目图、博客图）

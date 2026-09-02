@@ -26,11 +26,17 @@
 
   const fullscreen = document.getElementById('tree-fullscreen');
 
+  // 主题粒子背景：打开科技树时启动，关闭时停止（零 CPU）
+  const particles = window.createParticlesEngine
+    ? window.createParticlesEngine(document.getElementById('tree-particles-canvas'), { size: 'container' })
+    : null;
+
   function openTree() {
     if (!fullscreen) return;
     fullscreen.classList.add('show');
     fullscreen.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    if (particles) particles.start();
     if (tree) {
       tree.setActive(true);
       setTimeout(function () { tree.resize(); }, 80);
@@ -42,6 +48,7 @@
     fullscreen.classList.remove('show');
     fullscreen.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    if (particles) particles.stop();
     if (tree) {
       tree.setActive(false);
       if (tree.closeModal) tree.closeModal();
@@ -70,7 +77,9 @@
   });
 
   window.addEventListener('resize', function () {
-    if (tree && fullscreen && fullscreen.classList.contains('show')) tree.resize();
+    if (!fullscreen || !fullscreen.classList.contains('show')) return;
+    if (tree) tree.resize();
+    if (particles) particles.resize();
   });
 
   requestAnimationFrame(function () {

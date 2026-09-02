@@ -35,6 +35,7 @@ _legacy_jekyll/
 
 # Ignore ad-hoc debug scripts / screenshots at repo root (e.g. _check_*.js, _shot.js, view-*.png)
 /_*.*
+/_tree_shot/
 /.tmp-server.js
 /view-*.png
 /hobbies-*.png

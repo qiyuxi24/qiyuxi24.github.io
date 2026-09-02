@@ -1,19 +1,12 @@
-(function () {
-  'use strict';
+'use strict';
 
-  window.TreeUtils = window.TreeUtils || {};
-  window.TreeUtils.hexFromHsl = function hexFromHsl(h, s, l) {
-    s = s / 100; l = l / 100;
-    const k = function (n) { return (n + h / 30) % 12; };
-    const a = s * Math.min(l, 1 - l);
-    const f = function (n) {
-      const c = l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-      return Math.round(255 * c).toString(16).padStart(2, '0');
-    };
-    return '#' + f(0) + f(8) + f(4);
-  };
+/**
+ * tree-data.js — 科技树数据（节点/连线），位于 assets/data/（纯数据区）。
+ * 数据驱动，改这里即可增删节点，无需改 HTML。
+ * 渲染逻辑与配色工具 hexFromHsl 见 assets/js/tree-render.js。
+ */
 
-  window.TreeData = {
+window.TreeData = {
     name: '佀佳超',
     subtitle: 'AI 应用开发者',
     desc: '西北工业大学 · 人工智能专业在读，把每个想法变成能跑的东西。',
@@ -95,4 +88,3 @@
       },
     ]
   };
-})();

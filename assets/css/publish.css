@@ -1,0 +1,149 @@
+/* publish.css — 发布工作台（publish.html）专用样式
+ * 说明：本文件只服务发布工作台页面，与站点通用样式（style.css/reader.css）解耦。
+ * 折叠逻辑（元数据表单 / 文章列表面板）的状态类在 JS（assets/js/publish.js）中控制。
+ */
+:root{
+  --bg:#141416; --panel:#1c1c1e; --panel2:#232326; --border:#33333a;
+  --text:#e6e6e6; --muted:#8b8b93; --gold:#f5c06a; --gold-dim:#e0a95c;
+  --danger:#e05b5b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:'Poppins','Microsoft YaHei',system-ui,sans-serif;
+  background:var(--bg); color:var(--text); font-size:14px; overflow:hidden;
+}
+button{font-family:inherit}
+.topbar{
+  height:52px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 16px; background:var(--panel); border-bottom:1px solid var(--border);
+}
+.brand{font-weight:600; letter-spacing:.5px; color:var(--gold); white-space:nowrap}
+.brand .sub{font-weight:400; color:var(--muted); font-size:12px; margin-left:10px; letter-spacing:normal}
+.top-actions{display:flex; align-items:center; gap:12px}
+.count{color:var(--muted); font-size:12px}
+
+/* 布局：侧栏轨道宽度随 .side-collapsed 状态切换（收起时只留 36px 竖条） */
+.layout{
+  display:grid; grid-template-columns:260px minmax(420px,1fr);
+  height:calc(100vh - 52px); gap:1px; background:var(--border);
+}
+.layout.side-collapsed{grid-template-columns:36px minmax(420px,1fr)}
+.panel{background:var(--panel); display:flex; flex-direction:column; min-width:0; overflow:hidden}
+
+/* ---------- 通用按钮 ---------- */
+.btn{
+  border:1px solid var(--border); background:var(--panel2); color:var(--text);
+  padding:6px 12px; border-radius:8px; cursor:pointer; font-size:13px; transition:.15s;
+}
+.btn:hover{border-color:var(--gold); color:var(--gold)}
+.btn-primary{background:var(--gold); border-color:var(--gold); color:#1c1c1e; font-weight:600}
+.btn-primary:hover{background:var(--gold-dim); color:#1c1c1e}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.icon-btn{
+  flex:none; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center;
+  background:var(--panel2); border:1px solid var(--border); color:var(--muted);
+  border-radius:8px; cursor:pointer; font-size:12px; transition:.15s;
+}
+.icon-btn:hover{border-color:var(--gold); color:var(--gold)}
+
+/* ---------- 左栏：文章列表 ---------- */
+.list-panel{padding:8px}
+.side-body{flex:1; display:flex; flex-direction:column; min-height:0}
+.list-panel .panel-head{display:flex; align-items:center; gap:6px; margin-bottom:10px}
+.panel-title{flex:1; min-width:0; font-weight:600; font-size:13px; white-space:nowrap}
+.panel-head-actions{display:flex; gap:6px; align-items:center; flex:none}
+/* 收起后的竖条（36px 轨道），仅 .side-collapsed 时显示 */
+.side-rail{
+  flex:1; display:none; width:36px; min-height:0; align-items:center; justify-content:center;
+  background:none; border:none; color:var(--muted); cursor:pointer; font-size:16px; transition:.15s;
+}
+.side-rail:hover{color:var(--gold)}
+.search{
+  width:100%; padding:8px 10px; background:var(--panel2); border:1px solid var(--border);
+  border-radius:8px; color:var(--text); outline:none; margin-bottom:10px;
+}
+.search:focus{border-color:var(--gold)}
+.post-list{flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px}
+.post-item{
+  position:relative; padding:9px 26px 9px 10px; border:1px solid var(--border);
+  border-radius:8px; cursor:pointer; background:var(--panel2); transition:.15s;
+}
+.post-item:hover{border-color:var(--gold)}
+.post-item.active{border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold)}
+.pi-top{display:flex; align-items:center; gap:6px}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--gold); flex:none}
+.dot.off{background:#555}
+.pi-title{flex:1; min-width:0; font-weight:500; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.pin-flag{flex:none; color:var(--gold); border:1px solid var(--gold-dim); border-radius:4px; padding:0 5px; font-size:10px; line-height:16px}
+.pi-meta{color:var(--muted); font-size:11px; margin-top:3px}
+.pi-del{
+  position:absolute; right:6px; top:8px; background:none; border:none; color:var(--muted);
+  cursor:pointer; font-size:12px; opacity:0; transition:.15s;
+}
+.post-item:hover .pi-del{opacity:1}
+.pi-del:hover{color:var(--danger)}
+.empty{color:var(--muted); text-align:center; padding:30px 0}
+/* 折叠后的列表面板只留竖条，隐藏列表本体 */
+.side-collapsed .side-body{display:none}
+.side-collapsed .side-rail{display:flex}
+
+/* ---------- 中栏：元数据折叠条 + 表单 + Vditor ---------- */
+.meta-wrap{display:flex; flex-direction:column; flex:none}
+/* 折叠条常驻：提供「当前文章名 + 展开/收起表单」入口，表单折叠后仍可恢复 */
+.meta-bar{
+  display:flex; align-items:center; gap:10px; min-height:36px; padding:0 14px;
+  background:var(--panel); border-bottom:1px solid var(--border); cursor:pointer;
+}
+.meta-bar-label{
+  flex:none; color:var(--gold); border:1px solid var(--gold-dim); border-radius:10px;
+  padding:0 8px; font-size:11px; line-height:18px; white-space:nowrap;
+}
+.meta-bar-title{
+  flex:1; min-width:0; color:var(--muted); font-size:12px; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.meta-toggle{flex:none; cursor:pointer}
+.meta-form{
+  padding:12px 14px; border-bottom:1px solid var(--border); background:var(--panel2);
+  display:flex; flex-direction:column; gap:8px;
+}
+.meta-wrap.collapsed .meta-form{display:none}
+.field-row{display:flex; gap:10px; flex-wrap:wrap}
+.field{display:flex; flex-direction:column; gap:4px; min-width:0}
+.field.grow{flex:1 1 120px}
+.field.cat{width:150px; flex:none}
+.field.cat input{width:100%}
+.field label{font-size:11px; color:var(--muted)}
+.field input,.field select{
+  background:var(--panel); border:1px solid var(--border); border-radius:6px;
+  padding:6px 8px; color:var(--text); outline:none; font-size:13px;
+}
+.field input:focus,.field select:focus{border-color:var(--gold)}
+.check{justify-content:flex-end}
+.check label{display:flex; align-items:center; gap:6px; color:var(--text); font-size:13px; cursor:pointer; padding-bottom:8px; white-space:nowrap}
+.check input{accent-color:var(--gold); width:15px; height:15px; cursor:pointer}
+.cover-row{display:flex; gap:6px; width:100%}
+.cover-row input{flex:1}
+.cover-row .btn{flex:none; white-space:nowrap}
+#vditor{flex:1; min-height:0}
+.editor-foot{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-top:1px solid var(--border)}
+#foot-info{color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.editor-foot .actions{display:flex; gap:8px; flex:none}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+  background:var(--panel2); border:1px solid var(--gold); color:var(--text);
+  padding:10px 18px; border-radius:8px; font-size:13px; z-index:99;
+  box-shadow:0 8px 30px rgba(0,0,0,.5); max-width:80vw;
+}
+
+/* ---------- 窄屏：上下堆叠；侧栏折叠按钮隐藏，列表区始终可见 ---------- */
+@media (max-width: 760px){
+  .layout,.layout.side-collapsed{grid-template-columns:1fr; grid-template-rows:32% 1fr; grid-template-areas:"list" "edit"}
+  .list-panel{grid-area:list}
+  .editor-panel{grid-area:edit}
+  #btn-side-toggle,.side-rail{display:none}
+  .side-body{display:flex}
+}
